@@ -76,6 +76,16 @@ export interface Project {
   };
   concepts?: ProjectConcepts;       // mapa conceptual del proyecto (grafo estilo Obsidian)
 
+  /**
+   * Otras categorías donde este proyecto también debe aparecer (cross-listing).
+   * El proyecto vive en una sola entrada de `portfolioData`, pero se renderiza
+   * además en las carpetas listadas aquí, marcado con un badge "cross-discipline".
+   *
+   * Usa las translation keys del título de la categoría, ej:
+   *   crossCategories: ["category.cienciaDeDatos"]
+   */
+  crossCategories?: string[];
+
   // --- Vista de detalle del proyecto (#/project/<id>) ---
   // Si están vacíos, la sección correspondiente muestra "Próximamente".
   diagrams?: string[];          // URLs de imágenes (arquitectura, flujos)
@@ -206,6 +216,7 @@ export const portfolioData: Category[] = [
         tags: ["Kafka", "Flink", "Iceberg", "Redis", "Python"],
         status: "in-progress",
         date: "2026-09-01",
+        crossCategories: ["category.cienciaDeDatos"],
         concepts: {
           nodes: [
             { id: "kappa", label: { es: "Arquitectura Kappa", en: "Kappa Architecture" }, group: "arch" },
@@ -273,6 +284,7 @@ export const portfolioData: Category[] = [
         tags: ["Feast", "Redis", "DuckDB", "Spark", "MLOps"],
         status: "in-progress",
         date: "2026-11-03",
+        crossCategories: ["category.cienciaDeDatos"],
         concepts: {
           nodes: [
             { id: "feature-store", label: { es: "Feature Store", en: "Feature Store" }, group: "ml" },

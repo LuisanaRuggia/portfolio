@@ -18,7 +18,7 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { useTranslation, type TranslationKey } from '@/lib/i18n';
 import { playSound } from '@/lib/sounds';
-import type { Project, ProjectStatus } from '@/data/projects';
+import { portfolioData, type Project, type ProjectStatus } from '@/data/projects';
 import { ConceptGraph } from './concept-graph';
 
 function cn(...inputs: ClassValue[]) {
@@ -224,6 +224,15 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project, o
 
   const titleText = localize(project.title);
 
+  // Categorías a las que pertenece el proyecto: la carpeta primaria + las cross-disciplina
+  const primaryCategoryKey = portfolioData.find((c) =>
+    c.projects.some((p) => p.id === project.id),
+  )?.title;
+  const categoryKeys: TranslationKey[] = [
+    primaryCategoryKey,
+    ...(project.crossCategories ?? []),
+  ].filter((k): k is TranslationKey => !!k);
+
   return (
     <main className="animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Botón Volver */}
@@ -252,6 +261,18 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project, o
               <p className="text-muted-foreground text-base sm:text-lg mb-6 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
                 {localize(project.description)}
               </p>
+            )}
+            {categoryKeys.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2 mb-3 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
+                {categoryKeys.map((catKey) => (
+                  <span
+                    key={catKey}
+                    className="inline-flex items-center px-3 py-1 rounded-full bg-accent/10 border border-accent/40 text-xs font-bold uppercase tracking-wide text-accent"
+                  >
+                    {t(catKey)}
+                  </span>
+                ))}
+              </div>
             )}
             <div className="flex flex-wrap items-center gap-2 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
               {project.tags?.map((tag) => (

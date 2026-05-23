@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useLayoutEffect, useCallback, forwardRef } from 'react';
-import { Sun, Moon, X, ExternalLink, ChevronLeft, ChevronRight, Volume2, VolumeX, Sparkles, Music, FileDown } from 'lucide-react';
+import { Sun, Moon, X, ExternalLink, ChevronLeft, ChevronRight, Volume2, VolumeX, Sparkles, Music, FileDown, ArrowLeftRight } from 'lucide-react';
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import Lottie from 'lottie-react';
@@ -33,16 +33,44 @@ interface ProjectCardProps {
   onClick: () => void;
   isSelected: boolean;
   canHover: boolean;
+  isCrossListed?: boolean;
+}
+
+/** Proyecto enriquecido con flag de cross-listing para el render */
+type ProjectWithCross = Project & { isCrossListed?: boolean };
+
+/**
+ * Construye la lista efectiva de proyectos para una categoría:
+ *  - sus proyectos propios
+ *  - + proyectos de OTRAS categorías cuyo `crossCategories` la incluye
+ *
+ * El flag `isCrossListed` marca proyectos cross-disciplina (con `crossCategories` no vacío)
+ * y se muestra en TODAS las carpetas donde aparezcan, no solo en la secundaria — el cross
+ * es una propiedad del proyecto, no del lugar desde donde se mira.
+ */
+function getEffectiveProjects(category: { title: string; projects: Project[] }): ProjectWithCross[] {
+  const isCross = (p: Project) => (p.crossCategories?.length ?? 0) > 0;
+  const own: ProjectWithCross[] = category.projects.map((p) => ({ ...p, isCrossListed: isCross(p) }));
+  const cross: ProjectWithCross[] = portfolioData
+    .filter((c) => c.title !== category.title)
+    .flatMap((c) => c.projects)
+    .filter((p) => p.crossCategories?.includes(category.title))
+    .map((p) => ({ ...p, isCrossListed: true }));
+  return [...own, ...cross];
 }
 
 const ProjectCard = forwardRef<HTMLDivElement, ProjectCardProps>(
-  ({ image, title, delay, isVisible, index, totalCount, onClick, isSelected, canHover }, ref) => {
+  ({ image, title, delay, isVisible, index, totalCount, onClick, isSelected, canHover, isCrossListed }, ref) => {
     const middleIndex = (totalCount - 1) / 2;
     const factor = totalCount > 1 ? (index - middleIndex) / middleIndex : 0;
 
-    const rotation = factor * 25;
-    const translationX = factor * 85;
-    const translationY = Math.abs(factor) * 12;
+    // Compactness: con pocas cards se ven sueltas si las abrimos al máximo (±85px ±25°).
+    // Escala el abanico para que 2 cards queden agrupadas, 3 a media apertura, 4+ apertura completa.
+    const compactness = Math.min(totalCount / 4, 1);
+
+    const rotation = factor * 25 * compactness;
+    const translationX = factor * 85 * compactness;
+    const translationY = Math.abs(factor) * 12 * compactness;
 
     return (
       <div
@@ -81,6 +109,14 @@ const ProjectCard = forwardRef<HTMLDivElement, ProjectCardProps>(
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+          {isCrossListed && (
+            <div
+              className="absolute top-1 right-1 w-4 h-4 rounded-full bg-accent flex items-center justify-center shadow-md ring-1 ring-white/40"
+              aria-hidden="true"
+            >
+              <ArrowLeftRight className="w-2.5 h-2.5 text-white" strokeWidth={3} />
+            </div>
+          )}
           <p
             className={cn(
               "absolute left-1.5 right-1.5 font-black uppercase tracking-tighter text-white drop-shadow-md leading-tight",
@@ -405,7 +441,7 @@ const ImageLightbox: React.FC<ImageLightboxProps> = ({
 
 interface AnimatedFolderProps {
   title: string;
-  projects: Project[];
+  projects: ProjectWithCross[];
   className?: string;
   gradient?: string;
   onViewProject: (projectId: string) => void;
@@ -509,7 +545,7 @@ const AnimatedFolder: React.FC<AnimatedFolderProps> = ({ title, projects, classN
               </div>
             ) : (
               previewProjects.map((project, index) => (
-                <ProjectCard key={project.id} ref={(el) => { cardRefs.current[index] = el; }} image={project.image} title={localize(project.title)} delay={index * 50} isVisible={isHovered} index={index} totalCount={previewProjects.length} onClick={() => handleProjectClick(project, index)} isSelected={hiddenCardId === project.id} canHover={canHover} />
+                <ProjectCard key={project.id} ref={(el) => { cardRefs.current[index] = el; }} image={project.image} title={localize(project.title)} delay={index * 50} isVisible={isHovered} index={index} totalCount={previewProjects.length} onClick={() => handleProjectClick(project, index)} isSelected={hiddenCardId === project.id} canHover={canHover} isCrossListed={project.isCrossListed} />
               ))
             )}
           </div>
@@ -896,7 +932,7 @@ export default function FolderPortfolio() {
             >
               <AnimatedFolder
                 title={t(folder.title as TranslationKey)}
-                projects={folder.projects}
+                projects={getEffectiveProjects(folder)}
                 gradient={folder.gradient}
                 className="w-full"
                 onViewProject={navigate}
