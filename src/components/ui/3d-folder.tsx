@@ -183,8 +183,9 @@ const ImageLightbox: React.FC<ImageLightboxProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
 
   const totalProjects = projects.length;
-  const hasNext = internalIndex < totalProjects - 1;
-  const hasPrev = internalIndex > 0;
+  // Navegación circular: siempre hay prev/next mientras haya >1 proyecto
+  const hasNext = totalProjects > 1;
+  const hasPrev = totalProjects > 1;
   const currentProject = projects[internalIndex];
 
   useEffect(() => {
@@ -206,16 +207,16 @@ const ImageLightbox: React.FC<ImageLightboxProps> = ({
   }, [isOpen, currentIndex]);
 
   const navigateNext = useCallback(() => {
-    if (internalIndex >= totalProjects - 1 || isSliding) return;
-    onNavigate(internalIndex + 1);
+    if (isSliding || totalProjects <= 1) return;
+    onNavigate((internalIndex + 1) % totalProjects);
     playSound('pop');
   }, [internalIndex, totalProjects, isSliding, onNavigate]);
 
   const navigatePrev = useCallback(() => {
-    if (internalIndex <= 0 || isSliding) return;
-    onNavigate(internalIndex - 1);
+    if (isSliding || totalProjects <= 1) return;
+    onNavigate((internalIndex - 1 + totalProjects) % totalProjects);
     playSound('pop');
-  }, [internalIndex, isSliding, onNavigate]);
+  }, [internalIndex, totalProjects, isSliding, onNavigate]);
 
   const handleClose = useCallback(() => {
     setIsClosing(true);

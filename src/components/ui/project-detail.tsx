@@ -235,6 +235,7 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project, o
   ].filter((k): k is TranslationKey => !!k);
 
   // Lista plana de todos los proyectos del portafolio para navegación prev/next
+  // (NO circular — para no dar la sensación de que hay más proyectos de los que hay)
   const allProjects = portfolioData.flatMap((c) => c.projects);
   const currentIdx = allProjects.findIndex((p) => p.id === project.id);
   const prevProject = currentIdx > 0 ? allProjects[currentIdx - 1] : null;
