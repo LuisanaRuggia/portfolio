@@ -28,8 +28,8 @@ const translations = {
     'category.ingenieriaDeDatos': 'Ingeniería de Datos',
     'category.analisisDeDatos': 'Análisis de Datos',
     'category.iaAutomatizacion': 'IA & Automatización',
-    'category.computacionCuantica': 'Computación Cuántica',
-    'category.algoritmia': 'Algoritmia',
+    'category.desarrollo': 'Desarrollo',
+    'category.algoritmosYRetos': 'Algoritmos y Retos',
     'document.title': 'Luisana Gutiérrez — Portafolio de Proyectos',
   },
   en: {
@@ -57,8 +57,8 @@ const translations = {
     'category.ingenieriaDeDatos': 'Data Engineering',
     'category.analisisDeDatos': 'Data Analysis',
     'category.iaAutomatizacion': 'AI & Automation',
-    'category.computacionCuantica': 'Quantum Computing',
-    'category.algoritmia': 'Algorithms',
+    'category.desarrollo': 'Development',
+    'category.algoritmosYRetos': 'Algorithms & Challenges',
     'document.title': 'Luisana Gutiérrez — Project Portfolio',
   },
 } as const;

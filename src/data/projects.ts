@@ -132,12 +132,12 @@ export const portfolioData: Category[] = [
     projects: [],
   },
   {
-    title: "category.computacionCuantica",
+    title: "category.desarrollo",
     gradient: "linear-gradient(to right, #414345, #232526)",
     projects: [],
   },
   {
-    title: "category.algoritmia",
+    title: "category.algoritmosYRetos",
     gradient: "linear-gradient(135deg, #e73827, #f85032)",
     projects: [],
   },
