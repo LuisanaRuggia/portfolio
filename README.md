@@ -3,6 +3,7 @@
 Portafolio interactivo de proyectos. Carpetas 3D animadas, multi-idioma (ES/EN), tema claro/oscuro y música de fondo opcional.
 
 🚀 **Live:** <https://luisanaruggia.github.io/portfolio/>
+📦 **Repositorio:** <https://github.com/LuisanaRuggia/portfolio>
 
 ## Stack
 
