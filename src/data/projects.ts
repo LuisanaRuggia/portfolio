@@ -326,7 +326,48 @@ export const portfolioData: Category[] = [
   {
     title: "category.desarrollo",
     gradient: "linear-gradient(to right, #414345, #232526)",
-    projects: [],
+    projects: [
+      {
+        id: "dev1",
+        image: `${import.meta.env.BASE_URL}images/portfolio.png`,
+        title: { es: "Portafolio Personal", en: "Personal Portfolio" },
+        description: {
+          es: "Este mismo sitio. Portafolio interactivo en React + TypeScript con animaciones 3D, grafos conceptuales force-directed, chat asistente con LLM, multilenguaje ES/EN y música de fondo. Build estática en GitHub Pages + Cloudflare Worker para el chat.",
+          en: "This very site. Interactive portfolio in React + TypeScript with 3D animations, force-directed concept graphs, LLM-powered chat assistant, ES/EN multilingual support, and background music. Static build on GitHub Pages + Cloudflare Worker for the chat.",
+        },
+        tags: ["React", "TypeScript", "Vite", "Tailwind", "Cloudflare Workers", "Lottie", "Web Audio API"],
+        status: "in-progress",
+        crossCategories: ["category.iaAutomatizacion"],
+        links: {
+          repo: "https://github.com/LuisanaRuggia/portfolio",
+          demo: "https://luisanaruggia.github.io/portfolio/",
+        },
+        concepts: {
+          nodes: [
+            { id: "jamstack", label: { es: "JAMstack", en: "JAMstack" }, group: "arch" },
+            { id: "static-first", label: { es: "Static-first", en: "Static-first" }, group: "arch" },
+            { id: "3d-animation", label: { es: "Animaciones 3D CSS", en: "3D CSS Animations" }, group: "arch" },
+            { id: "force-directed", label: { es: "Grafos force-directed", en: "Force-directed Graphs" }, group: "data" },
+            { id: "hash-routing", label: { es: "Hash routing", en: "Hash Routing" }, group: "data" },
+            { id: "i18n", label: { es: "i18n bilingüe", en: "Bilingual i18n" }, group: "ops" },
+            { id: "edge-functions", label: { es: "Edge Functions", en: "Edge Functions" }, group: "ops" },
+            { id: "web-audio", label: { es: "Web Audio API", en: "Web Audio API" }, group: "ops" },
+            { id: "ci-cd", label: { es: "CI/CD con Actions", en: "GitHub Actions CI/CD" }, group: "ops" },
+            { id: "llm-chat", label: { es: "Chat con LLM", en: "LLM-powered Chat" }, group: "ml" },
+          ],
+          edges: [
+            { from: "jamstack", to: "static-first" },
+            { from: "jamstack", to: "edge-functions" },
+            { from: "static-first", to: "ci-cd" },
+            { from: "edge-functions", to: "llm-chat" },
+            { from: "force-directed", to: "hash-routing" },
+            { from: "i18n", to: "static-first" },
+            { from: "3d-animation", to: "web-audio" },
+            { from: "ci-cd", to: "static-first" },
+          ],
+        },
+      },
+    ],
   },
   {
     title: "category.algoritmosYRetos",
