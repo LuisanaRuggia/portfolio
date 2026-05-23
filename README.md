@@ -1,8 +1,8 @@
-# Portafolio — Luisana Gutiérrez
+# Portafolio — Luisana Gutiérrez Ruggia
 
 Portafolio interactivo de proyectos. Carpetas 3D animadas, multi-idioma (ES/EN), tema claro/oscuro y música de fondo opcional.
 
-🚀 **Live:** _(URL pendiente de primer deploy a GitHub Pages)_
+🚀 **Live:** <https://luisanaruggia.github.io/portfolio/>
 
 ## Stack
 
