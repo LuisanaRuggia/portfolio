@@ -78,16 +78,21 @@ const ProjectCard = forwardRef<HTMLDivElement, ProjectCardProps>(
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
-          <p className="absolute bottom-1.5 left-1.5 right-1.5 text-[9px] font-black uppercase tracking-tighter text-white truncate drop-shadow-md">
+          <p
+            className={cn(
+              "absolute left-1.5 right-1.5 font-black uppercase tracking-tighter text-white drop-shadow-md leading-tight",
+              canHover
+                ? "bottom-1.5 text-[9px] truncate"
+                : "bottom-1.5 text-[10px] line-clamp-3 whitespace-normal",
+            )}
+          >
             {title}
           </p>
         </div>
         <div
           className={cn(
             "absolute left-1/2 -translate-x-1/2 bottom-[calc(100%+3rem)] z-50",
-            !canHover && isVisible && !isSelected
-              ? "opacity-100"
-              : "opacity-0 group-hover/card:opacity-100",
+            "opacity-0 group-hover/card:opacity-100",
             "transition-opacity duration-200",
             "pointer-events-none",
           )}
@@ -162,11 +167,13 @@ const ImageLightbox: React.FC<ImageLightboxProps> = ({
   const navigateNext = useCallback(() => {
     if (internalIndex >= totalProjects - 1 || isSliding) return;
     onNavigate(internalIndex + 1);
+    playSound('pop');
   }, [internalIndex, totalProjects, isSliding, onNavigate]);
 
   const navigatePrev = useCallback(() => {
     if (internalIndex <= 0 || isSliding) return;
     onNavigate(internalIndex - 1);
+    playSound('pop');
   }, [internalIndex, isSliding, onNavigate]);
 
   const handleClose = useCallback(() => {
@@ -215,6 +222,7 @@ const ImageLightbox: React.FC<ImageLightboxProps> = ({
   const handleDotClick = (idx: number) => {
     if (isSliding || idx === internalIndex) return;
     onNavigate(idx);
+    playSound('pop');
   };
 
   if (!shouldRender || !currentProject) return null;
@@ -282,30 +290,36 @@ const ImageLightbox: React.FC<ImageLightboxProps> = ({
         disabled={!hasPrev || isSliding}
         aria-label={t('lightbox.previous')}
         className={cn(
-          "absolute left-4 md:left-10 z-50 w-14 h-14 flex items-center justify-center rounded-full bg-muted/30 backdrop-blur-xl border border-white/10 text-foreground hover:scale-110 active:scale-95 transition-all duration-300 disabled:opacity-0 disabled:pointer-events-none shadow-2xl",
+          "absolute left-2 md:left-10 z-50 top-1/3 md:top-1/2 -translate-y-1/2",
+          "w-10 h-10 md:w-14 md:h-14 flex items-center justify-center rounded-full",
+          "bg-muted/30 backdrop-blur-xl border border-white/10 text-foreground",
+          "hover:scale-110 active:scale-95 transition-all duration-300",
+          "disabled:opacity-0 disabled:pointer-events-none shadow-2xl",
         )}
         style={{
           opacity: animationPhase === "complete" && !isClosing && hasPrev ? 1 : 0,
-          transform: animationPhase === "complete" && !isClosing ? "translateX(0)" : "translateX(-40px)",
-          transition: "opacity 400ms ease-out 600ms, transform 500ms cubic-bezier(0.16, 1, 0.3, 1) 600ms",
+          transition: "opacity 400ms ease-out 600ms",
         }}
       >
-        <ChevronLeft className="w-6 h-6" strokeWidth={3} />
+        <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" strokeWidth={3} />
       </button>
       <button
         onClick={(e) => { e.stopPropagation(); navigateNext(); }}
         disabled={!hasNext || isSliding}
         aria-label={t('lightbox.next')}
         className={cn(
-          "absolute right-4 md:right-10 z-50 w-14 h-14 flex items-center justify-center rounded-full bg-muted/30 backdrop-blur-xl border border-white/10 text-foreground hover:scale-110 active:scale-95 transition-all duration-300 disabled:opacity-0 disabled:pointer-events-none shadow-2xl",
+          "absolute right-2 md:right-10 z-50 top-1/3 md:top-1/2 -translate-y-1/2",
+          "w-10 h-10 md:w-14 md:h-14 flex items-center justify-center rounded-full",
+          "bg-muted/30 backdrop-blur-xl border border-white/10 text-foreground",
+          "hover:scale-110 active:scale-95 transition-all duration-300",
+          "disabled:opacity-0 disabled:pointer-events-none shadow-2xl",
         )}
         style={{
           opacity: animationPhase === "complete" && !isClosing && hasNext ? 1 : 0,
-          transform: animationPhase === "complete" && !isClosing ? "translateX(0)" : "translateX(40px)",
-          transition: "opacity 400ms ease-out 600ms, transform 500ms cubic-bezier(0.16, 1, 0.3, 1) 600ms",
+          transition: "opacity 400ms ease-out 600ms",
         }}
       >
-        <ChevronRight className="w-6 h-6" strokeWidth={3} />
+        <ChevronRight className="w-5 h-5 md:w-6 md:h-6" strokeWidth={3} />
       </button>
       <div
         ref={containerRef}
@@ -341,17 +355,17 @@ const ImageLightbox: React.FC<ImageLightboxProps> = ({
             </div>
           </div>
           <div
-            className={cn("px-8 py-7 bg-card border-t border-white/5")}
+            className={cn("px-5 sm:px-8 py-5 sm:py-7 bg-card border-t border-white/5")}
             style={{
               opacity: animationPhase === "complete" && !isClosing ? 1 : 0,
               transform: animationPhase === "complete" && !isClosing ? "translateY(0)" : "translateY(40px)",
               transition: "opacity 500ms ease-out 500ms, transform 600ms cubic-bezier(0.16, 1, 0.3, 1) 500ms",
             }}
           >
-            <div className="flex items-center justify-between gap-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6">
               <div className="flex-1 min-w-0">
-                <h3 className="text-2xl font-bold text-foreground tracking-tight truncate">{localize(currentProject?.title)}</h3>
-                <div className="flex items-center gap-4 mt-2">
+                <h3 className="text-lg sm:text-2xl font-bold text-foreground tracking-tight truncate">{localize(currentProject?.title)}</h3>
+                <div className="flex items-center gap-3 sm:gap-4 mt-2">
                   <div className="flex items-center gap-1.5 px-2.5 py-1 bg-muted rounded-full border border-white/5">
                     {projects.map((_, idx) => (
                       <button
@@ -365,9 +379,9 @@ const ImageLightbox: React.FC<ImageLightboxProps> = ({
                   <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/60">{internalIndex + 1} / {totalProjects}</p>
                 </div>
               </div>
-              <button className={cn("flex items-center gap-2 px-6 py-3 text-sm font-bold uppercase tracking-widest text-primary-foreground bg-primary hover:brightness-110 rounded-xl shadow-lg shadow-primary/20 transition-all duration-300 hover:scale-105 active:scale-95")}>
+              <button className={cn("flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-bold uppercase tracking-widest text-primary-foreground bg-primary hover:brightness-110 rounded-xl shadow-lg shadow-primary/20 transition-all duration-300 hover:scale-105 active:scale-95 w-full sm:w-auto")}>
                 <span>{t('project.view')}</span>
-                <ExternalLink className="w-4 h-4" />
+                <ExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </button>
             </div>
           </div>
@@ -503,7 +517,7 @@ const AnimatedFolder: React.FC<AnimatedFolderProps> = ({ title, projects, classN
 
 // --- Main App ---
 
-const DEFAULT_VOLUME = 0.7;
+const DEFAULT_VOLUME = 0.4;
 const MUSIC_BASE_VOLUME = 0.15;
 
 export default function FolderPortfolio() {
@@ -513,9 +527,12 @@ export default function FolderPortfolio() {
   const [volumePanelOpen, setVolumePanelOpen] = useState(false);
   const [canHover, setCanHover] = useState(true);
   const [isMusicPlaying, setIsMusicPlaying] = useState(true);
+  const [isMusicActuallyPlaying, setIsMusicActuallyPlaying] = useState(false);
   const volumePanelRef = useRef<HTMLDivElement>(null);
   const previousVolumeRef = useRef(DEFAULT_VOLUME);
   const musicRef = useRef<HTMLAudioElement | null>(null);
+  const musicCtxRef = useRef<AudioContext | null>(null);
+  const musicGainRef = useRef<GainNode | null>(null);
   const isMusicPlayingRef = useRef(isMusicPlaying);
   isMusicPlayingRef.current = isMusicPlaying;
 
@@ -556,15 +573,53 @@ export default function FolderPortfolio() {
     const audio = new Audio(`${import.meta.env.BASE_URL}sounds/jazz-background.mp3`);
     audio.loop = true;
     audio.preload = 'auto';
-    audio.volume = MUSIC_BASE_VOLUME * volume;
+    audio.crossOrigin = 'anonymous';
     musicRef.current = audio;
+
+    // Routear vía Web Audio API + GainNode. En iOS Safari `audio.volume` es
+    // ignorado para HTMLAudioElement; con GainNode el control funciona.
+    let ctx: AudioContext | null = null;
+    let gainNode: GainNode | null = null;
+    try {
+      const AudioCtxCtor =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      ctx = new AudioCtxCtor();
+      const source = ctx.createMediaElementSource(audio);
+      gainNode = ctx.createGain();
+      gainNode.gain.value = MUSIC_BASE_VOLUME * volume;
+      source.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      musicCtxRef.current = ctx;
+      musicGainRef.current = gainNode;
+    } catch {
+      // Fallback: volumen directo (suficiente fuera de iOS)
+      audio.volume = MUSIC_BASE_VOLUME * volume;
+    }
+
+    // Refleja el estado REAL de reproducción (no solo el deseo). Importante
+    // porque los navegadores bloquean autoplay hasta el primer gesto del
+    // usuario: el botón puede decir "on" sin sonido real.
+    const handlePlaying = () => setIsMusicActuallyPlaying(true);
+    const handlePauseEnded = () => setIsMusicActuallyPlaying(false);
+    audio.addEventListener('playing', handlePlaying);
+    audio.addEventListener('pause', handlePauseEnded);
+    audio.addEventListener('ended', handlePauseEnded);
 
     // Música ON por defecto, OFF solo si el usuario la pausó explícitamente
     setIsMusicPlaying(localStorage.getItem('portfolio:music') !== 'false');
 
     return () => {
+      audio.removeEventListener('playing', handlePlaying);
+      audio.removeEventListener('pause', handlePauseEnded);
+      audio.removeEventListener('ended', handlePauseEnded);
       audio.pause();
+      if (ctx) {
+        ctx.close().catch(() => {});
+      }
       musicRef.current = null;
+      musicCtxRef.current = null;
+      musicGainRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -572,8 +627,21 @@ export default function FolderPortfolio() {
   useEffect(() => {
     const audio = musicRef.current;
     if (!audio) return;
-    audio.volume = MUSIC_BASE_VOLUME * volume;
+
+    // Volumen: GainNode si Web Audio está disponible, sino audio.volume directo.
+    const targetVol = MUSIC_BASE_VOLUME * volume;
+    const gainNode = musicGainRef.current;
+    if (gainNode) {
+      gainNode.gain.value = targetVol;
+    } else {
+      audio.volume = targetVol;
+    }
+
     if (isMusicPlaying) {
+      const ctx = musicCtxRef.current;
+      if (ctx && ctx.state === 'suspended') {
+        ctx.resume().catch(() => {});
+      }
       audio.play().catch((e) => {
         if (typeof console !== 'undefined') {
           console.debug('[music] play bloqueado:', e?.message ?? e);
@@ -585,6 +653,32 @@ export default function FolderPortfolio() {
     localStorage.setItem('portfolio:music', String(isMusicPlaying));
   }, [isMusicPlaying, volume]);
 
+  // Pausa la música cuando el usuario sale de la pestaña/ventana, y la
+  // reanuda al volver (solo si la tenía activa, respeta pausa manual).
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    const handleVisibility = () => {
+      const audio = musicRef.current;
+      const ctx = musicCtxRef.current;
+      if (!audio) return;
+      if (document.visibilityState === 'hidden') {
+        audio.pause();
+        if (ctx && ctx.state === 'running') {
+          ctx.suspend().catch(() => {});
+        }
+      } else if (document.visibilityState === 'visible') {
+        if (ctx && ctx.state === 'suspended') {
+          ctx.resume().catch(() => {});
+        }
+        if (isMusicPlayingRef.current && audio.paused) {
+          audio.play().catch(() => {});
+        }
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
+  }, []);
+
   // Auto-unlock: si el navegador bloqueó el primer play() (sin gesto del
   // usuario), al primer click/tap/tecla en la página intentamos reanudar.
   useEffect(() => {
@@ -594,6 +688,10 @@ export default function FolderPortfolio() {
       window.removeEventListener('keydown', handler);
       window.removeEventListener('touchstart', handler);
       const audio = musicRef.current;
+      const ctx = musicCtxRef.current;
+      if (ctx && ctx.state === 'suspended') {
+        ctx.resume().catch(() => {});
+      }
       if (audio && isMusicPlayingRef.current && audio.paused) {
         audio.play().catch(() => {});
       }
@@ -682,7 +780,7 @@ export default function FolderPortfolio() {
                 )}
               />
             </button>
-            {isMusicPlaying && (
+            {isMusicActuallyPlaying && (
               <div
                 className="absolute left-1/2 -translate-x-1/2 top-full pointer-events-none w-16 h-24 overflow-visible"
                 aria-hidden="true"
@@ -695,7 +793,7 @@ export default function FolderPortfolio() {
                 ].map((note, i) => (
                   <span
                     key={i}
-                    className="absolute bottom-2 text-base font-bold text-foreground select-none"
+                    className="absolute bottom-2 text-base font-bold text-accent select-none"
                     style={{
                       left: note.left,
                       animation: `float-note 3.6s ease-out ${note.delay} infinite`,
