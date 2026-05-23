@@ -1,12 +1,15 @@
 import React, { useState, useRef, useEffect, useLayoutEffect, useCallback, forwardRef } from 'react';
-import { Sun, Moon, X, ExternalLink, ChevronLeft, ChevronRight, Volume2, VolumeX, Sparkles, Music } from 'lucide-react';
+import { Sun, Moon, X, ExternalLink, ChevronLeft, ChevronRight, Volume2, VolumeX, Sparkles, Music, FileDown } from 'lucide-react';
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import Lottie from 'lottie-react';
 import { playSound, setSoundVolume } from "@/lib/sounds";
 import { useTranslation, type TranslationKey } from "@/lib/i18n";
+import { useHashRoute } from "@/lib/use-hash-route";
 import girlLaptopAnimation from "@/assets/lottie/girl-laptop.json";
 import { portfolioData, type Project } from "@/data/projects";
+import { ProjectDetailView } from "./project-detail";
+import { PortfolioChat } from "./portfolio-chat";
 
 // --- Utilities ---
 
@@ -122,6 +125,7 @@ interface ImageLightboxProps {
   sourceRect: DOMRect | null;
   onCloseComplete?: () => void;
   onNavigate: (index: number) => void;
+  onViewProject: (projectId: string) => void;
 }
 
 const ImageLightbox: React.FC<ImageLightboxProps> = ({
@@ -132,6 +136,7 @@ const ImageLightbox: React.FC<ImageLightboxProps> = ({
   sourceRect,
   onCloseComplete,
   onNavigate,
+  onViewProject,
 }) => {
   const { t, localize } = useTranslation();
   const [animationPhase, setAnimationPhase] = useState<"initial" | "animating" | "complete">("initial");
@@ -379,7 +384,14 @@ const ImageLightbox: React.FC<ImageLightboxProps> = ({
                   <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/60">{internalIndex + 1} / {totalProjects}</p>
                 </div>
               </div>
-              <button className={cn("flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-bold uppercase tracking-widest text-primary-foreground bg-primary hover:brightness-110 rounded-xl shadow-lg shadow-primary/20 transition-all duration-300 hover:scale-105 active:scale-95 w-full sm:w-auto")}>
+              <button
+                onClick={() => {
+                  if (!currentProject) return;
+                  onViewProject(currentProject.id);
+                  handleClose();
+                }}
+                className={cn("flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-bold uppercase tracking-widest text-primary-foreground bg-primary hover:brightness-110 rounded-xl shadow-lg shadow-primary/20 transition-all duration-300 hover:scale-105 active:scale-95 w-full sm:w-auto")}
+              >
                 <span>{t('project.view')}</span>
                 <ExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </button>
@@ -396,9 +408,10 @@ interface AnimatedFolderProps {
   projects: Project[];
   className?: string;
   gradient?: string;
+  onViewProject: (projectId: string) => void;
 }
 
-const AnimatedFolder: React.FC<AnimatedFolderProps> = ({ title, projects, className, gradient }) => {
+const AnimatedFolder: React.FC<AnimatedFolderProps> = ({ title, projects, className, gradient, onViewProject }) => {
   const { t, localize } = useTranslation();
   const [isHovered, setIsHovered] = useState(false);
   const [canHover, setCanHover] = useState(true);
@@ -510,7 +523,7 @@ const AnimatedFolder: React.FC<AnimatedFolderProps> = ({ title, projects, classN
           </p>
         </div>
       </div>
-      <ImageLightbox projects={projects} currentIndex={selectedIndex ?? 0} isOpen={selectedIndex !== null} onClose={handleCloseLightbox} sourceRect={sourceRect} onCloseComplete={handleCloseComplete} onNavigate={handleNavigate} />
+      <ImageLightbox projects={projects} currentIndex={selectedIndex ?? 0} isOpen={selectedIndex !== null} onClose={handleCloseLightbox} sourceRect={sourceRect} onCloseComplete={handleCloseComplete} onNavigate={handleNavigate} onViewProject={onViewProject} />
     </>
   );
 };
@@ -522,6 +535,10 @@ const MUSIC_BASE_VOLUME = 0.15;
 
 export default function FolderPortfolio() {
   const { t, language, setLanguage } = useTranslation();
+  const { projectId, navigate } = useHashRoute();
+  const selectedProject: Project | null = projectId
+    ? portfolioData.flatMap((c) => c.projects).find((p) => p.id === projectId) ?? null
+    : null;
   const [isDark, setIsDark] = useState(false);
   const [volume, setVolume] = useState(DEFAULT_VOLUME);
   const [volumePanelOpen, setVolumePanelOpen] = useState(false);
@@ -731,7 +748,17 @@ export default function FolderPortfolio() {
   return (
     <main className="min-h-screen bg-background text-foreground transition-colors duration-500 selection:bg-accent/40 selection:text-foreground">
       <header className="sticky top-0 z-40 w-full bg-background/80 backdrop-blur-xl border-b border-border transition-colors duration-500">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-end gap-2">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 h-16 flex items-center justify-between gap-2">
+          <a
+            href={`${import.meta.env.BASE_URL}cv.pdf`}
+            download
+            aria-label={t('header.downloadCv')}
+            className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 h-10 rounded-xl bg-muted/50 hover:bg-muted transition-colors border border-border text-sm font-bold tracking-wide text-foreground"
+          >
+            <FileDown className="w-4 h-4" />
+            <span>{t('header.cv')}</span>
+          </a>
+          <div className="flex items-center gap-1.5 sm:gap-2">
           <div
             className="relative"
             ref={volumePanelRef}
@@ -822,9 +849,18 @@ export default function FolderPortfolio() {
           >
             {isDark ? <Sun className="w-5 h-5 text-yellow-500" /> : <Moon className="w-5 h-5 text-indigo-600" />}
           </button>
+          </div>
         </div>
       </header>
 
+      {selectedProject ? (
+        <ProjectDetailView
+          project={selectedProject}
+          onBack={() => navigate(null)}
+          canHover={canHover}
+        />
+      ) : (
+      <>
       <div className="max-w-7xl mx-auto pt-8 sm:pt-12 px-4 sm:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 items-center">
           <div className="text-center md:text-left order-2 md:order-1">
@@ -863,11 +899,18 @@ export default function FolderPortfolio() {
                 projects={folder.projects}
                 gradient={folder.gradient}
                 className="w-full"
+                onViewProject={navigate}
               />
             </div>
           ))}
         </div>
       </section>
+
+      </>
+      )}
+
+      {/* Chat flotante — siempre presente, en home y en detail view */}
+      <PortfolioChat />
     </main>
   );
 }
