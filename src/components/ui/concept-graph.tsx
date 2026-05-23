@@ -50,12 +50,12 @@ const SPRING_K_INIT = 0.06;
 const CENTER_PULL_INIT = 0.0018;
 const DAMPING_INIT = 0.82;
 
-// Live loop (levitation suave)
-const REPULSION_LIVE = 1200;
-const SPRING_K_LIVE = 0.012;
-const CENTER_PULL_LIVE = 0.0006;
-const DAMPING_LIVE = 0.94;
-const NOISE_AMP = 0.08;
+// Live loop (levitation muy suave — fácil de leer)
+const REPULSION_LIVE = 800;
+const SPRING_K_LIVE = 0.008;
+const CENTER_PULL_LIVE = 0.0005;
+const DAMPING_LIVE = 0.96;
+const NOISE_AMP = 0.03;
 const MIN_DIST = 18;
 
 function applyForces(
@@ -122,8 +122,9 @@ function applyForces(
     n.vx += (CENTER_X - n.x) * centerPull;
     n.vy += (CENTER_Y - n.y) * centerPull;
     if (applyNoise) {
-      n.vx += Math.sin(time * 0.0009 + idx * 1.7) * NOISE_AMP;
-      n.vy += Math.cos(time * 0.0007 + idx * 0.9) * NOISE_AMP;
+      // Frecuencias bajas (~0.0003) = oscilación lenta, fácil de seguir con la vista
+      n.vx += Math.sin(time * 0.00035 + idx * 1.7) * NOISE_AMP;
+      n.vy += Math.cos(time * 0.00028 + idx * 0.9) * NOISE_AMP;
     }
     n.vx *= damping;
     n.vy *= damping;

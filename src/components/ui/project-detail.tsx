@@ -30,6 +30,7 @@ type SectionKey = 'diagrams' | 'documentation' | 'readme' | 'links' | 'blogVideo
 interface ProjectDetailViewProps {
   project: Project;
   onBack: () => void;
+  onNavigate: (projectId: string) => void;
   canHover: boolean;
 }
 
@@ -209,7 +210,7 @@ const SECTION_GRADIENTS: Record<SectionKey, string> = {
   updates: 'linear-gradient(135deg, #F80759, #BC4E9C)',
 };
 
-export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project, onBack, canHover }) => {
+export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project, onBack, onNavigate, canHover }) => {
   const { t, localize, language } = useTranslation();
   const [openSection, setOpenSection] = useState<SectionKey | null>(null);
 
@@ -233,20 +234,60 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project, o
     ...(project.crossCategories ?? []),
   ].filter((k): k is TranslationKey => !!k);
 
+  // Lista plana de todos los proyectos del portafolio para navegación prev/next
+  const allProjects = portfolioData.flatMap((c) => c.projects);
+  const currentIdx = allProjects.findIndex((p) => p.id === project.id);
+  const prevProject = currentIdx > 0 ? allProjects[currentIdx - 1] : null;
+  const nextProject = currentIdx >= 0 && currentIdx < allProjects.length - 1
+    ? allProjects[currentIdx + 1]
+    : null;
+
   return (
     <main className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-      {/* Botón Volver */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-6">
+      {/* Barra superior: Volver + navegación prev/next entre proyectos */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-6 flex items-center justify-between gap-3">
         <button
           onClick={() => {
             playSound('pop');
             onBack();
           }}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-muted/50 hover:bg-muted border border-border text-sm font-medium text-foreground transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-muted/50 hover:bg-muted border border-border text-sm font-medium text-foreground transition-colors flex-shrink-0"
         >
           <ArrowLeft className="w-4 h-4" />
           {t('detail.back')}
         </button>
+        <div className="flex items-center gap-2 min-w-0">
+          {prevProject && (
+            <button
+              onClick={() => {
+                playSound('pop');
+                onNavigate(prevProject.id);
+              }}
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-muted/50 hover:bg-muted border border-border text-sm font-medium text-foreground transition-colors min-w-0"
+              title={localize(prevProject.title)}
+            >
+              <ChevronLeft className="w-4 h-4 flex-shrink-0" />
+              <span className="hidden sm:inline truncate max-w-[160px]">
+                {localize(prevProject.title)}
+              </span>
+            </button>
+          )}
+          {nextProject && (
+            <button
+              onClick={() => {
+                playSound('pop');
+                onNavigate(nextProject.id);
+              }}
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-muted/50 hover:bg-muted border border-border text-sm font-medium text-foreground transition-colors min-w-0"
+              title={localize(nextProject.title)}
+            >
+              <span className="hidden sm:inline truncate max-w-[160px]">
+                {localize(nextProject.title)}
+              </span>
+              <ChevronRight className="w-4 h-4 flex-shrink-0" />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Hero del proyecto: info a la izquierda, grafo de conceptos a la derecha */}

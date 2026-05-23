@@ -893,6 +893,7 @@ export default function FolderPortfolio() {
         <ProjectDetailView
           project={selectedProject}
           onBack={() => navigate(null)}
+          onNavigate={(id) => navigate(id)}
           canHover={canHover}
         />
       ) : (
