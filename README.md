@@ -1,20 +1,51 @@
-# Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+# Portafolio — Luisana Gutiérrez
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+Portafolio interactivo de proyectos. Carpetas 3D animadas, multi-idioma (ES/EN), tema claro/oscuro y música de fondo opcional.
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+🚀 **Live:** _(URL pendiente de primer deploy a GitHub Pages)_
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+## Stack
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+- React 18 + TypeScript + Vite
+- Tailwind CSS + `tailwindcss-animate`
+- `lottie-react` para animación del hero
+- Web Audio API + HTMLAudioElement para sonidos (whoosh, pop, jazz de fondo)
+- i18n custom (sin dependencias) con `LocalizedString` para campos bilingües
+
+## Requisitos
+
+- **pnpm** ≥ 8 (obligatorio — npm y yarn están bloqueados por `preinstall`)
+- Node 20+ recomendado (el proyecto compila con 18 pero el ecosistema lo pide)
+
+## Comandos
+
+```bash
+pnpm install   # instalar dependencias
+pnpm dev       # dev server con HMR
+pnpm build     # build de producción → dist/
+pnpm preview   # servir dist/ en local
+```
+
+## Estructura
+
+```
+app/
+├── src/
+│   ├── components/ui/3d-folder.tsx  # componente principal
+│   ├── data/projects.ts             # catálogo de proyectos
+│   ├── lib/i18n.tsx                 # sistema multi-idioma
+│   ├── lib/sounds.ts                # SFX (whoosh, pop)
+│   └── assets/lottie/               # animaciones
+└── public/
+    ├── sounds/                      # MP3 (jazz, SFX)
+    └── images/projects/             # screenshots de proyectos
+```
+
+## Cómo agregar un proyecto
+
+1. Capturar screenshot → `public/images/projects/<id>.webp`
+2. Editar `src/data/projects.ts`: cambiar `image` y agregar `links`
+3. `pnpm dev` para previsualizar
+4. `git push origin main` → deploy automático
+
+Ver el docstring en `src/data/projects.ts` para el schema completo.

@@ -1,0 +1,36 @@
+# Dependencias
+node_modules/
+
+# Build output
+dist/
+dist-ssr/
+
+# Artefactos de tsc -b (build incremental)
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Editores (no compartir configs personales)
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Locales / Variables de entorno (por si en el futuro)
+.env
+.env.local
+.env.*.local
