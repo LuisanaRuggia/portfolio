@@ -74,7 +74,7 @@ const translations = {
     'category.iaAutomatizacion': 'IA & Automatización',
     'category.desarrollo': 'Desarrollo',
     'category.algoritmosYRetos': 'Algoritmos y Retos',
-    'document.title': 'Luisana Gutiérrez — Portafolio de Proyectos',
+    'document.title': 'Portafolio de Proyectos | Luisana Gutiérrez Ruggia',
   },
   en: {
     'hero.tagline': 'Project Portfolio',
@@ -147,7 +147,7 @@ const translations = {
     'category.iaAutomatizacion': 'AI & Automation',
     'category.desarrollo': 'Development',
     'category.algoritmosYRetos': 'Algorithms & Challenges',
-    'document.title': 'Luisana Gutiérrez — Project Portfolio',
+    'document.title': 'Project Portfolio | Luisana Gutiérrez Ruggia',
   },
 } as const;
 
