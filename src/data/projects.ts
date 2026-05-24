@@ -342,6 +342,9 @@ export const portfolioData: Category[] = [
           repo: "https://github.com/LuisanaRuggia/portfolio",
           demo: "https://luisanaruggia.github.io/portfolio/",
         },
+        diagrams: [
+          `${import.meta.env.BASE_URL}diagrams/portfolio/backend-architecture.png`,
+        ],
         concepts: {
           nodes: [
             { id: "jamstack", label: { es: "JAMstack", en: "JAMstack" }, group: "arch" },
