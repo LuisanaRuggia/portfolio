@@ -191,11 +191,13 @@ const DiagramsViewer: React.FC<DiagramsViewerProps> = ({ images, alt, onClose })
   const zoomOut = useCallback(() => setScale((s) => Math.max(MIN_SCALE, s / ZOOM_STEP)), []);
 
   const prev = useCallback(() => {
+    playSound('pop');
     reset();
     setIdx((i) => (i - 1 + images.length) % images.length);
   }, [images.length, reset]);
 
   const next = useCallback(() => {
+    playSound('pop');
     reset();
     setIdx((i) => (i + 1) % images.length);
   }, [images.length, reset]);
