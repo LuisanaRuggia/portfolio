@@ -385,7 +385,7 @@ const DiagramsViewer: React.FC<DiagramsViewerProps> = ({ images, alt, onClose, d
           <img
             src={images[idx]}
             alt={`${alt} ${idx + 1}`}
-            className="max-w-[92vw] max-h-[78vh] object-contain"
+            className="max-w-[92vw] max-h-[78vh] object-contain dark:invert dark:hue-rotate-180"
             draggable={false}
           />
         </div>
