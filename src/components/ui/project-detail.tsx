@@ -181,6 +181,9 @@ const DiagramsViewer: React.FC<DiagramsViewerProps> = ({ images, alt, onClose })
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const [isPanning, setIsPanning] = useState(false);
   const panStartRef = useRef({ x: 0, y: 0 });
+  // Multi-touch: rastrea todos los pointers activos para soporte de pinch-zoom
+  const pointersRef = useRef<Map<number, { x: number; y: number }>>(new Map());
+  const pinchRef = useRef<{ initialDist: number; initialScale: number } | null>(null);
 
   const reset = useCallback(() => {
     setScale(1);
@@ -234,21 +237,63 @@ const DiagramsViewer: React.FC<DiagramsViewerProps> = ({ images, alt, onClose })
     return () => el.removeEventListener('wheel', handler);
   }, []);
 
+  // Helpers para multi-touch
+  const pinchDistance = () => {
+    const pts = Array.from(pointersRef.current.values());
+    if (pts.length < 2) return 0;
+    return Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+  };
+
   const onPointerDown = (e: React.PointerEvent) => {
-    setIsPanning(true);
-    panStartRef.current = { x: e.clientX - translate.x, y: e.clientY - translate.y };
+    pointersRef.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
     (e.target as Element).setPointerCapture?.(e.pointerId);
+
+    if (pointersRef.current.size === 2) {
+      // 2 dedos: inicia gesto de pinch
+      pinchRef.current = { initialDist: pinchDistance(), initialScale: scale };
+      setIsPanning(false);
+    } else if (pointersRef.current.size === 1) {
+      // 1 dedo / mouse: pan
+      setIsPanning(true);
+      panStartRef.current = { x: e.clientX - translate.x, y: e.clientY - translate.y };
+    }
   };
 
   const onPointerMove = (e: React.PointerEvent) => {
-    if (!isPanning) return;
-    setTranslate({
-      x: e.clientX - panStartRef.current.x,
-      y: e.clientY - panStartRef.current.y,
-    });
+    if (!pointersRef.current.has(e.pointerId)) return;
+    pointersRef.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+    if (pointersRef.current.size === 2 && pinchRef.current) {
+      // Pinch zoom: nuevo scale = scale inicial * (distancia actual / distancia inicial)
+      const newDist = pinchDistance();
+      if (newDist > 0 && pinchRef.current.initialDist > 0) {
+        const factor = newDist / pinchRef.current.initialDist;
+        setScale(Math.max(MIN_SCALE, Math.min(MAX_SCALE, pinchRef.current.initialScale * factor)));
+      }
+    } else if (pointersRef.current.size === 1 && isPanning) {
+      setTranslate({
+        x: e.clientX - panStartRef.current.x,
+        y: e.clientY - panStartRef.current.y,
+      });
+    }
   };
 
-  const onPointerUp = () => setIsPanning(false);
+  const onPointerUp = (e: React.PointerEvent) => {
+    pointersRef.current.delete(e.pointerId);
+
+    if (pointersRef.current.size < 2) {
+      pinchRef.current = null;
+    }
+
+    if (pointersRef.current.size === 0) {
+      setIsPanning(false);
+    } else if (pointersRef.current.size === 1) {
+      // De pinch a pan: reinicia el origen con el dedo que queda
+      const remaining = Array.from(pointersRef.current.values())[0];
+      panStartRef.current = { x: remaining.x - translate.x, y: remaining.y - translate.y };
+      setIsPanning(true);
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-background/95 backdrop-blur-2xl animate-in fade-in duration-200">
