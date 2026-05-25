@@ -173,13 +173,17 @@ interface DiagramsViewerProps {
   downloadUrl?: string;
   /** Etiqueta para el botón de descarga. Defecto: "Descargar". */
   downloadLabel?: string;
+  /** Links adicionales que se renderizan como botones en el header.
+   * Útil para ofrecer "abrir en pestaña nueva" de elementos relacionados
+   * (ej. los diagramas embebidos cuando se muestra documentación). */
+  externalLinks?: Array<{ label: string; url: string }>;
 }
 
 const MIN_SCALE = 0.5;
 const MAX_SCALE = 8;
 const ZOOM_STEP = 1.25;
 
-const DiagramsViewer: React.FC<DiagramsViewerProps> = ({ images, alt, onClose, downloadUrl, downloadLabel }) => {
+const DiagramsViewer: React.FC<DiagramsViewerProps> = ({ images, alt, onClose, downloadUrl, downloadLabel, externalLinks }) => {
   const { t } = useTranslation();
   const [idx, setIdx] = useState(0);
   const [scale, setScale] = useState(1);
@@ -189,6 +193,9 @@ const DiagramsViewer: React.FC<DiagramsViewerProps> = ({ images, alt, onClose, d
   // Multi-touch: rastrea todos los pointers activos para soporte de pinch-zoom
   const pointersRef = useRef<Map<number, { x: number; y: number }>>(new Map());
   const pinchRef = useRef<{ initialDist: number; initialScale: number } | null>(null);
+  // Refs para medir el tamaño renderizado de la imagen y aplicar pan boundaries
+  const imgRef = useRef<HTMLImageElement>(null);
+  const imgDimsRef = useRef({ w: 0, h: 0 });
 
   const reset = useCallback(() => {
     setScale(1);
@@ -249,6 +256,43 @@ const DiagramsViewer: React.FC<DiagramsViewerProps> = ({ images, alt, onClose, d
     return Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
   };
 
+  // Restringe el translate para que la imagen nunca se pueda arrastrar fuera de la pantalla.
+  // Si la imagen escalada cabe en el viewport, no permite pan (centra). Si no cabe, permite
+  // pan solo hasta donde los bordes de la imagen tocan los del viewport.
+  const clampTranslate = (tx: number, ty: number, scaleVal: number) => {
+    const viewport = viewportRef.current;
+    if (!viewport || imgDimsRef.current.w === 0) return { x: tx, y: ty };
+    const vw = viewport.clientWidth;
+    const vh = viewport.clientHeight;
+    const scaledW = imgDimsRef.current.w * scaleVal;
+    const scaledH = imgDimsRef.current.h * scaleVal;
+    const maxTx = Math.max(0, (scaledW - vw) / 2);
+    const maxTy = Math.max(0, (scaledH - vh) / 2);
+    return {
+      x: Math.max(-maxTx, Math.min(maxTx, tx)),
+      y: Math.max(-maxTy, Math.min(maxTy, ty)),
+    };
+  };
+
+  // Cuando termina de cargar la imagen, captura sus dimensiones renderizadas a scale=1
+  const handleImageLoad = useCallback(() => {
+    if (!imgRef.current) return;
+    imgDimsRef.current = {
+      w: imgRef.current.offsetWidth,
+      h: imgRef.current.offsetHeight,
+    };
+    // Re-aplica clamp al translate actual con las dimensiones recién medidas
+    setTranslate((t) => clampTranslate(t.x, t.y, scale));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scale]);
+
+  // Cuando cambia el scale (zoom in/out, pinch, reset), reclampea por si el translate
+  // actual ya no cabe en los nuevos bounds.
+  useEffect(() => {
+    setTranslate((t) => clampTranslate(t.x, t.y, scale));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scale]);
+
   const onPointerDown = (e: React.PointerEvent) => {
     pointersRef.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
     (e.target as Element).setPointerCapture?.(e.pointerId);
@@ -276,10 +320,13 @@ const DiagramsViewer: React.FC<DiagramsViewerProps> = ({ images, alt, onClose, d
         setScale(Math.max(MIN_SCALE, Math.min(MAX_SCALE, pinchRef.current.initialScale * factor)));
       }
     } else if (pointersRef.current.size === 1 && isPanning) {
-      setTranslate({
-        x: e.clientX - panStartRef.current.x,
-        y: e.clientY - panStartRef.current.y,
-      });
+      setTranslate(
+        clampTranslate(
+          e.clientX - panStartRef.current.x,
+          e.clientY - panStartRef.current.y,
+          scale,
+        ),
+      );
     }
   };
 
@@ -340,6 +387,33 @@ const DiagramsViewer: React.FC<DiagramsViewerProps> = ({ images, alt, onClose, d
           >
             <Maximize2 className="w-4 h-4" />
           </button>
+          {externalLinks?.map((link) => (
+            <a
+              key={link.url}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              title={link.label}
+              className="hidden sm:inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-muted/50 hover:bg-muted text-xs font-bold uppercase tracking-wider text-foreground transition-colors"
+            >
+              <ExternalLink className="w-3 h-3" />
+              {link.label}
+            </a>
+          ))}
+          {externalLinks?.map((link) => (
+            // En mobile, solo icono (más compacto)
+            <a
+              key={`m-${link.url}`}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={link.label}
+              title={link.label}
+              className="sm:hidden w-9 h-9 flex items-center justify-center rounded-lg hover:bg-muted transition-colors"
+            >
+              <ExternalLink className="w-4 h-4" />
+            </a>
+          ))}
           {downloadUrl && (
             <a
               href={downloadUrl}
@@ -383,8 +457,10 @@ const DiagramsViewer: React.FC<DiagramsViewerProps> = ({ images, alt, onClose, d
           }}
         >
           <img
+            ref={imgRef}
             src={images[idx]}
             alt={`${alt} ${idx + 1}`}
+            onLoad={handleImageLoad}
             className="max-w-[92vw] max-h-[78vh] object-contain dark:invert dark:hue-rotate-180"
             draggable={false}
           />
@@ -663,6 +739,13 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project, o
             images={project.documentationPages!}
             alt={titleText}
             downloadUrl={project.documentationUrl}
+            externalLinks={project.diagrams?.map((url) => {
+              // "frontend-architecture.png" → "Frontend"
+              const filename = url.split('/').pop()?.replace(/\.\w+$/, '') ?? '';
+              const cleaned = filename.replace(/-architecture$/, '').replace(/-/g, ' ');
+              const label = cleaned ? cleaned.charAt(0).toUpperCase() + cleaned.slice(1) : 'Diagrama';
+              return { label, url };
+            })}
             onClose={() => setOpenSection(null)}
           />
         )}
