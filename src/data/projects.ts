@@ -352,9 +352,6 @@ export const portfolioData: Category[] = [
         documentationUrl: `${import.meta.env.BASE_URL}docs/dev1/documentation.pdf`,
         documentationPages: [
           `${import.meta.env.BASE_URL}docs/dev1/pages/page-1.png`,
-          `${import.meta.env.BASE_URL}docs/dev1/pages/page-2.png`,
-          `${import.meta.env.BASE_URL}docs/dev1/pages/page-3.png`,
-          `${import.meta.env.BASE_URL}docs/dev1/pages/page-4.png`,
         ],
         readmeUrl: "https://github.com/LuisanaRuggia/portfolio/blob/main/README.md",
         concepts: {
