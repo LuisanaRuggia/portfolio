@@ -1,4 +1,5 @@
 import type { LocalizedString } from "@/lib/i18n";
+import type { ThemedImage } from "@/lib/theme";
 
 /**
  * Catálogo de proyectos del portafolio.
@@ -63,7 +64,12 @@ export interface ProjectConcepts {
 
 export interface Project {
   id: string;
-  image: string;
+  /**
+   * Imagen principal del proyecto. Puede ser un string (mismo en ambos temas)
+   * o `{ light, dark }` para que el sitio swappee la imagen según el tema activo.
+   * Ver `useThemedImage()` en `lib/theme.ts`.
+   */
+  image: ThemedImage;
   title: LocalizedString;
   description?: LocalizedString;
   tags?: string[];
@@ -332,7 +338,10 @@ export const portfolioData: Category[] = [
     projects: [
       {
         id: "dev1",
-        image: `${import.meta.env.BASE_URL}images/portfolio.png`,
+        image: {
+          light: `${import.meta.env.BASE_URL}images/portfolio-light.png`,
+          dark: `${import.meta.env.BASE_URL}images/portfolio-dark.png`,
+        },
         title: { es: "Portafolio Personal", en: "Personal Portfolio" },
         description: {
           es: "Este mismo sitio. Portafolio interactivo en React + TypeScript con animaciones 3D, grafos conceptuales force-directed, chat asistente con LLM, multilenguaje ES/EN y música de fondo. Build estática en GitHub Pages + Cloudflare Worker para el chat.",
@@ -354,6 +363,50 @@ export const portfolioData: Category[] = [
           `${import.meta.env.BASE_URL}docs/dev1/pages/page-1.png`,
         ],
         readmeUrl: "https://github.com/LuisanaRuggia/portfolio/blob/main/README.md",
+        updates: [
+          {
+            date: "2026-05-24",
+            description: {
+              es: "Imagen del proyecto cambia entre versión clara y oscura según el tema activo del sitio",
+              en: "Project image switches between light and dark variants based on the active site theme",
+            },
+          },
+          {
+            date: "2026-05-24",
+            description: {
+              es: "Documentación técnica como poster PDF de una página, con diagramas vectoriales SVG embebidos y descarga directa",
+              en: "Technical documentation as single-page poster PDF, with embedded vector SVG diagrams and direct download",
+            },
+          },
+          {
+            date: "2026-05-24",
+            description: {
+              es: "Visor fullscreen para diagramas y documentación con zoom, pan, pinch-zoom en mobile, navegación entre páginas y atajos de teclado",
+              en: "Fullscreen viewer for diagrams and documentation with zoom, pan, mobile pinch-zoom, page navigation and keyboard shortcuts",
+            },
+          },
+          {
+            date: "2026-05-23",
+            description: {
+              es: "Vista de detalle por proyecto con grafo conceptual force-directed estilo Obsidian, status badges y categorías cross-disciplina",
+              en: "Per-project detail view with Obsidian-style force-directed concept graph, status badges and cross-discipline categories",
+            },
+          },
+          {
+            date: "2026-05-23",
+            description: {
+              es: "Chat asistente flotante multilingüe que responde sobre proyectos, stack tecnológico y skills aplicadas",
+              en: "Floating multilingual chat assistant that answers about projects, tech stack and applied skills",
+            },
+          },
+          {
+            date: "2026-05-22",
+            description: {
+              es: "Versión inicial: carpetas 3D animadas, multi-idioma ES/EN, tema claro/oscuro, música jazz opcional y deploy automático a GitHub Pages",
+              en: "Initial version: animated 3D folders, ES/EN multilingual, light/dark theme, optional jazz music and automatic GitHub Pages deploy",
+            },
+          },
+        ],
         concepts: {
           nodes: [
             { id: "jamstack", label: { es: "JAMstack", en: "JAMstack" }, group: "arch" },

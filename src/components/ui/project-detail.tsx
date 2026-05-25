@@ -21,6 +21,7 @@ import {
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { useTranslation, type TranslationKey } from '@/lib/i18n';
+import { useThemedImage } from '@/lib/theme';
 import { playSound } from '@/lib/sounds';
 import { portfolioData, type Project, type ProjectStatus } from '@/data/projects';
 import { ConceptGraph } from './concept-graph';
@@ -529,6 +530,7 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project, o
   };
 
   const titleText = localize(project.title);
+  const themedProjectImage = useThemedImage(project.image);
 
   // Categorías a las que pertenece el proyecto: la carpeta primaria + las cross-disciplina
   const primaryCategoryKey = portfolioData.find((c) =>
@@ -795,7 +797,7 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project, o
           <div className="space-y-5">
             <div className="rounded-xl overflow-hidden bg-muted aspect-[16/10]">
               <img
-                src={project.screenshot ?? project.image}
+                src={project.screenshot ?? themedProjectImage}
                 alt={titleText}
                 className="w-full h-full object-cover"
               />

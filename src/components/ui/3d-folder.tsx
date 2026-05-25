@@ -6,12 +6,22 @@ import Lottie from 'lottie-react';
 import { playSound, setSoundVolume } from "@/lib/sounds";
 import { useTranslation, type TranslationKey } from "@/lib/i18n";
 import { useHashRoute } from "@/lib/use-hash-route";
+import { useIsDarkMode, type ThemedImage } from "@/lib/theme";
 import girlLaptopAnimation from "@/assets/lottie/girl-laptop.json";
 import { portfolioData, type Project } from "@/data/projects";
 import { ProjectDetailView } from "./project-detail";
 import { PortfolioChat } from "./portfolio-chat";
 
 // --- Utilities ---
+
+/** Resuelve una ThemedImage al URL apropiado dado el estado de dark mode.
+ *  No usa hooks → llamable dentro de loops/maps. */
+function resolveImage(image: ThemedImage | undefined, isDark: boolean): string {
+  if (!image) return '';
+  if (typeof image === 'string') return image;
+  return isDark ? image.dark : image.light;
+}
+
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -175,6 +185,7 @@ const ImageLightbox: React.FC<ImageLightboxProps> = ({
   onViewProject,
 }) => {
   const { t, localize } = useTranslation();
+  const isDark = useIsDarkMode();
   const [animationPhase, setAnimationPhase] = useState<"initial" | "animating" | "complete">("initial");
   const [isClosing, setIsClosing] = useState(false);
   const [shouldRender, setShouldRender] = useState(false);
@@ -386,7 +397,7 @@ const ImageLightbox: React.FC<ImageLightboxProps> = ({
               {projects.map((project) => (
                 <div key={project.id} className="min-w-full h-full relative">
                   <img
-                    src={project.image || PLACEHOLDER_IMAGE}
+                    src={resolveImage(project.image, isDark) || PLACEHOLDER_IMAGE}
                     alt={localize(project.title)}
                     className="w-full h-full object-cover select-none"
                     onError={(e) => { (e.target as HTMLImageElement).src = PLACEHOLDER_IMAGE; }}
@@ -450,6 +461,7 @@ interface AnimatedFolderProps {
 
 const AnimatedFolder: React.FC<AnimatedFolderProps> = ({ title, projects, className, gradient, onViewProject }) => {
   const { t, localize } = useTranslation();
+  const isDark = useIsDarkMode();
   const [isHovered, setIsHovered] = useState(false);
   const [canHover, setCanHover] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -546,7 +558,7 @@ const AnimatedFolder: React.FC<AnimatedFolderProps> = ({ title, projects, classN
               </div>
             ) : (
               previewProjects.map((project, index) => (
-                <ProjectCard key={project.id} ref={(el) => { cardRefs.current[index] = el; }} image={project.image} title={localize(project.title)} delay={index * 50} isVisible={isHovered} index={index} totalCount={previewProjects.length} onClick={() => handleProjectClick(project, index)} isSelected={hiddenCardId === project.id} canHover={canHover} isCrossListed={project.isCrossListed} />
+                <ProjectCard key={project.id} ref={(el) => { cardRefs.current[index] = el; }} image={resolveImage(project.image, isDark)} title={localize(project.title)} delay={index * 50} isVisible={isHovered} index={index} totalCount={previewProjects.length} onClick={() => handleProjectClick(project, index)} isSelected={hiddenCardId === project.id} canHover={canHover} isCrossListed={project.isCrossListed} />
               ))
             )}
           </div>
