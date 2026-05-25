@@ -1,4 +1,4 @@
-import React, { useEffect, useState, type ReactNode } from 'react';
+import React, { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import {
   ArrowLeft,
   Layers,
@@ -12,6 +12,9 @@ import {
   ChevronRight,
   Newspaper,
   History,
+  ZoomIn,
+  ZoomOut,
+  Maximize2,
   type LucideIcon,
 } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
@@ -159,42 +162,202 @@ export const SectionModal: React.FC<SectionModalProps> = ({ title, isOpen, onClo
   );
 };
 
-// --- Galería de diagramas (carrusel simple) ---
+// --- Visor de diagramas: fullscreen + zoom + pan + navegación circular ---
 
-const DiagramsGallery: React.FC<{ images: string[]; alt: string }> = ({ images, alt }) => {
-  const [idx, setIdx] = useState(0);
+interface DiagramsViewerProps {
+  images: string[];
+  alt: string;
+  onClose: () => void;
+}
+
+const MIN_SCALE = 0.5;
+const MAX_SCALE = 8;
+const ZOOM_STEP = 1.25;
+
+const DiagramsViewer: React.FC<DiagramsViewerProps> = ({ images, alt, onClose }) => {
   const { t } = useTranslation();
-  const prev = () => setIdx((i) => (i - 1 + images.length) % images.length);
-  const next = () => setIdx((i) => (i + 1) % images.length);
+  const [idx, setIdx] = useState(0);
+  const [scale, setScale] = useState(1);
+  const [translate, setTranslate] = useState({ x: 0, y: 0 });
+  const [isPanning, setIsPanning] = useState(false);
+  const panStartRef = useRef({ x: 0, y: 0 });
+
+  const reset = useCallback(() => {
+    setScale(1);
+    setTranslate({ x: 0, y: 0 });
+  }, []);
+
+  const zoomIn = useCallback(() => setScale((s) => Math.min(MAX_SCALE, s * ZOOM_STEP)), []);
+  const zoomOut = useCallback(() => setScale((s) => Math.max(MIN_SCALE, s / ZOOM_STEP)), []);
+
+  const prev = useCallback(() => {
+    reset();
+    setIdx((i) => (i - 1 + images.length) % images.length);
+  }, [images.length, reset]);
+
+  const next = useCallback(() => {
+    reset();
+    setIdx((i) => (i + 1) % images.length);
+  }, [images.length, reset]);
+
+  // Bloquear scroll del body + atajos de teclado
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+      else if (e.key === 'ArrowLeft' && images.length > 1) prev();
+      else if (e.key === 'ArrowRight' && images.length > 1) next();
+      else if (e.key === '+' || e.key === '=') zoomIn();
+      else if (e.key === '-' || e.key === '_') zoomOut();
+      else if (e.key === '0') reset();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+    };
+  }, [onClose, prev, next, zoomIn, zoomOut, reset, images.length]);
+
+  // Wheel para zoom (usar listener nativo no-passive para poder preventDefault sin warning)
+  const viewportRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = viewportRef.current;
+    if (!el) return;
+    const handler = (e: WheelEvent) => {
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? 1 / ZOOM_STEP : ZOOM_STEP;
+      setScale((s) => Math.max(MIN_SCALE, Math.min(MAX_SCALE, s * delta)));
+    };
+    el.addEventListener('wheel', handler, { passive: false });
+    return () => el.removeEventListener('wheel', handler);
+  }, []);
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    setIsPanning(true);
+    panStartRef.current = { x: e.clientX - translate.x, y: e.clientY - translate.y };
+    (e.target as Element).setPointerCapture?.(e.pointerId);
+  };
+
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (!isPanning) return;
+    setTranslate({
+      x: e.clientX - panStartRef.current.x,
+      y: e.clientY - panStartRef.current.y,
+    });
+  };
+
+  const onPointerUp = () => setIsPanning(false);
 
   return (
-    <div className="space-y-4">
-      <div className="relative rounded-xl overflow-hidden bg-muted aspect-[16/10]">
-        <img src={images[idx]} alt={`${alt} ${idx + 1}`} className="w-full h-full object-contain" />
+    <div className="fixed inset-0 z-50 flex flex-col bg-background/95 backdrop-blur-2xl animate-in fade-in duration-200">
+      {/* Top bar: título + acciones */}
+      <header className="flex items-center justify-between gap-3 px-4 sm:px-6 py-3 border-b border-border bg-card/60 backdrop-blur">
+        <h2 className="text-sm font-bold text-foreground truncate flex-1">
+          {alt}
+          {images.length > 1 && (
+            <span className="ml-2 text-muted-foreground font-medium">
+              {idx + 1} / {images.length}
+            </span>
+          )}
+        </h2>
+        <div className="flex items-center gap-1.5 flex-shrink-0">
+          <button
+            onClick={zoomOut}
+            aria-label={t('diagrams.zoomOut')}
+            title={`${t('diagrams.zoomOut')} (−)`}
+            className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-muted transition-colors"
+          >
+            <ZoomOut className="w-4 h-4" />
+          </button>
+          <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground w-12 text-center">
+            {Math.round(scale * 100)}%
+          </span>
+          <button
+            onClick={zoomIn}
+            aria-label={t('diagrams.zoomIn')}
+            title={`${t('diagrams.zoomIn')} (+)`}
+            className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-muted transition-colors"
+          >
+            <ZoomIn className="w-4 h-4" />
+          </button>
+          <button
+            onClick={reset}
+            aria-label={t('diagrams.reset')}
+            title={`${t('diagrams.reset')} (0)`}
+            className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-muted transition-colors"
+          >
+            <Maximize2 className="w-4 h-4" />
+          </button>
+          <button
+            onClick={onClose}
+            aria-label={t('lightbox.close')}
+            title={`${t('lightbox.close')} (Esc)`}
+            className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-muted transition-colors"
+          >
+            <X className="w-4 h-4" strokeWidth={2.5} />
+          </button>
+        </div>
+      </header>
+
+      {/* Viewport: imagen pan-zoom */}
+      <div
+        ref={viewportRef}
+        className="flex-1 relative overflow-hidden touch-none select-none"
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
+        onDoubleClick={reset}
+        style={{ cursor: isPanning ? 'grabbing' : 'grab' }}
+      >
+        <div
+          className="absolute inset-0 flex items-center justify-center pointer-events-none"
+          style={{
+            transform: `translate(${translate.x}px, ${translate.y}px) scale(${scale})`,
+            transformOrigin: 'center',
+            transition: isPanning ? 'none' : 'transform 180ms ease-out',
+            willChange: 'transform',
+          }}
+        >
+          <img
+            src={images[idx]}
+            alt={`${alt} ${idx + 1}`}
+            className="max-w-[92vw] max-h-[78vh] object-contain"
+            draggable={false}
+          />
+        </div>
+
+        {/* Nav chevrons (solo si hay más de 1 diagrama) */}
         {images.length > 1 && (
           <>
             <button
-              onClick={prev}
+              onClick={(e) => {
+                e.stopPropagation();
+                prev();
+              }}
               aria-label={t('lightbox.previous')}
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-background/80 backdrop-blur border border-border shadow-lg hover:scale-110 transition-transform"
+              className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-card/90 backdrop-blur border border-border shadow-xl hover:scale-110 transition-transform"
             >
               <ChevronLeft className="w-5 h-5" strokeWidth={3} />
             </button>
             <button
-              onClick={next}
+              onClick={(e) => {
+                e.stopPropagation();
+                next();
+              }}
               aria-label={t('lightbox.next')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-background/80 backdrop-blur border border-border shadow-lg hover:scale-110 transition-transform"
+              className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-card/90 backdrop-blur border border-border shadow-xl hover:scale-110 transition-transform"
             >
               <ChevronRight className="w-5 h-5" strokeWidth={3} />
             </button>
           </>
         )}
       </div>
-      {images.length > 1 && (
-        <p className="text-center text-xs font-bold uppercase tracking-widest text-muted-foreground">
-          {idx + 1} / {images.length}
-        </p>
-      )}
+
+      {/* Bottom hint */}
+      <footer className="px-4 py-2 text-center text-[11px] text-muted-foreground border-t border-border bg-card/60 backdrop-blur">
+        {t('diagrams.hint')}
+      </footer>
     </div>
   );
 };
@@ -411,17 +574,21 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project, o
         </div>
       </section>
 
-      {/* Modales por sección */}
+      {/* Diagramas: si hay contenido → visor fullscreen con zoom/pan/nav;
+          si no hay contenido → SectionModal regular con "Próximamente" */}
+      {openSection === 'diagrams' && has.diagrams && (
+        <DiagramsViewer
+          images={project.diagrams!}
+          alt={titleText}
+          onClose={() => setOpenSection(null)}
+        />
+      )}
       <SectionModal
         title={t('detail.diagrams')}
-        isOpen={openSection === 'diagrams'}
+        isOpen={openSection === 'diagrams' && !has.diagrams}
         onClose={() => setOpenSection(null)}
       >
-        {has.diagrams ? (
-          <DiagramsGallery images={project.diagrams!} alt={titleText} />
-        ) : (
-          <ComingSoonPlaceholder />
-        )}
+        <ComingSoonPlaceholder />
       </SectionModal>
 
       <SectionModal
