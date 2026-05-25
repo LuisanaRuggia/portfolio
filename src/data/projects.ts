@@ -89,7 +89,10 @@ export interface Project {
   // --- Vista de detalle del proyecto (#/project/<id>) ---
   // Si están vacíos, la sección correspondiente muestra "Próximamente".
   diagrams?: string[];          // URLs de imágenes (arquitectura, flujos)
-  documentationUrl?: string;    // link externo a docs completas
+  documentationUrl?: string;    // link al PDF original (para descarga)
+  documentationPages?: string[]; // URLs de imágenes (páginas del PDF renderizadas) para
+                                 // mostrar inline en el visor estilo Diagramas.
+                                 // Si está vacío, no se muestra documentación inline.
   readmeUrl?: string;           // link al README.md en GitHub
   screenshot?: string;          // foto grande para sección "Enlaces" (default: image)
   videoUrl?: string;            // YouTube/Vimeo URL para video demo
@@ -347,6 +350,12 @@ export const portfolioData: Category[] = [
           `${import.meta.env.BASE_URL}diagrams/portfolio/backend-architecture.png`,
         ],
         documentationUrl: `${import.meta.env.BASE_URL}docs/dev1/documentation.pdf`,
+        documentationPages: [
+          `${import.meta.env.BASE_URL}docs/dev1/pages/page-1.png`,
+          `${import.meta.env.BASE_URL}docs/dev1/pages/page-2.png`,
+          `${import.meta.env.BASE_URL}docs/dev1/pages/page-3.png`,
+          `${import.meta.env.BASE_URL}docs/dev1/pages/page-4.png`,
+        ],
         readmeUrl: "https://github.com/LuisanaRuggia/portfolio/blob/main/README.md",
         concepts: {
           nodes: [

@@ -169,13 +169,17 @@ interface DiagramsViewerProps {
   images: string[];
   alt: string;
   onClose: () => void;
+  /** Si está, agrega un botón de descarga en el header (apunta al archivo original, ej. PDF) */
+  downloadUrl?: string;
+  /** Etiqueta para el botón de descarga. Defecto: "Descargar". */
+  downloadLabel?: string;
 }
 
 const MIN_SCALE = 0.5;
 const MAX_SCALE = 8;
 const ZOOM_STEP = 1.25;
 
-const DiagramsViewer: React.FC<DiagramsViewerProps> = ({ images, alt, onClose }) => {
+const DiagramsViewer: React.FC<DiagramsViewerProps> = ({ images, alt, onClose, downloadUrl, downloadLabel }) => {
   const { t } = useTranslation();
   const [idx, setIdx] = useState(0);
   const [scale, setScale] = useState(1);
@@ -336,6 +340,17 @@ const DiagramsViewer: React.FC<DiagramsViewerProps> = ({ images, alt, onClose })
           >
             <Maximize2 className="w-4 h-4" />
           </button>
+          {downloadUrl && (
+            <a
+              href={downloadUrl}
+              download
+              aria-label={downloadLabel ?? t('doc.download')}
+              title={downloadLabel ?? t('doc.download')}
+              className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-muted transition-colors"
+            >
+              <Download className="w-4 h-4" />
+            </a>
+          )}
           <button
             onClick={onClose}
             aria-label={t('lightbox.close')}
@@ -410,78 +425,6 @@ const DiagramsViewer: React.FC<DiagramsViewerProps> = ({ images, alt, onClose })
   );
 };
 
-// --- Visor de documentación: fullscreen con iframe del PDF + acciones ---
-
-interface DocumentationViewerProps {
-  url: string;
-  title: string;
-  onClose: () => void;
-}
-
-const DocumentationViewer: React.FC<DocumentationViewerProps> = ({ url, title, onClose }) => {
-  const { t } = useTranslation();
-
-  useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    document.addEventListener('keydown', onKey);
-    return () => {
-      document.removeEventListener('keydown', onKey);
-      document.body.style.overflow = '';
-    };
-  }, [onClose]);
-
-  return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-background/95 backdrop-blur-2xl animate-in fade-in duration-200">
-      <header className="flex items-center justify-between gap-3 px-4 sm:px-6 py-3 border-b border-border bg-card/60 backdrop-blur">
-        <h2 className="text-sm font-bold text-foreground truncate flex-1">
-          {title}
-          <span className="ml-2 text-muted-foreground font-medium">— {t('detail.documentation')}</span>
-        </h2>
-        <div className="flex items-center gap-1.5 flex-shrink-0">
-          <a
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={t('doc.openExternal')}
-            title={t('doc.openExternal')}
-            className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-muted transition-colors"
-          >
-            <ExternalLink className="w-4 h-4" />
-          </a>
-          <a
-            href={url}
-            download
-            aria-label={t('doc.download')}
-            title={t('doc.download')}
-            className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-muted transition-colors"
-          >
-            <Download className="w-4 h-4" />
-          </a>
-          <button
-            onClick={onClose}
-            aria-label={t('lightbox.close')}
-            title={`${t('lightbox.close')} (Esc)`}
-            className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-muted transition-colors"
-          >
-            <X className="w-4 h-4" strokeWidth={2.5} />
-          </button>
-        </div>
-      </header>
-
-      <div className="flex-1 bg-muted/20">
-        <iframe
-          src={url}
-          title={`${title} — ${t('detail.documentation')}`}
-          className="w-full h-full border-0"
-        />
-      </div>
-    </div>
-  );
-};
-
 // --- Vista principal del detalle del proyecto ---
 
 const SECTION_GRADIENTS: Record<SectionKey, string> = {
@@ -499,7 +442,7 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project, o
 
   const has = {
     diagrams: (project.diagrams?.length ?? 0) > 0,
-    documentation: !!project.documentationUrl,
+    documentation: (project.documentationPages?.length ?? 0) > 0 || !!project.documentationUrl,
     readme: !!project.readmeUrl || (project.tags?.length ?? 0) > 0,
     links: !!(project.links?.repo || project.links?.demo),
     blogVideo: !!(project.links?.blog || project.videoUrl),
@@ -711,15 +654,18 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project, o
         <ComingSoonPlaceholder />
       </SectionModal>
 
-      {/* Documentación: si hay PDF → visor fullscreen embebido;
-          si no hay → SectionModal regular con "Próximamente" */}
-      {openSection === 'documentation' && has.documentation && (
-        <DocumentationViewer
-          url={project.documentationUrl!}
-          title={titleText}
-          onClose={() => setOpenSection(null)}
-        />
-      )}
+      {/* Documentación: si hay páginas PNG renderizadas del PDF → visor fullscreen
+          (mismo viewer que los diagramas, con botón de descarga del PDF original).
+          Si no hay nada → "Próximamente". */}
+      {openSection === 'documentation' &&
+        (project.documentationPages?.length ?? 0) > 0 && (
+          <DiagramsViewer
+            images={project.documentationPages!}
+            alt={titleText}
+            downloadUrl={project.documentationUrl}
+            onClose={() => setOpenSection(null)}
+          />
+        )}
       <SectionModal
         title={t('detail.documentation')}
         isOpen={openSection === 'documentation' && !has.documentation}
