@@ -414,17 +414,18 @@ const DiagramsViewer: React.FC<DiagramsViewerProps> = ({ images, alt, onClose, d
               <ExternalLink className="w-4 h-4" />
             </a>
           ))}
-          {downloadUrl && (
-            <a
-              href={downloadUrl}
-              download
-              aria-label={downloadLabel ?? t('doc.download')}
-              title={downloadLabel ?? t('doc.download')}
-              className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-muted transition-colors"
-            >
-              <Download className="w-4 h-4" />
-            </a>
-          )}
+          {/* Botón de descarga: si hay downloadUrl explícito (ej. el PDF original de
+              la documentación) descarga eso; si no, descarga la imagen actual del visor
+              (útil para que la sección Diagramas permita guardar cada diagrama). */}
+          <a
+            href={downloadUrl ?? images[idx]}
+            download
+            aria-label={downloadLabel ?? t('doc.download')}
+            title={downloadLabel ?? t('doc.download')}
+            className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-muted transition-colors"
+          >
+            <Download className="w-4 h-4" />
+          </a>
           <button
             onClick={onClose}
             aria-label={t('lightbox.close')}
@@ -461,7 +462,9 @@ const DiagramsViewer: React.FC<DiagramsViewerProps> = ({ images, alt, onClose, d
             src={images[idx]}
             alt={`${alt} ${idx + 1}`}
             onLoad={handleImageLoad}
-            className="max-w-[92vw] max-h-[78vh] object-contain dark:invert dark:hue-rotate-180"
+            className="max-w-[92vw] max-h-[78vh] object-contain
+                       dark:invert dark:hue-rotate-180 dark:contrast-125
+                       dark:ring-1 dark:ring-white/20 dark:rounded-md dark:shadow-2xl"
             draggable={false}
           />
         </div>
@@ -739,13 +742,6 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project, o
             images={project.documentationPages!}
             alt={titleText}
             downloadUrl={project.documentationUrl}
-            externalLinks={project.diagrams?.map((url) => {
-              // "frontend-architecture.png" → "Frontend"
-              const filename = url.split('/').pop()?.replace(/\.\w+$/, '') ?? '';
-              const cleaned = filename.replace(/-architecture$/, '').replace(/-/g, ' ');
-              const label = cleaned ? cleaned.charAt(0).toUpperCase() + cleaned.slice(1) : 'Diagrama';
-              return { label, url };
-            })}
             onClose={() => setOpenSection(null)}
           />
         )}
