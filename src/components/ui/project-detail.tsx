@@ -15,6 +15,7 @@ import {
   ZoomIn,
   ZoomOut,
   Maximize2,
+  Download,
   type LucideIcon,
 } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
@@ -409,6 +410,78 @@ const DiagramsViewer: React.FC<DiagramsViewerProps> = ({ images, alt, onClose })
   );
 };
 
+// --- Visor de documentación: fullscreen con iframe del PDF + acciones ---
+
+interface DocumentationViewerProps {
+  url: string;
+  title: string;
+  onClose: () => void;
+}
+
+const DocumentationViewer: React.FC<DocumentationViewerProps> = ({ url, title, onClose }) => {
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+    };
+  }, [onClose]);
+
+  return (
+    <div className="fixed inset-0 z-50 flex flex-col bg-background/95 backdrop-blur-2xl animate-in fade-in duration-200">
+      <header className="flex items-center justify-between gap-3 px-4 sm:px-6 py-3 border-b border-border bg-card/60 backdrop-blur">
+        <h2 className="text-sm font-bold text-foreground truncate flex-1">
+          {title}
+          <span className="ml-2 text-muted-foreground font-medium">— {t('detail.documentation')}</span>
+        </h2>
+        <div className="flex items-center gap-1.5 flex-shrink-0">
+          <a
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={t('doc.openExternal')}
+            title={t('doc.openExternal')}
+            className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-muted transition-colors"
+          >
+            <ExternalLink className="w-4 h-4" />
+          </a>
+          <a
+            href={url}
+            download
+            aria-label={t('doc.download')}
+            title={t('doc.download')}
+            className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-muted transition-colors"
+          >
+            <Download className="w-4 h-4" />
+          </a>
+          <button
+            onClick={onClose}
+            aria-label={t('lightbox.close')}
+            title={`${t('lightbox.close')} (Esc)`}
+            className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-muted transition-colors"
+          >
+            <X className="w-4 h-4" strokeWidth={2.5} />
+          </button>
+        </div>
+      </header>
+
+      <div className="flex-1 bg-muted/20">
+        <iframe
+          src={url}
+          title={`${title} — ${t('detail.documentation')}`}
+          className="w-full h-full border-0"
+        />
+      </div>
+    </div>
+  );
+};
+
 // --- Vista principal del detalle del proyecto ---
 
 const SECTION_GRADIENTS: Record<SectionKey, string> = {
@@ -638,16 +711,21 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project, o
         <ComingSoonPlaceholder />
       </SectionModal>
 
+      {/* Documentación: si hay PDF → visor fullscreen embebido;
+          si no hay → SectionModal regular con "Próximamente" */}
+      {openSection === 'documentation' && has.documentation && (
+        <DocumentationViewer
+          url={project.documentationUrl!}
+          title={titleText}
+          onClose={() => setOpenSection(null)}
+        />
+      )}
       <SectionModal
         title={t('detail.documentation')}
-        isOpen={openSection === 'documentation'}
+        isOpen={openSection === 'documentation' && !has.documentation}
         onClose={() => setOpenSection(null)}
       >
-        {has.documentation ? (
-          <ExternalLinkBlock url={project.documentationUrl!} label={t('detail.openDocs')} />
-        ) : (
-          <ComingSoonPlaceholder />
-        )}
+        <ComingSoonPlaceholder />
       </SectionModal>
 
       <SectionModal
