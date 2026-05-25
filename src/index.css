@@ -50,6 +50,22 @@
       "Helvetica Neue", Arial, "Noto Sans", sans-serif;
     -webkit-font-smoothing: antialiased;
   }
+
+  /* Indica al browser el esquema de color actual para que aplique sus defaults
+     coherentes (inputs, scrollbars, caret, autofill, etc.) según el tema activo */
+  :root {
+    color-scheme: light;
+  }
+  .dark {
+    color-scheme: dark;
+  }
+
+  /* Inputs y textareas heredan el color del body en vez de usar el del browser */
+  input,
+  textarea,
+  select {
+    color: inherit;
+  }
 }
 
 @keyframes float-note {
