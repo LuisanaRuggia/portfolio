@@ -34,3 +34,8 @@ Thumbs.db
 .env
 .env.local
 .env.*.local
+
+# Diagramas de trabajo (draw.io / Excalidraw) — son borradores, no artefactos del repo
+*.drawio
+*.drawio.bkp
+*.excalidraw

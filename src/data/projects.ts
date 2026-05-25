@@ -343,6 +343,7 @@ export const portfolioData: Category[] = [
           demo: "https://luisanaruggia.github.io/portfolio/",
         },
         diagrams: [
+          `${import.meta.env.BASE_URL}diagrams/portfolio/frontend-architecture.png`,
           `${import.meta.env.BASE_URL}diagrams/portfolio/backend-architecture.png`,
         ],
         concepts: {
