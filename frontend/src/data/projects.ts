@@ -440,3 +440,23 @@ export const portfolioData: Category[] = [
     projects: [],
   },
 ];
+
+// --- Auto-generated overrides (Fase 2) -------------------------------------
+// Los agentes batch escriben `generated/updates.json` y `generated/concepts.json`
+// en cada push a main. Acá se mergean SOBRE los hardcoded de arriba: si hay
+// generated para un proyecto, override; si no, queda el hardcoded como fallback.
+// Si el script falla un día, el sitio no se rompe — sigue mostrando lo manual.
+import generatedUpdates from "./generated/updates.json";
+import generatedConcepts from "./generated/concepts.json";
+
+const gu = generatedUpdates as Record<string, Project["updates"] | undefined>;
+const gc = generatedConcepts as Record<string, Project["concepts"] | undefined>;
+
+for (const cat of portfolioData) {
+  for (const p of cat.projects) {
+    const updates = gu[p.id];
+    if (updates && updates.length > 0) p.updates = updates;
+    const concepts = gc[p.id];
+    if (concepts && concepts.nodes.length > 0) p.concepts = concepts;
+  }
+}

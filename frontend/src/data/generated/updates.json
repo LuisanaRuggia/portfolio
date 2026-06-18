@@ -1,0 +1,39 @@
+{
+  "dev1": [
+    {
+      "date": "2026-06-18",
+      "description": {
+        "es": "Implementación de chat real con Groq, respuestas predefinidas y limitación de velocidad",
+        "en": "Implementation of real-time chat with Groq, canned responses and rate limiting"
+      }
+    },
+    {
+      "date": "2026-06-18",
+      "description": {
+        "es": "Configuración de la plantilla LaTeX de documentación y reorganización del repositorio",
+        "en": "Setup of LaTeX documentation template and repository reorganization"
+      }
+    },
+    {
+      "date": "2026-05-24",
+      "description": {
+        "es": "Mejoras en la interfaz de usuario, incluyendo imágenes con tema, contraste en modo oscuro y compatibilidad con navegadores",
+        "en": "User interface improvements, including themed images, dark mode contrast and browser compatibility"
+      }
+    },
+    {
+      "date": "2026-05-23",
+      "description": {
+        "es": "Implementación de vistas de proyecto, asistente de chat y gráficos de conceptos",
+        "en": "Implementation of project views, chat assistant and concept graphs"
+      }
+    },
+    {
+      "date": "2026-05-22",
+      "description": {
+        "es": "Implementación de favicon con soporte para navegadores más amplio",
+        "en": "Implementation of favicon with broader browser support"
+      }
+    }
+  ]
+}

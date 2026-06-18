@@ -1,6 +1,6 @@
 # Portafolio Personal · Luisana Gutiérrez Ruggia
 
-Portafolio interactivo de proyectos de ingeniería en ciencia e ingeniería de datos. Construido como una SPA estática en React + TypeScript, con animaciones 3D, grafos conceptuales force-directed estilo Obsidian, chat asistente con LLM, multi-idioma ES/EN y música jazz de fondo.
+Portafolio interactivo de proyectos de ciencia e ingeniería de datos. Arquitectura **JAMstack**: SPA estática en React + TypeScript desplegada en GitHub Pages, con **edge functions** en Cloudflare Workers para el backend del chat asistente (LLM via Groq). Incluye animaciones 3D, grafos conceptuales **force-directed** estilo Obsidian, **hash routing** sin librerías, **i18n** completo ES/EN y música jazz de fondo.
 
 🌐 **Live:** <https://luisanaruggia.github.io/portfolio/>
 📦 **Repositorio:** <https://github.com/LuisanaRuggia/portfolio>
@@ -15,7 +15,7 @@ Portafolio interactivo de proyectos de ingeniería en ciencia e ingeniería de d
 - **Vista de detalle por proyecto** con grafo conceptual, status badge, categorías cross-disciplina y seis secciones (Diagramas, Documentación, README+Stack, Enlaces, Blog/Video, Cambios recientes).
 - **Grafo conceptual force-directed** estilo Obsidian con drag, levitación, filtro por grupo y leyenda dinámica.
 - **Visor de diagramas fullscreen** con zoom, pan, pinch-zoom en mobile y navegación entre múltiples diagramas.
-- **Chat asistente flotante** (mock por ahora, backend con Claude API planeado) que responde sobre proyectos, stack y skills.
+- **Chat asistente flotante** con backend real en Cloudflare Worker + Groq (Llama 3.1 8B): rate-limited, contexto del portafolio inyectado en el system prompt, responde en primera persona.
 - **Multi-idioma ES/EN** completo en toda la UI, incluyendo aria-labels y descripciones de proyectos.
 - **Tema claro/oscuro** con detección automática de preferencia del sistema.
 - **Música jazz de fondo** opcional con Web Audio API + GainNode (compatibilidad iOS).
@@ -30,6 +30,8 @@ Portafolio interactivo de proyectos de ingeniería en ciencia e ingeniería de d
 | Iconos | `lucide-react` |
 | Animaciones | `lottie-react` (hero) + CSS 3D transforms (carpetas) + SVG force-directed simulación custom (grafo conceptual) |
 | Browser APIs | Web Audio API · localStorage · Pointer Events · Page Visibility · MediaQuery |
+| Backend (chat) | Cloudflare Workers (edge functions) + KV (rate limiting) + Groq Llama 3.1 8B |
+| Agentes batch | Node + tsx en GitHub Actions: generan updates, concepts y contexto del chat desde el repo |
 | Build / CI / Deploy | pnpm 10 + tsc + Vite + GitHub Actions + GitHub Pages |
 
 Bundle final: ~180 KB gzipped. Sin dependencias de routing, sin state management library, sin Framer Motion.

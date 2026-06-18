@@ -1,0 +1,71 @@
+name: Regenerate content (updates + concepts)
+
+# Trigger DESHABILITADO automático hasta configurar GROQ_API_KEY en GitHub Secrets.
+# Cuando esté listo, descomentar el bloque `push:` y `schedule:`. Mientras tanto
+# solo workflow_dispatch (manual desde la UI de Actions).
+on:
+  # push:
+  #   branches: [main]
+  #   paths-ignore:
+  #     - 'frontend/src/data/generated/**'
+  #     - 'frontend/src/data/projects.ts'
+  # schedule:
+  #   - cron: '0 6 * * 1'   # Lunes 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: regenerate-content
+  cancel-in-progress: false
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # necesario para que `git log -n 30` funcione
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          package_json_file: backend/package.json
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: backend/pnpm-lock.yaml
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate updates
+        working-directory: backend
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: pnpm script:updates
+
+      - name: Generate concepts
+        working-directory: backend
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: pnpm script:concepts
+
+      - name: Commit regenerated content if changed
+        run: |
+          if [[ -n "$(git status --porcelain frontend/src/data/generated/)" ]]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add frontend/src/data/generated/
+            git commit -m "chore(content): regenerate updates and concepts [skip ci]"
+            git push
+          else
+            echo "Sin cambios en generated/"
+          fi

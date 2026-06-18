@@ -1,64 +1,36 @@
 /**
  * Genera el system prompt del chat worker a partir de portfolioData del frontend.
  *
- * Lee:  frontend/src/data/projects.ts (dynamic import, type-stripped por tsx)
+ * Lee:  frontend/src/data/projects.ts (vía loadProjectsFromFrontend)
  * Escribe: backend/workers/chat/src/portfolio-context.generated.ts
  *
- * Idempotente: si el output es igual al existente, no toca el archivo.
- * Se llama en cada deploy del worker (ver .github/workflows/deploy-workers.yml).
+ * Idempotente. Se llama en cada deploy del worker.
  */
 
-import { readFileSync, writeFileSync, existsSync, mkdtempSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join, dirname } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { dirname, join } from 'node:path';
 
-// Tipos mínimos re-declarados localmente para evitar arrastrar el typecheck del
-// frontend al backend. Mantener en sync con frontend/src/data/projects.ts si
-// el shape cambia (es rare — el shape de Project es estable).
-type LocalizedString = string | { es: string; en: string };
-type ProjectStatus = 'in-progress' | 'finished-open' | 'finished';
+import { idempotentWrite, loadProjectsFromFrontend } from './lib/github.js';
+import type { Category, ProjectStatus } from './lib/types.js';
+import { resolveLocalized } from './lib/types.js';
 
-interface Project {
-  id: string;
-  title: LocalizedString;
-  description?: LocalizedString;
-  tags?: string[];
-  status?: ProjectStatus;
-}
-
-interface Category {
-  /** Translation key, p.ej. "category.ingenieriaDeDatos". */
-  title: string;
-  projects: Project[];
-}
-
-/** Resuelve un LocalizedString al idioma pedido. Acepta string crudo. */
-function resolve(s: LocalizedString | undefined, lang: 'es' | 'en'): string {
-  if (!s) return '';
-  if (typeof s === 'string') return s;
-  return s[lang];
-}
-
-/** Traducción de las categorías (sus translation keys vienen del i18n del frontend). */
 const CATEGORY_LABELS: Record<string, { es: string; en: string }> = {
   'category.cienciaDeDatos': { es: 'Ciencia de datos', en: 'Data science' },
   'category.ingenieriaDeDatos': { es: 'Ingeniería de datos', en: 'Data engineering' },
   'category.analisisDeDatos': { es: 'Análisis de datos', en: 'Data analysis' },
   'category.inteligenciaArtificial': { es: 'Inteligencia artificial', en: 'Artificial intelligence' },
+  'category.iaAutomatizacion': { es: 'IA y automatización', en: 'AI & automation' },
   'category.computacionCuantica': { es: 'Computación cuántica', en: 'Quantum computing' },
   'category.algoritmia': { es: 'Algoritmia', en: 'Algorithmics' },
+  'category.algoritmosYRetos': { es: 'Algoritmos y retos', en: 'Algorithms & challenges' },
   'category.desarrollo': { es: 'Desarrollo de software', en: 'Software development' },
 };
 
-/** Estados localizados. */
 const STATUS_LABELS: Record<ProjectStatus, { es: string; en: string }> = {
   'in-progress': { es: 'en progreso', en: 'in progress' },
   'finished-open': { es: 'terminado, open-source', en: 'finished, open-source' },
   finished: { es: 'terminado', en: 'finished' },
 };
 
-/** Cabecera del prompt — "Sobre mí". Habla en primera persona como Luisana. */
 const ABOUT_ME = {
   es: `Soy Luisana Ruggia, estudiante de Ingeniería en Ciencia de Datos en el Politécnico Grancolombiano. Vivo en Bogotá, Colombia. Actualmente trabajo en GSE — Gestión de Seguridad Electrónica S.A. Construí este portafolio para mostrar los proyectos en los que he trabajado. Los que están publicados aquí son proyectos personales que hago por interés propio fuera de la carrera. Tengo además proyectos académicos de análisis de datos y dashboards que aún no he subido al portafolio. Por ahora no estoy buscando empleo activamente; el portafolio es para enseñar lo que sé hacer.
 
@@ -118,16 +90,15 @@ function buildContext(portfolioData: Category[], lang: 'es' | 'en'): string {
     sections.push(`\n### ${catLabel}`);
 
     for (const p of cat.projects) {
-      const title = resolve(p.title, lang);
+      const title = resolveLocalized(p.title, lang);
       const status = p.status ? ` (${STATUS_LABELS[p.status][lang]})` : '';
       sections.push(`\n- **${title}** [id: ${p.id}]${status}`);
 
-      const desc = resolve(p.description, lang);
+      const desc = resolveLocalized(p.description, lang);
       if (desc) sections.push(`  ${desc}`);
 
       if (p.tags && p.tags.length > 0) {
-        const label = lang === 'es' ? 'Stack' : 'Stack';
-        sections.push(`  ${label}: ${p.tags.join(', ')}`);
+        sections.push(`  Stack: ${p.tags.join(', ')}`);
       }
     }
   }
@@ -151,42 +122,8 @@ function buildFileContent(es: string, en: string): string {
   );
 }
 
-/**
- * Carga `portfolioData` del frontend sin depender de Vite.
- *
- * `projects.ts` usa `import.meta.env.BASE_URL` (inyectado por Vite en build-time)
- * para construir rutas de assets. En Node puro no existe. Como solo necesitamos
- * los campos textuales (id, title, description, tags, status) y no las URLs de
- * assets, hacemos un copy temporal del archivo reemplazando esa referencia por
- * un literal y lo importamos dinámicamente.
- */
-async function loadPortfolioData(): Promise<Category[]> {
-  const projectsPath = join(
-    dirname(new URL(import.meta.url).pathname),
-    '..',
-    '..',
-    'frontend',
-    'src',
-    'data',
-    'projects.ts',
-  );
-  const source = readFileSync(projectsPath, 'utf8');
-  const patched = source.replace(/import\.meta\.env\.BASE_URL/g, "'/portfolio/'");
-
-  const tmpDir = mkdtempSync(join(tmpdir(), 'portfolio-context-'));
-  const tmpFile = join(tmpDir, 'projects.ts');
-  writeFileSync(tmpFile, patched);
-
-  try {
-    const mod = await import(pathToFileURL(tmpFile).href);
-    return (mod as { portfolioData: Category[] }).portfolioData;
-  } finally {
-    rmSync(tmpDir, { recursive: true, force: true });
-  }
-}
-
 async function main(): Promise<void> {
-  const portfolioData = await loadPortfolioData();
+  const portfolioData = await loadProjectsFromFrontend();
 
   const es = buildContext(portfolioData, 'es');
   const en = buildContext(portfolioData, 'en');
@@ -201,19 +138,15 @@ async function main(): Promise<void> {
     'portfolio-context.generated.ts',
   );
 
-  if (existsSync(outPath)) {
-    const current = readFileSync(outPath, 'utf8');
-    if (current === newContent) {
-      console.log('portfolio-context.generated.ts ya está actualizado, no se hicieron cambios.');
-      return;
-    }
+  const wrote = idempotentWrite(outPath, newContent);
+  if (wrote) {
+    console.log(`Escrito ${outPath} (${es.length + en.length} caracteres total).`);
+  } else {
+    console.log('portfolio-context.generated.ts ya está actualizado, no se hicieron cambios.');
   }
-
-  writeFileSync(outPath, newContent, 'utf8');
-  console.log(`Escrito ${outPath} (${es.length + en.length} caracteres total).`);
 }
 
-main().catch((err) => {
+main().catch(err => {
   console.error(err);
   process.exit(1);
 });
