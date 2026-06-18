@@ -1,0 +1,19 @@
+name = "luisana-portfolio-drafts"
+main = "src/index.ts"
+compatibility_date = "2025-11-01"
+compatibility_flags = ["nodejs_compat"]
+
+# KV namespace para la cola de borradores. Crear con:
+#   wrangler kv namespace create DRAFTS
+# y pegar el id devuelto aquí abajo.
+# [[kv_namespaces]]
+# binding = "DRAFTS"
+# id = "TODO_pegar_id_de_wrangler"
+
+# Secrets a configurar (no se commitean):
+#   wrangler secret put ADMIN_TOKEN
+#   wrangler secret put LINKEDIN_ACCESS_TOKEN
+#   wrangler secret put DEVTO_API_KEY
+
+[vars]
+ALLOWED_ORIGIN = "https://luisanaruggia.github.io"

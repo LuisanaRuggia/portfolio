@@ -1,0 +1,17 @@
+name = "luisana-portfolio-chat"
+main = "src/index.ts"
+compatibility_date = "2025-11-01"
+compatibility_flags = ["nodejs_compat"]
+
+# KV namespace para rate limiting. Crear con:
+#   wrangler kv namespace create RATE_LIMIT
+# y pegar el id devuelto aquí abajo.
+# [[kv_namespaces]]
+# binding = "RATE_LIMIT"
+# id = "TODO_pegar_id_de_wrangler"
+
+# Secrets a configurar (no se commitean):
+#   wrangler secret put GROQ_API_KEY
+
+[vars]
+ALLOWED_ORIGIN = "https://luisanaruggia.github.io"

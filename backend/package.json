@@ -1,0 +1,39 @@
+{
+  "name": "portfolio-backend",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Backend del portafolio: Cloudflare Workers + agentes batch (Groq) que mantienen contenido auto-generado.",
+  "type": "module",
+  "packageManager": "pnpm@10.33.3",
+  "engines": {
+    "pnpm": ">=8"
+  },
+  "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "typecheck": "tsc --noEmit",
+    "script:updates": "tsx scripts/generate-updates.ts",
+    "script:concepts": "tsx scripts/generate-concepts.ts",
+    "script:docs": "tsx scripts/generate-docs.ts",
+    "script:diagrams": "tsx scripts/sync-diagrams.ts",
+    "script:context": "tsx scripts/sync-portfolio-context.ts",
+    "script:readme": "tsx scripts/generate-readme.ts",
+    "script:status": "tsx scripts/detect-status.ts",
+    "script:cv": "tsx scripts/generate-cv.ts",
+    "script:blog": "tsx scripts/generate-blog.ts",
+    "script:linkedin": "tsx scripts/generate-linkedin.ts",
+    "dev:chat": "wrangler dev --config workers/chat/wrangler.toml",
+    "dev:drafts": "wrangler dev --config workers/drafts/wrangler.toml",
+    "deploy:chat": "wrangler deploy --config workers/chat/wrangler.toml",
+    "deploy:drafts": "wrangler deploy --config workers/drafts/wrangler.toml"
+  },
+  "dependencies": {
+    "groq-sdk": "^0.34.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20251101.0",
+    "@types/node": "^25.9.1",
+    "tsx": "^4.19.2",
+    "typescript": "~5.6.3",
+    "wrangler": "^3.90.0"
+  }
+}
