@@ -9,8 +9,8 @@ import { useHashRoute } from "@/lib/use-hash-route";
 import { useIsDarkMode, type ThemedImage } from "@/lib/theme";
 import girlLaptopAnimation from "@/assets/lottie/girl-laptop.json";
 import { portfolioData, type Project } from "@/data/projects";
-import { ProjectDetailView } from "./project-detail";
-import { PortfolioChat } from "./portfolio-chat";
+import { ProjectDetailView } from "@/features/projects/project-detail";
+import { PortfolioChat } from "@/features/chat/portfolio-chat";
 
 // --- Utilities ---
 

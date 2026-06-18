@@ -1,0 +1,2 @@
+# Reservado para UI primitives reusables (Button, Badge, Card, etc.).
+# Las features grandes viven en `src/features/`.

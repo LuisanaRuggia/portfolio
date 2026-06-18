@@ -24,7 +24,7 @@ import { useTranslation, type TranslationKey } from '@/lib/i18n';
 import { useThemedImage } from '@/lib/theme';
 import { playSound } from '@/lib/sounds';
 import { portfolioData, type Project, type ProjectStatus } from '@/data/projects';
-import { ConceptGraph } from './concept-graph';
+import { ConceptGraph } from '@/features/concepts/concept-graph';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
