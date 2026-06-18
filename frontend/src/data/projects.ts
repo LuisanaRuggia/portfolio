@@ -62,6 +62,14 @@ export interface ProjectConcepts {
   edges: ProjectConceptEdge[];       // relaciones entre conceptos (no incluyas las que parten del proyecto)
 }
 
+/**
+ * Entrada de un diagrama. Soporta dos formas para retro-compat:
+ *   - `"foo.svg"` → URL crudo, sin caption (estilo legacy).
+ *   - `{ url, caption: { es, en } }` → URL + caption bilingüe.
+ * Los auto-generados por `sync-diagrams.ts` (Fase 3) usan la segunda forma.
+ */
+export type DiagramEntry = string | { url: string; caption?: LocalizedString };
+
 export interface Project {
   id: string;
   /**
@@ -94,11 +102,19 @@ export interface Project {
 
   // --- Vista de detalle del proyecto (#/project/<id>) ---
   // Si están vacíos, la sección correspondiente muestra "Próximamente".
-  diagrams?: string[];          // URLs de imágenes (arquitectura, flujos)
-  documentationUrl?: string;    // link al PDF original (para descarga)
-  documentationPages?: string[]; // URLs de imágenes (páginas del PDF renderizadas) para
-                                 // mostrar inline en el visor estilo Diagramas.
-                                 // Si está vacío, no se muestra documentación inline.
+  diagrams?: DiagramEntry[];    // URLs de imágenes con caption opcional
+  /**
+   * Metadata de la documentación auto-generada por `generate-docs.ts`.
+   * Se inyecta desde `generated/docs.json` (ver merge al final del archivo).
+   * El frontend construye los URLs en runtime según language + tema:
+   *   `${BASE_URL}docs/${id}/${theme}/documentation.${lang}.pdf`
+   *   `${BASE_URL}docs/${id}/${theme}/pages-${lang}/page-${n}.png`
+   */
+  documentation?: { pageCount: number; variants: string[] };
+  /** @deprecated Reemplazado por `documentation`. Se mantiene por si proyectos sin agente lo usan. */
+  documentationUrl?: string;
+  /** @deprecated Reemplazado por `documentation`. Se mantiene por si proyectos sin agente lo usan. */
+  documentationPages?: string[];
   readmeUrl?: string;           // link al README.md en GitHub
   screenshot?: string;          // foto grande para sección "Enlaces" (default: image)
   videoUrl?: string;            // YouTube/Vimeo URL para video demo
@@ -358,10 +374,10 @@ export const portfolioData: Category[] = [
           `${import.meta.env.BASE_URL}diagrams/portfolio/frontend-architecture.svg`,
           `${import.meta.env.BASE_URL}diagrams/portfolio/backend-architecture.svg`,
         ],
-        documentationUrl: `${import.meta.env.BASE_URL}docs/dev1/documentation.pdf`,
-        documentationPages: [
-          `${import.meta.env.BASE_URL}docs/dev1/pages/page-1.png`,
-        ],
+        // documentationUrl y documentationPages se computan dinámicamente en
+        // project-detail.tsx según language + isDark (4 variantes auto-generadas
+        // por backend/scripts/generate-docs.ts). El generated/docs.json del
+        // merge de abajo provee el pageCount.
         readmeUrl: "https://github.com/LuisanaRuggia/portfolio/blob/main/README.md",
         updates: [
           {
@@ -448,9 +464,13 @@ export const portfolioData: Category[] = [
 // Si el script falla un día, el sitio no se rompe — sigue mostrando lo manual.
 import generatedUpdates from "./generated/updates.json";
 import generatedConcepts from "./generated/concepts.json";
+import generatedDiagrams from "./generated/diagrams.json";
+import generatedDocs from "./generated/docs.json";
 
 const gu = generatedUpdates as Record<string, Project["updates"] | undefined>;
 const gc = generatedConcepts as Record<string, Project["concepts"] | undefined>;
+const gd = generatedDiagrams as Record<string, Project["diagrams"] | undefined>;
+const gdocs = generatedDocs as Record<string, Project["documentation"] | undefined>;
 
 for (const cat of portfolioData) {
   for (const p of cat.projects) {
@@ -458,5 +478,9 @@ for (const cat of portfolioData) {
     if (updates && updates.length > 0) p.updates = updates;
     const concepts = gc[p.id];
     if (concepts && concepts.nodes.length > 0) p.concepts = concepts;
+    const diagrams = gd[p.id];
+    if (diagrams && diagrams.length > 0) p.diagrams = diagrams;
+    const docs = gdocs[p.id];
+    if (docs && docs.pageCount > 0) p.documentation = docs;
   }
 }

@@ -1,0 +1,202 @@
+% =====================================================================
+%  Poster-style documentation template — Personal Portfolio
+%  Adapted from the beamerposter template (gemini/msu) with the portfolio's
+%  orange accent palette. Single page A3 landscape, multicolumn, blocks
+%  with colored header.
+% =====================================================================
+
+\documentclass[10pt]{article}
+
+% ------------------ Page size: custom 42x37cm (wider than A3 + taller)
+%   so all content fits on one sheet with multicols. ------
+\usepackage[paperwidth=42cm, paperheight=37cm, margin=1cm, top=1.2cm, bottom=1.2cm]{geometry}
+
+% ------------------ Encoding and fonts ------------------
+% With xelatex we use fontspec; DejaVu Sans is native on Linux and looks clean.
+\usepackage{fontspec}
+\setmainfont{DejaVu Sans}
+\setsansfont{DejaVu Sans}
+\setmonofont{DejaVu Sans Mono}
+\renewcommand{\familydefault}{\sfdefault}
+
+% ------------------ Color, graphics, layout ------------------
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage[most]{tcolorbox}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{hyperref}
+
+% ------------------ Portfolio palette ------------------
+% Colors: the {{COLOR_*}} placeholders are replaced by generate-docs.ts based
+% on theme. For light: dark bodytext on light background. For dark: light text
+% on dark background. The orange accent stays in both.
+\definecolor{accent}{HTML}{F97316}
+\definecolor{accentdark}{HTML}{{{COLOR_ACCENT_DARK}}}
+\definecolor{accentlight}{HTML}{{{COLOR_ACCENT_LIGHT}}}
+\definecolor{bodytext}{HTML}{{{COLOR_BODY_TEXT}}}
+\definecolor{mutedtext}{HTML}{{{COLOR_MUTED_TEXT}}}
+\definecolor{cardbg}{HTML}{{{COLOR_CARD_BG}}}
+\definecolor{pagebg}{HTML}{{{COLOR_PAGE_BG}}}
+\pagecolor{pagebg}
+\color{bodytext}
+
+\hypersetup{colorlinks=true, urlcolor=accent, linkcolor=accent}
+
+% ------------------ Block with orange header ------------------
+\newtcolorbox{posterblock}[1]{
+  enhanced,
+  colback=cardbg,
+  colframe=accent,
+  coltitle=white,
+  coltext=bodytext,   % tcolorbox defaults to black; force bodytext for dark mode
+  colbacktitle=accent,
+  title={\strut\large\bfseries\MakeUppercase{#1}},
+  boxrule=0pt,
+  toprule=0pt,
+  bottomrule=0pt,
+  leftrule=0pt,
+  rightrule=0pt,
+  arc=3pt,
+  outer arc=3pt,
+  left=9pt, right=9pt, top=6pt, bottom=6pt,
+  toptitle=3pt, bottomtitle=3pt,
+  before skip=0pt,
+  after skip=10pt,
+  fonttitle=\sffamily,
+  breakable
+}
+
+% ------------------ Subheading inside a block ------------------
+\newcommand{\posterheading}[1]{%
+  \vspace{4pt}%
+  \par{\color{accentdark}\sffamily\bfseries #1}\par
+  \vspace{2pt}%
+}
+
+% ------------------ Footer / pagestyle ------------------
+\pagestyle{empty}
+
+% ------------------ Spacing between items ------------------
+\setlist{itemsep=2pt, topsep=2pt, leftmargin=1.2em}
+
+\begin{document}
+\sloppy
+
+% ==================== HEADER ====================
+% The {{...}} placeholders are replaced by backend/scripts/generate-docs.ts
+% before compiling. If you compile this template by hand (without the script),
+% the placeholders show up literally in the PDF — use the script to regenerate.
+\noindent
+\begin{minipage}{0.7\textwidth}
+  \raggedright
+  {\color{accent}\fontsize{42}{50}\selectfont\bfseries {{TITLE}}\par}
+  \vspace{6pt}
+  {\color{mutedtext}\Large {{SUBTITLE}}}
+\end{minipage}
+\hfill
+\begin{minipage}{0.28\textwidth}
+  \raggedleft\small\color{mutedtext}
+  \textbf{Version} {{VERSION}} \\
+  \textbf{Last update} {{LAST_UPDATE}} \\
+  \textbf{Repository} \href{{{REPO_URL}}}{{{REPO_LABEL}}} \\
+  \textbf{Demo} \href{{{DEMO_URL}}}{{{DEMO_LABEL}}}
+\end{minipage}
+
+\vspace{6pt}
+\noindent\textcolor{accent}{\rule{\linewidth}{2pt}}
+\vspace{14pt}
+
+% ==================== CONTENT IN 3 COLUMNS ====================
+\setlength{\columnsep}{18pt}
+\begin{multicols}{3}
+
+% ----- COLUMN 1 -----
+
+\begin{posterblock}{Overview}
+{{OVERVIEW}}
+
+\posterheading{Key features}
+{{FEATURES_LIST}}
+\end{posterblock}
+
+\begin{posterblock}{Tech stack}
+\posterheading{Core}
+React 18 on TypeScript 5.6 with strict mode, bundled with Vite 5.4.
+
+\posterheading{Styles and animations}
+Tailwind CSS, lottie-react for the hero animation, CSS 3D transforms for the folders, custom SVG force-directed simulation for the concept graph.
+
+\posterheading{Browser APIs}
+Web Audio API with GainNode, localStorage, Pointer Events for drag and pinch zoom, Page Visibility to pause music, MediaQuery to detect hover and theme preference.
+
+\posterheading{Infrastructure}
+pnpm as the required package manager, GitHub Actions for CI, GitHub Pages for global static hosting with HTTPS.
+
+\posterheading{Final bundle}
+Approximately 180 kilobytes gzipped. No React Router, Framer Motion or state management libraries.
+\end{posterblock}
+
+% ----- COLUMN 2 -----
+
+\begin{posterblock}{Frontend architecture}
+The application is structured in five vertical layers that separate concerns: development tooling, main framework, styles and UI, browser APIs, and continuous deployment. Each layer only depends on the layers above and exposes a narrow interface to those below.
+
+\posterheading{Vertical layers}
+Dev/Build (pnpm, TypeScript, Vite) which only depend on system tools. Core (React, Hash Routing) which mounts the site. Styles and UI (Tailwind, lucide, lottie, CSS 3D) which provide the visual identity. Browser APIs (Web Audio, localStorage, Pointer Events, Page Visibility, MediaQuery) which leverage native capabilities without extra libs. CI/Deploy (GitHub Actions and Pages) which ships the compiled bundle to production.
+
+\posterheading{Key decision}
+A custom hash routing of about thirty lines replaces react-router, removing a significant dependency while keeping shareable URLs that survive browser refreshes. See the full stack diagram in the portfolio's Diagrams section.
+\end{posterblock}
+
+\begin{posterblock}{Main components}
+\posterheading{FolderPortfolio}
+Renders the grid of six 3D folders with a fan of cards and orchestrates the modal lightbox.
+
+\posterheading{ProjectDetailView}
+Detail view with hero, force-directed concept graph and six section cards. Navigate between projects without going back to the grid.
+
+\posterheading{ConceptGraph}
+Custom physics simulation with node repulsion, edge springs and continuous levitation. Supports drag with pointer events and group filtering.
+
+\posterheading{DiagramsViewer}
+Fullscreen viewer with zoom up to eight hundred percent, pan and pinch zoom on mobile. Circular navigation between multiple images.
+
+\posterheading{PortfolioChat}
+Floating bubble with a collapsible panel. Mock by keyword matching, LLM integration planned for the next phase.
+\end{posterblock}
+
+% ----- COLUMN 3 -----
+
+\begin{posterblock}{Backend architecture}
+A minimal serverless layer that coexists with the static frontend without turning it into a monolith. Two runtime workers for chat and administration, a suite of batch agents in GitHub Actions that auto-generate portfolio content.
+
+\posterheading{Three functional layers}
+Events (push to repo, release tag, cron, visitor chat, admin approval) trigger the chain. Backend (runtime workers for chat and draft admin, batch agents in GitHub Actions grouped into content, lifecycle and distribution, mixed persistence between committed JSON and ephemeral Workers KV). Outputs (auto-deployed portfolio web, auto-generated CV PDF, blog on Dev.to, post on LinkedIn, chat response).
+
+\posterheading{Key decision}
+Hybrid JAMstack instead of an Express or n8n monolith. The unpredictable traffic of a personal portfolio justifies pay-per-request on Cloudflare Workers rather than maintaining a 24/7 server. See the full flow diagram in the portfolio's Diagrams section.
+\end{posterblock}
+
+\begin{posterblock}{Data model}
+The catalog of projects lives in \texttt{src/data/projects.ts} as an array of six categories. Each project declares a unique identifier, image, bilingual title and description, list of tags, a status from three values, links to repository and demo, graph concepts and optional cross-discipline categories.
+
+\posterheading{Key types}
+\texttt{LocalizedString}, \texttt{ProjectStatus}, \texttt{ConceptGroup} with four semantic values: architecture, data, operations and machine learning.
+
+\posterheading{Persistence}
+JSON and markdown committed to the repository for public data. Workers KV for chat rate limiting and the queue of distribution drafts. Conversation history is not stored, for privacy.
+\end{posterblock}
+
+\begin{posterblock}{Next steps and recent changes}
+\posterheading{Recent changes}
+{{RECENT_CHANGES}}
+
+\posterheading{Next steps}
+{{ROADMAP_LIST}}
+\end{posterblock}
+
+\end{multicols}
+
+\end{document}
