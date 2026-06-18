@@ -1,0 +1,205 @@
+% =====================================================================
+%  Plantilla de documentación tipo poster — Portafolio Personal
+%  Adaptada del template beamerposter (gemini/msu) con paleta naranja
+%  accent del portafolio. Single page A3 landscape, multicolumna,
+%  blocks con header coloreado.
+% =====================================================================
+
+\documentclass[10pt]{article}
+
+% ------------------ Tamaño de página: custom 42x37cm (A3 ancho + más alto)
+%   para que entre todo el contenido en una sola hoja con multicols. ------
+\usepackage[paperwidth=42cm, paperheight=37cm, margin=1cm, top=1.2cm, bottom=1.2cm]{geometry}
+
+% ------------------ Codificación y fuentes ------------------
+% Con xelatex usamos fontspec; DejaVu Sans es nativo en Linux y se ve limpio.
+\usepackage{fontspec}
+\setmainfont{DejaVu Sans}
+\setsansfont{DejaVu Sans}
+\setmonofont{DejaVu Sans Mono}
+\renewcommand{\familydefault}{\sfdefault}
+
+% ------------------ Color, gráficos, layout ------------------
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage[most]{tcolorbox}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{hyperref}
+
+% ------------------ Paleta del portafolio ------------------
+\definecolor{accent}{HTML}{F97316}
+\definecolor{accentdark}{HTML}{D45A00}
+\definecolor{accentlight}{HTML}{FFE6CC}
+\definecolor{bodytext}{HTML}{1A1A1A}
+\definecolor{mutedtext}{HTML}{6B6B6B}
+\definecolor{cardbg}{HTML}{FAFAFA}
+
+\hypersetup{colorlinks=true, urlcolor=accent, linkcolor=accent}
+
+% ------------------ Bloque con header naranja ------------------
+\newtcolorbox{posterblock}[1]{
+  enhanced,
+  colback=cardbg,
+  colframe=accent,
+  coltitle=white,
+  colbacktitle=accent,
+  title={\strut\large\bfseries\MakeUppercase{#1}},
+  boxrule=0pt,
+  toprule=0pt,
+  bottomrule=0pt,
+  leftrule=0pt,
+  rightrule=0pt,
+  arc=3pt,
+  outer arc=3pt,
+  left=9pt, right=9pt, top=6pt, bottom=6pt,
+  toptitle=3pt, bottomtitle=3pt,
+  before skip=0pt,
+  after skip=10pt,
+  fonttitle=\sffamily,
+  breakable
+}
+
+% ------------------ Subtítulo dentro de block (heading) ------------------
+\newcommand{\posterheading}[1]{%
+  \vspace{4pt}%
+  \par{\color{accentdark}\sffamily\bfseries #1}\par
+  \vspace{2pt}%
+}
+
+% ------------------ Footer / pagestyle ------------------
+\pagestyle{empty}
+
+% ------------------ Espaciado entre items ------------------
+\setlist{itemsep=2pt, topsep=2pt, leftmargin=1.2em}
+
+\begin{document}
+\sloppy
+
+% ==================== ENCABEZADO ====================
+\noindent
+\begin{minipage}{0.7\textwidth}
+  \raggedright
+  {\color{accent}\fontsize{42}{50}\selectfont\bfseries Portafolio Personal\par}
+  \vspace{6pt}
+  {\color{mutedtext}\Large Documentación técnica del proyecto}
+\end{minipage}
+\hfill
+\begin{minipage}{0.28\textwidth}
+  \raggedleft\small\color{mutedtext}
+  \textbf{Versión} 1.0 \\
+  \textbf{Última actualización} Mayo 2026 \\
+  \textbf{Repositorio} \href{https://github.com/LuisanaRuggia/portfolio}{github.com/LuisanaRuggia/portfolio} \\
+  \textbf{Demo} \href{https://luisanaruggia.github.io/portfolio/}{luisanaruggia.github.io/portfolio}
+\end{minipage}
+
+\vspace{6pt}
+\noindent\textcolor{accent}{\rule{\linewidth}{2pt}}
+\vspace{14pt}
+
+% ==================== CONTENIDO EN 3 COLUMNAS ====================
+\setlength{\columnsep}{18pt}
+\begin{multicols}{3}
+
+% ----- COLUMNA 1 -----
+
+\begin{posterblock}{Resumen}
+El Portafolio Personal es una single page application interactiva que sirve como vitrina de proyectos de ciencia e ingeniería de datos. Combina animaciones tridimensionales en CSS, un grafo conceptual force-directed inspirado en Obsidian, un asistente conversacional con modelo de IA y soporte bilingüe completo en una arquitectura JAMstack estática sin servidor.
+
+\posterheading{Características principales}
+\begin{itemize}
+  \item Navegación por carpetas 3D animadas en abanico
+  \item Vista de detalle con grafo conceptual interactivo
+  \item Visor fullscreen de diagramas con zoom y pan
+  \item Chat asistente flotante en español e inglés
+  \item Tema claro y oscuro con detección automática
+  \item Música jazz opcional con Web Audio API
+\end{itemize}
+\end{posterblock}
+
+\begin{posterblock}{Stack tecnológico}
+\posterheading{Core}
+React 18 sobre TypeScript 5.6 con modo estricto, empaquetado con Vite 5.4.
+
+\posterheading{Estilos y animaciones}
+Tailwind CSS, lottie-react para la animación del hero, CSS 3D transforms para las carpetas, simulación force-directed propia en SVG para el grafo.
+
+\posterheading{APIs del navegador}
+Web Audio API con GainNode, localStorage, Pointer Events para drag y pinch zoom, Page Visibility para pausar música, MediaQuery para detectar hover y preferencia de tema.
+
+\posterheading{Infraestructura}
+pnpm como gestor obligatorio, GitHub Actions para CI, GitHub Pages para hosting estático global con HTTPS.
+
+\posterheading{Bundle final}
+Aproximadamente 180 kilobytes comprimidos. Sin React Router, Framer Motion ni librerías de state management.
+\end{posterblock}
+
+% ----- COLUMNA 2 -----
+
+\begin{posterblock}{Arquitectura del frontend}
+La aplicación se estructura en cinco capas verticales que separan responsabilidades: herramientas de desarrollo, framework principal, estilos e interfaz, APIs del navegador y despliegue continuo. Cada capa solo depende de las superiores y expone una interfaz acotada a las inferiores.
+
+\posterheading{Capas verticales}
+Dev/Build (pnpm, TypeScript, Vite) que solo dependen de las herramientas del sistema. Core (React, Hash Routing) que monta el sitio. Estilos y UI (Tailwind, lucide, lottie, CSS 3D) que dan la identidad visual. Browser APIs (Web Audio, localStorage, Pointer Events, Page Visibility, MediaQuery) que aprovechan capacidades nativas sin libs adicionales. CI/Deploy (GitHub Actions y Pages) que lleva el bundle compilado a producción.
+
+\posterheading{Decisión clave}
+Hash routing custom de aproximadamente treinta líneas reemplaza a react-router, lo que elimina una dependencia significativa y mantiene URLs compartibles que sobreviven a refrescos del navegador. Ver el diagrama completo del stack en la sección Diagramas del portafolio.
+\end{posterblock}
+
+\begin{posterblock}{Componentes principales}
+\posterheading{FolderPortfolio}
+Renderiza el grid de seis carpetas tridimensionales con abanico de cards y orquesta el lightbox modal.
+
+\posterheading{ProjectDetailView}
+Vista de detalle con hero, grafo conceptual force-directed y seis tarjetas de sección. Navegación entre proyectos sin volver al grid.
+
+\posterheading{ConceptGraph}
+Simulación física propia con repulsión entre nodos, springs en aristas y levitación continua. Soporta drag con pointer events y filtro por grupo.
+
+\posterheading{DiagramsViewer}
+Visor fullscreen con zoom hasta ochocientos por ciento, pan y pinch zoom en mobile. Navegación circular entre múltiples imágenes.
+
+\posterheading{PortfolioChat}
+Burbuja flotante con panel desplegable. Mock por keyword matching, integración con LLM planeada como próxima fase.
+\end{posterblock}
+
+% ----- COLUMNA 3 -----
+
+\begin{posterblock}{Arquitectura del backend}
+Planificación de una capa serverless mínima que coexiste con el frontend estático sin convertirlo en monolito. Dos workers en runtime para chat y administración, una suite de agentes batch en GitHub Actions para auto-generar contenido del portafolio.
+
+\posterheading{Tres capas funcionales}
+Eventos (push a repo, release tag, cron, chat de visitante, aprobación de admin) que disparan la cadena. Backend (workers de runtime para chat y admin de borradores, agentes batch en GitHub Actions agrupados en content, lifecycle y distribution, persistencia mixta entre JSON committed y Workers KV ephemeral). Outputs (portafolio web auto-desplegado, CV PDF auto-generado, blog en Dev.to, post en LinkedIn, respuesta del chat).
+
+\posterheading{Decisión clave}
+JAMstack híbrida en lugar de monolito Express o n8n. El tráfico impredecible de un portafolio personal justifica pagar por request en Cloudflare Workers en lugar de mantener un servidor 24/7. Ver el diagrama completo del flujo en la sección Diagramas del portafolio.
+\end{posterblock}
+
+\begin{posterblock}{Modelo de datos}
+El catálogo de proyectos vive en \texttt{src/data/projects.ts} como un arreglo de seis categorías. Cada proyecto declara identificador único, imagen, título y descripción bilingües, lista de tags, estado dentro de tres valores, enlaces a repositorio y demo, conceptos del grafo y categorías cross-disciplina opcionales.
+
+\posterheading{Tipos clave}
+\texttt{LocalizedString}, \texttt{ProjectStatus}, \texttt{ConceptGroup} con cuatro valores semánticos: arquitectura, datos, operaciones y machine learning.
+
+\posterheading{Persistencia}
+JSON y markdown committed al repositorio para datos públicos. Workers KV para rate limiting del chat y cola de borradores de distribución. No se almacena historial de conversaciones por privacidad.
+\end{posterblock}
+
+\begin{posterblock}{Setup local y despliegue}
+\posterheading{Requisitos}
+pnpm igual o superior a versión 8, Node 18 o superior.
+
+\posterheading{Comandos}
+\texttt{pnpm install} para dependencias, \texttt{pnpm dev} para servidor con hot module replacement, \texttt{pnpm build} para producción.
+
+\posterheading{Despliegue}
+GitHub Actions ejecuta automáticamente en cada push a la rama principal: instala, compila y publica el artifact a Pages. Disponible globalmente con HTTPS en menos de tres minutos.
+
+\posterheading{Costo operativo}
+Cero en la fase actual. Inferior a tres dólares mensuales al activar el backend planeado.
+\end{posterblock}
+
+\end{multicols}
+
+\end{document}
