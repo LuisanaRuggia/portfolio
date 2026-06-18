@@ -10,18 +10,18 @@
         "group": "arch"
       },
       {
-        "id": "static-site-generation",
+        "id": "edge-functions",
         "label": {
-          "es": "Generación de sitios estáticos",
-          "en": "Static Site Generation"
+          "es": "Funciones de borde",
+          "en": "Edge Functions"
         },
         "group": "ops"
       },
       {
-        "id": "edge-functions",
+        "id": "static-site-generation",
         "label": {
-          "es": "Funciones de edge",
-          "en": "Edge Functions"
+          "es": "Generación de sitios estáticos",
+          "en": "Static Site Generation"
         },
         "group": "ops"
       },
@@ -34,14 +34,6 @@
         "group": "data"
       },
       {
-        "id": "hash-routing",
-        "label": {
-          "es": "Enrutamiento por hash",
-          "en": "Hash Routing"
-        },
-        "group": "ops"
-      },
-      {
         "id": "internationalization",
         "label": {
           "es": "Internacionalización",
@@ -50,10 +42,10 @@
         "group": "ops"
       },
       {
-        "id": "web-audio-api",
+        "id": "hash-routing",
         "label": {
-          "es": "API de audio web",
-          "en": "Web Audio API"
+          "es": "Enrutamiento por hash",
+          "en": "Hash Routing"
         },
         "group": "ops"
       },
@@ -64,6 +56,14 @@
           "en": "Machine Learning"
         },
         "group": "ml"
+      },
+      {
+        "id": "web-audio-api",
+        "label": {
+          "es": "API de audio web",
+          "en": "Web Audio API"
+        },
+        "group": "ops"
       },
       {
         "id": "conceptual-modeling",
@@ -85,19 +85,19 @@
     "edges": [
       {
         "from": "jamstack-architecture",
-        "to": "static-site-generation"
-      },
-      {
-        "from": "jamstack-architecture",
         "to": "edge-functions"
       },
       {
-        "from": "static-site-generation",
-        "to": "hash-routing"
+        "from": "jamstack-architecture",
+        "to": "static-site-generation"
       },
       {
         "from": "edge-functions",
         "to": "machine-learning"
+      },
+      {
+        "from": "static-site-generation",
+        "to": "hash-routing"
       },
       {
         "from": "force-directed-graphs",
@@ -108,20 +108,20 @@
         "to": "animated-visualizations"
       },
       {
+        "from": "hash-routing",
+        "to": "animated-visualizations"
+      },
+      {
         "from": "web-audio-api",
         "to": "animated-visualizations"
       },
       {
-        "from": "machine-learning",
-        "to": "conceptual-modeling"
-      },
-      {
         "from": "conceptual-modeling",
-        "to": "force-directed-graphs"
+        "to": "machine-learning"
       },
       {
-        "from": "animated-visualizations",
-        "to": "force-directed-graphs"
+        "from": "machine-learning",
+        "to": "edge-functions"
       }
     ]
   }
