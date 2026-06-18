@@ -20,8 +20,8 @@ import {
 } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { useTranslation, type TranslationKey } from '@/lib/i18n';
-import { useThemedImage } from '@/lib/theme';
+import { useTranslation, type LocalizedString, type TranslationKey } from '@/lib/i18n';
+import { useIsDarkMode, useThemedImage } from '@/lib/theme';
 import { playSound } from '@/lib/sounds';
 import { portfolioData, type Project, type ProjectStatus } from '@/data/projects';
 import { ConceptGraph } from '@/features/concepts/concept-graph';
@@ -167,7 +167,13 @@ export const SectionModal: React.FC<SectionModalProps> = ({ title, isOpen, onClo
 // --- Visor de diagramas: fullscreen + zoom + pan + navegación circular ---
 
 interface DiagramsViewerProps {
-  images: string[];
+  /**
+   * Lista de imágenes a mostrar. Cada entrada puede ser:
+   *   - string: URL crudo, sin caption (uso legacy y para documentationPages).
+   *   - { url, caption?: LocalizedString }: URL + caption opcional bilingüe
+   *     (usado por diagramas auto-indexados con captions.json).
+   */
+  images: Array<string | { url: string; caption?: LocalizedString }>;
   alt: string;
   onClose: () => void;
   /** Si está, agrega un botón de descarga en el header (apunta al archivo original, ej. PDF) */
@@ -178,14 +184,30 @@ interface DiagramsViewerProps {
    * Útil para ofrecer "abrir en pestaña nueva" de elementos relacionados
    * (ej. los diagramas embebidos cuando se muestra documentación). */
   externalLinks?: Array<{ label: string; url: string }>;
+  /**
+   * Si está activo, NO aplica el filter CSS `invert + hue-rotate` en dark mode.
+   * Usar cuando las imágenes YA fueron generadas en el tema correcto (ej. los
+   * PDFs auto-generados de Fase 3 que tienen variantes light/dark nativas).
+   * Para diagramas SVG single-source (que solo existen en light), dejar `false`.
+   */
+  skipDarkInvert?: boolean;
+}
+
+/** Normaliza un entry a `{ url, caption? }`. */
+function normalizeDiagramEntry(
+  entry: string | { url: string; caption?: LocalizedString },
+): { url: string; caption?: LocalizedString } {
+  return typeof entry === 'string' ? { url: entry } : entry;
 }
 
 const MIN_SCALE = 0.5;
 const MAX_SCALE = 8;
 const ZOOM_STEP = 1.25;
 
-const DiagramsViewer: React.FC<DiagramsViewerProps> = ({ images, alt, onClose, downloadUrl, downloadLabel, externalLinks }) => {
-  const { t } = useTranslation();
+const DiagramsViewer: React.FC<DiagramsViewerProps> = ({ images: rawImages, alt, onClose, downloadUrl, downloadLabel, externalLinks, skipDarkInvert = false }) => {
+  const { t, localize } = useTranslation();
+  // Normalizamos todos los entries a { url, caption? } para no llenar el componente de checks.
+  const images = rawImages.map(normalizeDiagramEntry);
   const [idx, setIdx] = useState(0);
   const [scale, setScale] = useState(1);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
@@ -359,6 +381,12 @@ const DiagramsViewer: React.FC<DiagramsViewerProps> = ({ images, alt, onClose, d
               {idx + 1} / {images.length}
             </span>
           )}
+          {/* Caption del diagrama activo, si existe (sync-diagrams + captions.json) */}
+          {images[idx].caption && (
+            <span className="ml-2 text-muted-foreground font-normal hidden sm:inline">
+              · {localize(images[idx].caption!)}
+            </span>
+          )}
         </h2>
         <div className="flex items-center gap-1.5 flex-shrink-0">
           <button
@@ -419,7 +447,7 @@ const DiagramsViewer: React.FC<DiagramsViewerProps> = ({ images, alt, onClose, d
               la documentación) descarga eso; si no, descarga la imagen actual del visor
               (útil para que la sección Diagramas permita guardar cada diagrama). */}
           <a
-            href={downloadUrl ?? images[idx]}
+            href={downloadUrl ?? images[idx].url}
             download
             aria-label={downloadLabel ?? t('doc.download')}
             title={downloadLabel ?? t('doc.download')}
@@ -460,12 +488,18 @@ const DiagramsViewer: React.FC<DiagramsViewerProps> = ({ images, alt, onClose, d
         >
           <img
             ref={imgRef}
-            src={images[idx]}
+            src={images[idx].url}
             alt={`${alt} ${idx + 1}`}
             onLoad={handleImageLoad}
-            className="max-w-[92vw] max-h-[78vh] object-contain
-                       dark:invert dark:hue-rotate-180 dark:contrast-125
-                       dark:ring-1 dark:ring-white/20 dark:rounded-md dark:shadow-2xl"
+            className={cn(
+              'max-w-[92vw] max-h-[78vh] object-contain',
+              // Para diagramas single-source (SVG light-only) en dark mode
+              // invertimos los colores via filter CSS. Para documentación con
+              // variantes nativas dark/light (Fase 3) skipDarkInvert evita
+              // doble-inversión.
+              !skipDarkInvert && 'dark:invert dark:hue-rotate-180 dark:contrast-125',
+              'dark:ring-1 dark:ring-white/20 dark:rounded-md dark:shadow-2xl',
+            )}
             draggable={false}
           />
         </div>
@@ -518,11 +552,32 @@ const SECTION_GRADIENTS: Record<SectionKey, string> = {
 
 export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project, onBack, onNavigate, canHover }) => {
   const { t, localize, language } = useTranslation();
+  const isDark = useIsDarkMode();
   const [openSection, setOpenSection] = useState<SectionKey | null>(null);
+
+  // Documentación auto-generada por Fase 3: 4 variantes (light/dark × es/en).
+  // El backend genera los PDFs en `public/docs/<id>/<theme>/documentation.<lang>.pdf`
+  // y las páginas en `pages-<lang>/page-N.png`. Acá construimos los URLs según el
+  // tema y el idioma activos para que el visor recargue automáticamente al
+  // cambiar cualquiera de los dos.
+  const docMeta = project.documentation;
+  const docTheme = isDark ? 'dark' : 'light';
+  const docBaseUrl = docMeta
+    ? `${import.meta.env.BASE_URL}docs/${project.id}/${docTheme}`
+    : null;
+  const docPdfUrl = docBaseUrl
+    ? `${docBaseUrl}/documentation.${language}.pdf`
+    : project.documentationUrl;
+  const docPages: string[] = docBaseUrl
+    ? Array.from(
+        { length: docMeta?.pageCount ?? 0 },
+        (_, i) => `${docBaseUrl}/pages-${language}/page-${i + 1}.png`,
+      )
+    : (project.documentationPages ?? []);
 
   const has = {
     diagrams: (project.diagrams?.length ?? 0) > 0,
-    documentation: (project.documentationPages?.length ?? 0) > 0 || !!project.documentationUrl,
+    documentation: docPages.length > 0 || !!docPdfUrl,
     readme: !!project.readmeUrl || (project.tags?.length ?? 0) > 0,
     links: !!(project.links?.repo || project.links?.demo),
     blogVideo: !!(project.links?.blog || project.videoUrl),
@@ -735,18 +790,22 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project, o
         <ComingSoonPlaceholder />
       </SectionModal>
 
-      {/* Documentación: si hay páginas PNG renderizadas del PDF → visor fullscreen
-          (mismo viewer que los diagramas, con botón de descarga del PDF original).
-          Si no hay nada → "Próximamente". */}
-      {openSection === 'documentation' &&
-        (project.documentationPages?.length ?? 0) > 0 && (
-          <DiagramsViewer
-            images={project.documentationPages!}
-            alt={titleText}
-            downloadUrl={project.documentationUrl}
-            onClose={() => setOpenSection(null)}
-          />
-        )}
+      {/* Documentación: visor fullscreen con las páginas auto-generadas.
+          URLs (docPages, docPdfUrl) son reactivas a language + isDark — al
+          cambiar idioma o tema, el visor se re-renderiza con el PDF correcto. */}
+      {openSection === 'documentation' && docPages.length > 0 && (
+        <DiagramsViewer
+          // key fuerza remount al cambiar variante (resetea zoom/pan)
+          key={`docs-${docTheme}-${language}`}
+          images={docPages}
+          alt={titleText}
+          downloadUrl={docPdfUrl}
+          // Las páginas de docs YA traen el tema correcto (light/dark) en su PDF
+          // nativo. NO aplicar el filter invert que sí se usa para diagramas SVG.
+          skipDarkInvert
+          onClose={() => setOpenSection(null)}
+        />
+      )}
       <SectionModal
         title={t('detail.documentation')}
         isOpen={openSection === 'documentation' && !has.documentation}

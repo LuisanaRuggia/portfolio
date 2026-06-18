@@ -1,0 +1,11 @@
+{
+  "dev1": {
+    "pageCount": 1,
+    "variants": [
+      "light-es",
+      "dark-es",
+      "light-en",
+      "dark-en"
+    ]
+  }
+}

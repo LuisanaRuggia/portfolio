@@ -1,0 +1,78 @@
+name: Regenerate documentation (PDF + páginas)
+
+# Trigger automático DESHABILITADO hasta validar el primer run en CI manual.
+# Razón: instalar texlive + esperar primer compile sin sorpresas. Después de
+# 1-2 ejecuciones manuales exitosas (workflow_dispatch), descomentar `push:` y
+# `schedule:` para que se mantenga solo.
+on:
+  # push:
+  #   branches: [main]
+  #   paths:
+  #     - 'README.md'
+  #     - 'backend/templates/documentation-poster.tex'
+  #     - 'frontend/src/data/projects.ts'
+  # schedule:
+  #   - cron: '0 7 * * 1'   # Lunes 07:00 UTC, después de regenerate-content
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: regenerate-docs
+  cancel-in-progress: false
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install LaTeX + poppler
+        # ~2 min. Cacheable a futuro si se vuelve molesto.
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            texlive-xetex \
+            texlive-fonts-recommended \
+            texlive-latex-extra \
+            fonts-dejavu \
+            poppler-utils
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          package_json_file: backend/package.json
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: backend/pnpm-lock.yaml
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate docs
+        working-directory: backend
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: pnpm script:docs
+
+      - name: Commit regenerated docs if changed
+        run: |
+          if [[ -n "$(git status --porcelain frontend/public/docs/)" ]]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add frontend/public/docs/
+            git commit -m "chore(docs): regenerate documentation PDF + pages [skip ci]"
+            git push
+          else
+            echo "Sin cambios en frontend/public/docs/"
+          fi

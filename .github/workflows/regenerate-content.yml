@@ -1,10 +1,11 @@
-name: Regenerate content (updates + concepts)
+name: Regenerate content (updates + concepts + diagrams index)
 
 on:
   push:
     branches: [main]
     # Evita loop: cuando el workflow commitea los JSON regenerados, ese push
-    # toca solo estas paths, así no se re-dispara a sí mismo.
+    # toca solo estas paths, así no se re-dispara a sí mismo. También ignora
+    # diagramas SVG nuevos (los indexa el siguiente push real).
     paths-ignore:
       - 'frontend/src/data/generated/**'
       - 'frontend/src/data/projects.ts'
@@ -57,14 +58,21 @@ jobs:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: pnpm script:concepts
 
+      - name: Sync diagrams index (sin LLM, solo file system)
+        working-directory: backend
+        run: pnpm script:diagrams
+
       - name: Commit regenerated content if changed
         run: |
-          if [[ -n "$(git status --porcelain frontend/src/data/generated/)" ]]; then
+          # Incluye generated/ (updates, concepts, diagrams.json) Y los SVGs
+          # sanitizados in-place por sync-diagrams.
+          changes=$(git status --porcelain frontend/src/data/generated/ frontend/public/diagrams/)
+          if [[ -n "$changes" ]]; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add frontend/src/data/generated/
-            git commit -m "chore(content): regenerate updates and concepts [skip ci]"
+            git add frontend/src/data/generated/ frontend/public/diagrams/
+            git commit -m "chore(content): regenerate updates, concepts and diagrams index [skip ci]"
             git push
           else
-            echo "Sin cambios en generated/"
+            echo "Sin cambios en generated/ ni en diagrams/"
           fi
