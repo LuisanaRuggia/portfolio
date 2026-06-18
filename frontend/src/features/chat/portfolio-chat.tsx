@@ -256,13 +256,31 @@ function getMockResponse(input: string, language: Language): string {
     : 'I\'m not sure I caught the question. You can ask about the projects, the architecture, the stack, the skills, or a specific tool like Spark, Kafka, or Airflow. I can also help you locate something inside the portfolio.';
 }
 
+/** Error tipado para diferenciar rate limit vs error genérico en el handler UI. */
+class ChatError extends Error {
+  constructor(public kind: 'rate_limit' | 'generic') {
+    super(kind);
+  }
+}
+
 async function sendMessage(text: string, language: Language): Promise<string> {
-  // Mock: respuesta sintética con un pequeño delay para que se sienta natural.
-  // Cuando se integre el agente, reemplazar este body por una llamada
-  // a un endpoint que devuelva la respuesta del LLM.
-  const delay = 600 + Math.random() * 600;
-  await new Promise((r) => setTimeout(r, delay));
-  return getMockResponse(text, language);
+  const apiUrl = import.meta.env.VITE_CHAT_API_URL;
+  // Dev local sin worker: cae al mock (mismo comportamiento pre-Fase 1)
+  if (!apiUrl) {
+    const delay = 600 + Math.random() * 600;
+    await new Promise((r) => setTimeout(r, delay));
+    return getMockResponse(text, language);
+  }
+  const res = await fetch(`${apiUrl}/chat`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ message: text, language }),
+  });
+  if (res.status === 429) throw new ChatError('rate_limit');
+  if (!res.ok) throw new ChatError('generic');
+  const data = (await res.json()) as { reply?: string };
+  if (!data.reply) throw new ChatError('generic');
+  return data.reply;
 }
 
 // --- UI ---
@@ -319,17 +337,14 @@ export const PortfolioChat: React.FC = () => {
     try {
       const reply = await sendMessage(text, language);
       setMessages((m) => [...m, { id: `b-${Date.now()}`, role: 'bot', text: reply }]);
-    } catch {
+    } catch (err) {
+      const errorKey: TranslationKey =
+        err instanceof ChatError && err.kind === 'rate_limit'
+          ? 'chat.error.rateLimit'
+          : 'chat.error.generic';
       setMessages((m) => [
         ...m,
-        {
-          id: `b-err-${Date.now()}`,
-          role: 'bot',
-          text:
-            language === 'es'
-              ? 'Ups, algo salió mal. Prueba de nuevo.'
-              : 'Oops, something went wrong. Try again.',
-        },
+        { id: `b-err-${Date.now()}`, role: 'bot', text: t(errorKey) },
       ]);
     } finally {
       setIsTyping(false);

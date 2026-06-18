@@ -3,12 +3,13 @@ main = "src/index.ts"
 compatibility_date = "2025-11-01"
 compatibility_flags = ["nodejs_compat"]
 
-# KV namespace para rate limiting. Crear con:
+# KV namespace para rate limiting (10 req/min por IP).
+# Antes del primer deploy, crear con:
 #   wrangler kv namespace create RATE_LIMIT
-# y pegar el id devuelto aquí abajo.
-# [[kv_namespaces]]
-# binding = "RATE_LIMIT"
-# id = "TODO_pegar_id_de_wrangler"
+# y pegar el id devuelto en `id` abajo (reemplazando el placeholder).
+[[kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "PLACEHOLDER_REEMPLAZAR_CON_ID_REAL"
 
 # Secrets a configurar (no se commitean):
 #   wrangler secret put GROQ_API_KEY

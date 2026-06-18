@@ -1,0 +1,75 @@
+name: Deploy Cloudflare Workers
+
+# TRIGGERS DESHABILITADOS hasta completar el setup de Cloudflare (Fase 5):
+#   - Crear cuenta + wrangler login
+#   - wrangler kv namespace create RATE_LIMIT (pegar id en wrangler.toml)
+#   - wrangler secret put GROQ_API_KEY (en producción)
+#   - GitHub Secrets: CLOUDFLARE_API_TOKEN + VITE_CHAT_API_URL
+#
+# Cuando esté listo, descomentar el bloque `push:` de abajo. Mientras tanto el
+# workflow solo corre por trigger manual (workflow_dispatch) para poder testearlo
+# manualmente desde la UI de Actions sin disparar deploys automáticos rotos.
+on:
+  # push:
+  #   branches: [main]
+  #   paths:
+  #     - 'backend/workers/chat/**'
+  #     - 'backend/scripts/sync-portfolio-context.ts'
+  #     - 'frontend/src/data/projects.ts'
+  #     - '.github/workflows/deploy-workers.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write  # para poder commitear portfolio-context.generated.ts si cambió
+
+concurrency:
+  group: workers-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy-chat:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          package_json_file: backend/package.json
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: backend/pnpm-lock.yaml
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: pnpm install --frozen-lockfile
+
+      - name: Regenerate portfolio context
+        working-directory: backend
+        run: pnpm tsx scripts/sync-portfolio-context.ts
+
+      - name: Commit regenerated context if it changed
+        run: |
+          if [[ -n "$(git status --porcelain backend/workers/chat/src/portfolio-context.generated.ts)" ]]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add backend/workers/chat/src/portfolio-context.generated.ts
+            git commit -m "chore(backend): regenerate chat portfolio context [skip ci]"
+            git push
+          else
+            echo "portfolio-context.generated.ts unchanged"
+          fi
+
+      - name: Deploy chat worker
+        working-directory: backend/workers/chat
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: pnpm exec wrangler deploy
