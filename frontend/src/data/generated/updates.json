@@ -3,22 +3,36 @@
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Correcciones de errores en chat y workflows, mejora de CV y configuración de prod",
-        "en": "Fixes for chat and workflows, CV improvements and prod configuration"
+        "es": "Correcciones de errores en la implementación de chat y auto-despliegue de trabajos",
+        "en": "Fixes for chat implementation and auto-deployment of tasks"
       }
     },
     {
       "date": "2026-06-18",
       "description": {
-        "es": "Implementación de Fase 3 de contenido: documentación bilingüe, dark mode y gestión de diagramas",
-        "en": "Implementation of Phase 3 content: bilingual documentation, dark mode and diagram management"
+        "es": "Implementación de Fase 3 de contenido: documentación bilingüe y gestión de diagramas",
+        "en": "Implementation of Phase 3 content: bilingual documentation and diagram management"
+      }
+    },
+    {
+      "date": "2026-06-18",
+      "description": {
+        "es": "Implementación de Fase 2 de contenido: agentes de actualizaciones y conceptos con Groq",
+        "en": "Implementation of Phase 2 content: update agents and concepts with Groq"
+      }
+    },
+    {
+      "date": "2026-06-18",
+      "description": {
+        "es": "Implementación de Fase 1 de chat: chat real con Groq y límite de velocidad",
+        "en": "Implementation of Phase 1 chat: real-time chat with Groq and rate limit"
       }
     },
     {
       "date": "2026-05-24",
       "description": {
-        "es": "Mejoras de UI y documentación, incluyendo imágenes temáticas y diagramas vectoriales",
-        "en": "UI and documentation improvements, including themed images and vectorial diagrams"
+        "es": "Corrección de errores en la legibilidad del input de chat en modo oscuro",
+        "en": "Fix for chat input legibility in dark mode"
       }
     }
   ]
