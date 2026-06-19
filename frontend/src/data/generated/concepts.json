@@ -10,18 +10,18 @@
         "group": "arch"
       },
       {
-        "id": "edge-functions",
-        "label": {
-          "es": "Funciones de borde",
-          "en": "Edge Functions"
-        },
-        "group": "ops"
-      },
-      {
         "id": "static-site-generation",
         "label": {
           "es": "Generación de sitios estáticos",
           "en": "Static Site Generation"
+        },
+        "group": "ops"
+      },
+      {
+        "id": "edge-functions",
+        "label": {
+          "es": "Funciones de borde",
+          "en": "Edge Functions"
         },
         "group": "ops"
       },
@@ -42,28 +42,20 @@
         "group": "ops"
       },
       {
-        "id": "hash-routing",
+        "id": "animated-visualizations",
         "label": {
-          "es": "Enrutamiento hash",
-          "en": "Hash Routing"
-        },
-        "group": "ops"
-      },
-      {
-        "id": "machine-learning",
-        "label": {
-          "es": "Aprendizaje automático",
-          "en": "Machine Learning"
-        },
-        "group": "ml"
-      },
-      {
-        "id": "conceptual-modeling",
-        "label": {
-          "es": "Modelado conceptual",
-          "en": "Conceptual Modeling"
+          "es": "Visualizaciones animadas",
+          "en": "Animated Visualizations"
         },
         "group": "data"
+      },
+      {
+        "id": "chat-assistant",
+        "label": {
+          "es": "Asistente de chat",
+          "en": "Chat Assistant"
+        },
+        "group": "ml"
       },
       {
         "id": "web-audio-api",
@@ -74,10 +66,18 @@
         "group": "ops"
       },
       {
-        "id": "cloud-computing",
+        "id": "hash-routing",
         "label": {
-          "es": "Computación en la nube",
-          "en": "Cloud Computing"
+          "es": "Enrutamiento hash",
+          "en": "Hash Routing"
+        },
+        "group": "ops"
+      },
+      {
+        "id": "multi-language-support",
+        "label": {
+          "es": "Soporte multilenguaje",
+          "en": "Multi-Language Support"
         },
         "group": "ops"
       }
@@ -85,43 +85,43 @@
     "edges": [
       {
         "from": "jamstack-architecture",
-        "to": "edge-functions"
-      },
-      {
-        "from": "jamstack-architecture",
         "to": "static-site-generation"
       },
       {
-        "from": "edge-functions",
-        "to": "machine-learning"
-      },
-      {
-        "from": "force-directed-graphs",
-        "to": "conceptual-modeling"
-      },
-      {
-        "from": "internationalization",
-        "to": "hash-routing"
-      },
-      {
-        "from": "web-audio-api",
-        "to": "cloud-computing"
+        "from": "jamstack-architecture",
+        "to": "edge-functions"
       },
       {
         "from": "static-site-generation",
-        "to": "cloud-computing"
-      },
-      {
-        "from": "machine-learning",
-        "to": "conceptual-modeling"
-      },
-      {
-        "from": "jamstack-architecture",
-        "to": "internationalization"
+        "to": "hash-routing"
       },
       {
         "from": "edge-functions",
-        "to": "cloud-computing"
+        "to": "chat-assistant"
+      },
+      {
+        "from": "force-directed-graphs",
+        "to": "animated-visualizations"
+      },
+      {
+        "from": "internationalization",
+        "to": "multi-language-support"
+      },
+      {
+        "from": "animated-visualizations",
+        "to": "web-audio-api"
+      },
+      {
+        "from": "chat-assistant",
+        "to": "edge-functions"
+      },
+      {
+        "from": "hash-routing",
+        "to": "static-site-generation"
+      },
+      {
+        "from": "multi-language-support",
+        "to": "internationalization"
       }
     ]
   }

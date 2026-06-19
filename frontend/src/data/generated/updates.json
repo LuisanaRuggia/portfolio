@@ -3,36 +3,22 @@
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Mejoras en la página de CV y chat para una experiencia más interactiva.",
-        "en": "Improvements to the CV and chat pages for a more interactive experience."
-      }
-    },
-    {
-      "date": "2026-06-19",
-      "description": {
-        "es": "Correcciones en el despliegue y workflows para una mayor estabilidad.",
-        "en": "Corrections to deployment and workflows for greater stability."
+        "es": "Implementación de características y correcciones en la sección de Blog/Video y página de CV.",
+        "en": "Implementation of features and fixes in the Blog/Video section and CV page."
       }
     },
     {
       "date": "2026-06-18",
       "description": {
-        "es": "Implementación de la documentación bilingüe y gestión de contenido.",
-        "en": "Implementation of bilingual documentation and content management."
+        "es": "Actualización de la documentación bilingüe y gestión de diagramas.",
+        "en": "Update of bilingual documentation and diagram management."
       }
     },
     {
       "date": "2026-06-18",
       "description": {
-        "es": "Configuración de triggers automáticos y reorganización del repo.",
-        "en": "Setup of automatic triggers and repository reorganization."
-      }
-    },
-    {
-      "date": "2026-06-18",
-      "description": {
-        "es": "Implementación del chat real y agentes de updates con Groq.",
-        "en": "Implementation of real-time chat and update agents with Groq."
+        "es": "Activación de triggers automáticos para regenerar contenido.",
+        "en": "Activation of automatic triggers to regenerate content."
       }
     }
   ]
