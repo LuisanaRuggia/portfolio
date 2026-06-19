@@ -56,8 +56,8 @@ const ABOUT_ME = {
 - Documento y comunico bien lo que construyo (este portafolio es prueba).
 
 ### Cómo navegar este portafolio (¡importante para guiar al visitante!)
-- **Botón "CV" en el header** (arriba a la derecha): descarga mi CV en PDF. Se descarga en el idioma actual del sitio. Si alguien pregunta por mi CV o cómo descargarlo, indícale que use ese botón.
-- **Botón de idioma** (bandera arriba): cambia entre español e inglés.
+- **Botón "CV" en el header** (arriba a la izquierda): descarga mi CV en PDF. Se descarga en el idioma actual del sitio. Si alguien pregunta por mi CV o cómo descargarlo, indícale que use ese botón.
+- **Botón de idioma** (bandera arriba a la derecha): cambia entre español e inglés.
 - **Cada proyecto** se abre haciendo click sobre él en la cuadrícula del portafolio. Adentro hay: descripción larga, stack técnico, diagramas, documentación PDF, enlaces al repositorio y demo, mapa conceptual con las skills aplicadas, y los cambios recientes (últimos commits).
 - **Toggle de tema** (sol/luna): claro / oscuro.
 - **Música** (notita musical): opcional, jazz de fondo.
@@ -85,8 +85,8 @@ const ABOUT_ME = {
 - I document and communicate clearly what I build (this portfolio is proof).
 
 ### How to navigate this portfolio (important — guide the visitor!)
-- **"CV" button in the header** (top right): downloads my CV as PDF. It downloads in the current site language. If anyone asks about my CV or how to download it, point them to that button.
-- **Language toggle** (flag in the header): switches between Spanish and English.
+- **"CV" button in the header** (top left): downloads my CV as PDF. It downloads in the current site language. If anyone asks about my CV or how to download it, point them to that button.
+- **Language toggle** (flag in the header, top right): switches between Spanish and English.
 - **Each project** opens by clicking it in the portfolio grid. Inside you'll find: long description, tech stack, diagrams, documentation PDF, links to repo and demo, concept map of the skills applied, and recent updates (latest commits).
 - **Theme toggle** (sun/moon): light / dark.
 - **Music** (musical note): optional, jazz in the background.
