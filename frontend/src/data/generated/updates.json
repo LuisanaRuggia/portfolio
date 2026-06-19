@@ -3,22 +3,22 @@
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Implementación de chat real con Groq y mejoras en la experiencia del usuario.",
-        "en": "Implementation of real-time chat with Groq and user experience improvements."
+        "es": "Correcciones de errores en chat y workflows, mejora de CV y configuración de prod",
+        "en": "Fixes for chat and workflows, CV improvements and prod configuration"
       }
     },
     {
       "date": "2026-06-18",
       "description": {
-        "es": "Desarrollo de la documentación bilingüe y gestión de diagramas.",
-        "en": "Development of bilingual documentation and diagram management."
+        "es": "Implementación de Fase 3 de contenido: documentación bilingüe, dark mode y gestión de diagramas",
+        "en": "Implementation of Phase 3 content: bilingual documentation, dark mode and diagram management"
       }
     },
     {
       "date": "2026-05-24",
       "description": {
-        "es": "Mejoras en la experiencia del usuario y diseño de la documentación.",
-        "en": "User experience improvements and documentation design."
+        "es": "Mejoras de UI y documentación, incluyendo imágenes temáticas y diagramas vectoriales",
+        "en": "UI and documentation improvements, including themed images and vectorial diagrams"
       }
     }
   ]
