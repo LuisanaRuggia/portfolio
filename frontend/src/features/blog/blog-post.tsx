@@ -63,7 +63,7 @@ export const BlogPost: React.FC<BlogPostProps> = ({ slug, onBack, onProjectLink 
           className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-muted/50 hover:bg-muted border border-border text-sm font-medium text-foreground transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          {t('blog.backToIndex')}
+          {t('detail.back')}
         </button>
       </div>
 

@@ -939,7 +939,21 @@ export default function FolderPortfolio() {
       ) : isBlogIndex ? (
         <BlogIndex onBack={navigateHome} onOpenPost={navigateBlogPost} />
       ) : blogSlug ? (
-        <BlogPost slug={blogSlug} onBack={navigateBlogIndex} onProjectLink={navigate} />
+        <BlogPost
+          slug={blogSlug}
+          onBack={() => {
+            // Vuelve al referrer guardado en sessionStorage (project:<id>),
+            // o al índice del blog si entró directo / desde el botón del header.
+            const referrer = sessionStorage.getItem('blogReferrer');
+            sessionStorage.removeItem('blogReferrer');
+            if (referrer?.startsWith('project:')) {
+              navigate(referrer.slice('project:'.length));
+            } else {
+              navigateBlogIndex();
+            }
+          }}
+          onProjectLink={navigate}
+        />
       ) : selectedProject ? (
         <ProjectDetailView
           project={selectedProject}

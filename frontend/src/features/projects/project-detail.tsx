@@ -896,10 +896,13 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project, o
               ))}
             {project.links?.blog &&
               (project.links.blog.startsWith('/blog/') ? (
-                /* Blog interno self-hosted: setea el hash para navegación SPA. */
+                /* Blog interno self-hosted: setea el hash para navegación SPA
+                   y guarda el referrer en sessionStorage para que el botón
+                   "Volver" del post regrese acá en lugar del índice del blog. */
                 <button
                   onClick={() => {
                     playSound('pop');
+                    sessionStorage.setItem('blogReferrer', `project:${project.id}`);
                     window.location.hash = `#${project.links!.blog!}`;
                   }}
                   className="flex items-center gap-3 px-5 py-4 rounded-xl bg-card hover:bg-muted/50 border border-border text-foreground transition-colors w-full text-left"
