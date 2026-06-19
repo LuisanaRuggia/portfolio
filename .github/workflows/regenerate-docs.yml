@@ -1,18 +1,17 @@
 name: Regenerate documentation (PDF + páginas)
 
-# Trigger automático DESHABILITADO hasta validar el primer run en CI manual.
-# Razón: instalar texlive + esperar primer compile sin sorpresas. Después de
-# 1-2 ejecuciones manuales exitosas (workflow_dispatch), descomentar `push:` y
-# `schedule:` para que se mantenga solo.
+# Triggers activos desde Fase 5. La regeneración corre cuando cambia el README,
+# la plantilla LaTeX, o projects.ts (porque el README del proyecto alimenta la
+# documentación), y semanalmente como backstop.
 on:
-  # push:
-  #   branches: [main]
-  #   paths:
-  #     - 'README.md'
-  #     - 'backend/templates/documentation-poster.tex'
-  #     - 'frontend/src/data/projects.ts'
-  # schedule:
-  #   - cron: '0 7 * * 1'   # Lunes 07:00 UTC, después de regenerate-content
+  push:
+    branches: [main]
+    paths:
+      - 'README.md'
+      - 'backend/templates/documentation-poster.tex'
+      - 'frontend/src/data/projects.ts'
+  schedule:
+    - cron: '0 7 * * 1'   # Lunes 07:00 UTC, después de regenerate-content
   workflow_dispatch:
 
 permissions:

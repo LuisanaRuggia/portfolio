@@ -1,22 +1,18 @@
 name: Deploy Cloudflare Workers
 
-# TRIGGERS DESHABILITADOS hasta completar el setup de Cloudflare (Fase 5):
-#   - Crear cuenta + wrangler login
-#   - wrangler kv namespace create RATE_LIMIT (pegar id en wrangler.toml)
-#   - wrangler secret put GROQ_API_KEY (en producción)
-#   - GitHub Secrets: CLOUDFLARE_API_TOKEN + VITE_CHAT_API_URL
-#
-# Cuando esté listo, descomentar el bloque `push:` de abajo. Mientras tanto el
-# workflow solo corre por trigger manual (workflow_dispatch) para poder testearlo
-# manualmente desde la UI de Actions sin disparar deploys automáticos rotos.
+# Triggers activos desde Fase 5 (setup Cloudflare completo):
+#   - cuenta Cloudflare + wrangler login OK
+#   - KV namespace RATE_LIMIT creado (id pegado en wrangler.toml)
+#   - GROQ_API_KEY como secret en el worker (vía wrangler secret put)
+#   - GitHub Secrets: CLOUDFLARE_API_TOKEN + VITE_CHAT_API_URL listos
 on:
-  # push:
-  #   branches: [main]
-  #   paths:
-  #     - 'backend/workers/chat/**'
-  #     - 'backend/scripts/sync-portfolio-context.ts'
-  #     - 'frontend/src/data/projects.ts'
-  #     - '.github/workflows/deploy-workers.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'backend/workers/chat/**'
+      - 'backend/scripts/sync-portfolio-context.ts'
+      - 'frontend/src/data/projects.ts'
+      - '.github/workflows/deploy-workers.yml'
   workflow_dispatch:
 
 permissions:

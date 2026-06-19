@@ -1,15 +1,17 @@
 name: Regenerate CV (bilingual PDFs)
 
-# Trigger automático DESACTIVADO hasta validar 1-2 runs manuales en CI.
-# Cuando confirmes que el PDF compila bien en GitHub Actions, descomentar.
+# Triggers activos desde Fase 5. Cuando cambia resume.json, las plantillas,
+# el script generate-cv.ts o projects.ts (porque los proyectos del CV
+# vienen del frontend), se regeneran los PDFs en es + en.
 on:
-  # push:
-  #   branches: [main]
-  #   paths:
-  #     - 'backend/data/resume.json'
-  #     - 'backend/templates/cv.es.tex'
-  #     - 'backend/templates/cv.en.tex'
-  #     - 'backend/scripts/generate-cv.ts'
+  push:
+    branches: [main]
+    paths:
+      - 'backend/data/resume.json'
+      - 'backend/templates/cv.es.tex'
+      - 'backend/templates/cv.en.tex'
+      - 'backend/scripts/generate-cv.ts'
+      - 'frontend/src/data/projects.ts'
   workflow_dispatch:
 
 permissions:
