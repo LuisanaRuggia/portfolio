@@ -1,0 +1,184 @@
+{
+  "basics": {
+    "name": "Luisana Jacqueline Gutiérrez Ruggia",
+    "label": {
+      "es": "Analista Junior de Datos · Estudiante de Ingeniería en Ciencia de Datos",
+      "en": "Junior Data Analyst · Data Science Engineering Student"
+    },
+    "email": "ruggialuisana@gmail.com",
+    "location": {
+      "city": "Bogotá",
+      "country": "Colombia",
+      "countryCode": "CO"
+    },
+    "summary": {
+      "es": "Estudiante de Ingeniería en Ciencia de Datos en séptimo semestre. Convierto datos en decisiones a través de pipelines, automatización y análisis con Python. Busco proyectos donde los datos generen impacto real.",
+      "en": "Data Science Engineering student in seventh semester. I turn data into decisions through pipelines, automation and Python analysis. I'm looking for projects where data drives real impact."
+    },
+    "profiles": [
+      {
+        "network": "GitHub",
+        "username": "LuisanaRuggia",
+        "url": "https://github.com/LuisanaRuggia"
+      },
+      {
+        "network": "LinkedIn",
+        "username": "luisana-j-gutiérrez-ruggia",
+        "url": "https://www.linkedin.com/in/luisana-j-gutiérrez-ruggia-128083256/"
+      },
+      {
+        "network": "Portfolio",
+        "username": "luisanaruggia",
+        "url": "https://luisanaruggia.github.io/portfolio/"
+      }
+    ]
+  },
+  "work": [
+    {
+      "name": "Paynet",
+      "position": {
+        "es": "Analista Junior de Datos",
+        "en": "Junior Data Analyst"
+      },
+      "location": {
+        "city": "Bogotá",
+        "country": "Colombia"
+      },
+      "startDate": "2025-09",
+      "endDate": null,
+      "highlights": [
+        {
+          "es": "Modelado de datos y procesos ETL para integración entre sistemas internos.",
+          "en": "Data modeling and ETL processes for integration between internal systems."
+        },
+        {
+          "es": "Desarrollo y mantenimiento de pipelines de datos en Python.",
+          "en": "Development and maintenance of data pipelines in Python."
+        },
+        {
+          "es": "Diseño y mantenimiento de dashboards en Power BI y Apache Superset para áreas de negocio.",
+          "en": "Design and maintenance of dashboards in Power BI and Apache Superset for business areas."
+        },
+        {
+          "es": "Construcción de agentes de IA con LLMs: diseño de prompts, integración de herramientas y orquestación de skills.",
+          "en": "Building AI agents with LLMs: prompt design, tool integration and skills orchestration."
+        },
+        {
+          "es": "Automatización de procesos internos con Python y flujos en n8n.",
+          "en": "Automation of internal processes with Python and n8n flows."
+        },
+        {
+          "es": "Desarrollo de scripts y herramientas internas para optimizar tareas operativas.",
+          "en": "Development of internal scripts and tools to optimize operational tasks."
+        }
+      ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "Politécnico Grancolombiano",
+      "location": {
+        "city": "Bogotá",
+        "country": "Colombia"
+      },
+      "area": {
+        "es": "Ingeniería en Ciencia de Datos",
+        "en": "Data Science Engineering"
+      },
+      "studyType": {
+        "es": "Pregrado",
+        "en": "Undergraduate"
+      },
+      "startDate": "2023",
+      "endDate": "2027",
+      "note": {
+        "es": "Cursando séptimo semestre",
+        "en": "Currently in seventh semester"
+      }
+    }
+  ],
+  "skills": [
+    {
+      "name": {
+        "es": "Lenguajes de programación",
+        "en": "Programming languages"
+      },
+      "keywords": ["Python", "SQL", "R", "Java"]
+    },
+    {
+      "name": {
+        "es": "Bases de datos",
+        "en": "Databases"
+      },
+      "keywords": ["PostgreSQL", "MongoDB", "ClickHouse"]
+    },
+    {
+      "name": {
+        "es": "Pipelines y Big Data",
+        "en": "Pipelines and Big Data"
+      },
+      "keywords": ["Apache Spark", "Apache Airflow", "Apache Kafka", "Debezium", "Iceberg", "dbt"]
+    },
+    {
+      "name": {
+        "es": "Business Intelligence",
+        "en": "Business Intelligence"
+      },
+      "keywords": ["Power BI", "Apache Superset"]
+    },
+    {
+      "name": {
+        "es": "Cloud e infraestructura",
+        "en": "Cloud and infrastructure"
+      },
+      "keywords": ["Docker", "Cloudflare Workers", "GitHub Actions"]
+    },
+    {
+      "name": {
+        "es": "Automatización",
+        "en": "Automation"
+      },
+      "keywords": ["n8n", "scripts en Python", "agentes de IA con LLM"]
+    },
+    {
+      "name": {
+        "es": "En crecimiento",
+        "en": "Growing in"
+      },
+      "keywords": ["Machine Learning", "Inteligencia Artificial", "Investigación aplicada"]
+    }
+  ],
+  "languages": [
+    {
+      "language": {
+        "es": "Español",
+        "en": "Spanish"
+      },
+      "fluency": {
+        "es": "Nativo",
+        "en": "Native"
+      }
+    },
+    {
+      "language": {
+        "es": "Inglés",
+        "en": "English"
+      },
+      "fluency": {
+        "es": "Conversacional",
+        "en": "Conversational"
+      }
+    },
+    {
+      "language": {
+        "es": "Italiano",
+        "en": "Italian"
+      },
+      "fluency": {
+        "es": "Conversacional",
+        "en": "Conversational"
+      }
+    }
+  ],
+  "projects": []
+}

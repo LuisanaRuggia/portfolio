@@ -10,6 +10,7 @@ import { useIsDarkMode, type ThemedImage } from "@/lib/theme";
 import girlLaptopAnimation from "@/assets/lottie/girl-laptop.json";
 import { portfolioData, type Project } from "@/data/projects";
 import { ProjectDetailView } from "@/features/projects/project-detail";
+import { CvPage } from "@/features/cv/cv-page";
 import { PortfolioChat } from "@/features/chat/portfolio-chat";
 
 // --- Utilities ---
@@ -584,7 +585,7 @@ const MUSIC_BASE_VOLUME = 0.15;
 
 export default function FolderPortfolio() {
   const { t, language, setLanguage } = useTranslation();
-  const { projectId, navigate } = useHashRoute();
+  const { projectId, isCv, navigate, navigateCv, navigateHome } = useHashRoute();
   const selectedProject: Project | null = projectId
     ? portfolioData.flatMap((c) => c.projects).find((p) => p.id === projectId) ?? null
     : null;
@@ -798,19 +799,20 @@ export default function FolderPortfolio() {
     <main className="min-h-screen bg-background text-foreground transition-colors duration-500 selection:bg-accent/40 selection:text-foreground">
       <header className="sticky top-0 z-40 w-full bg-background/80 backdrop-blur-xl border-b border-border transition-colors duration-500">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 h-16 flex items-center justify-between gap-2">
-          <a
-            // CV bilingüe auto-generado (Fase 4): el PDF descargado depende
-            // del idioma activo del sitio. El nombre del archivo en disco
-            // queda como `CV_Luisana_Ruggia_<lang>.pdf` para que el usuario
-            // lo identifique fácil en su carpeta de descargas.
-            href={`${import.meta.env.BASE_URL}cv/CV_Luisana_Ruggia_${language}.pdf`}
-            download={`CV_Luisana_Ruggia_${language}.pdf`}
-            aria-label={t('header.downloadCv')}
+          <button
+            // CV interactivo (Fase 6): navega a #/cv. Antes descargaba el PDF
+            // directo; ahora primero abre la vista HTML del CV, y desde ahí el
+            // visitante puede descargar el PDF si quiere.
+            onClick={() => {
+              playSound('pop');
+              navigateCv();
+            }}
+            aria-label={t('header.cv')}
             className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 h-10 rounded-xl bg-muted/50 hover:bg-muted transition-colors border border-border text-sm font-bold tracking-wide text-foreground"
           >
             <FileDown className="w-4 h-4" />
             <span>{t('header.cv')}</span>
-          </a>
+          </button>
           <div className="flex items-center gap-1.5 sm:gap-2">
           <div
             className="relative"
@@ -906,7 +908,9 @@ export default function FolderPortfolio() {
         </div>
       </header>
 
-      {selectedProject ? (
+      {isCv ? (
+        <CvPage onBack={navigateHome} />
+      ) : selectedProject ? (
         <ProjectDetailView
           project={selectedProject}
           onBack={() => navigate(null)}

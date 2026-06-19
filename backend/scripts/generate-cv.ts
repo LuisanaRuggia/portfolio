@@ -17,7 +17,12 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { loadProjectsFromFrontend, REPO_ROOT_PATH, repoRelative } from './lib/github.js';
+import {
+  idempotentWrite,
+  loadProjectsFromFrontend,
+  REPO_ROOT_PATH,
+  repoRelative,
+} from './lib/github.js';
 import { resolveLocalized, type Category, type ProjectStatus } from './lib/types.js';
 import { compileAndPlace, escapeLatex, renderTemplate } from './lib/latex.js';
 import { flattenResume, loadResume, type FlatResume } from './lib/resume.js';
@@ -221,6 +226,15 @@ function buildPlaceholders(flat: FlatResume, lang: Lang): Record<string, string>
 async function main(): Promise<void> {
   const resume = loadResume();
   const portfolioData = await loadProjectsFromFrontend();
+
+  // Copia el resume.json al frontend para que el CV interactivo (#/cv) lo
+  // importe directamente como JSON. Single source of truth queda en
+  // backend/data/, frontend mantiene una copia auto-sincronizada en cada
+  // regeneración del CV. Idempotente.
+  const resumeSrcPath = repoRelative('backend/data/resume.json');
+  const resumeDestPath = repoRelative('frontend/src/data/resume.json');
+  const wrote = idempotentWrite(resumeDestPath, readFileSync(resumeSrcPath, 'utf8'));
+  if (wrote) console.log(`[resume] ✓ copiado a frontend/src/data/resume.json`);
 
   const targets: Array<{ lang: Lang; templatePath: string }> = [
     { lang: 'es', templatePath: repoRelative('backend/templates/cv.es.tex') },
