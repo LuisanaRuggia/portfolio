@@ -3,36 +3,22 @@
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Implementación de fase 5 con chat real en producción y auto-despliegue de worker, CV y documentos.",
-        "en": "Implementation of phase 5 with real-time chat in production and auto-deployment of worker, CV and documents."
+        "es": "Implementación de chat real con Groq y mejoras en la experiencia del usuario.",
+        "en": "Implementation of real-time chat with Groq and user experience improvements."
       }
     },
     {
       "date": "2026-06-18",
       "description": {
-        "es": "Desarrollo de contenido con documentación bilingüe, gestión de diagramas y refactorización de LLM.",
-        "en": "Content development with bilingual documentation, diagram management and LLM refactoring."
-      }
-    },
-    {
-      "date": "2026-06-18",
-      "description": {
-        "es": "Implementación de fase 2 con agentes de actualizaciones y conceptos con Groq, y fase 1 con chat real con Groq.",
-        "en": "Implementation of phase 2 with update agents and concepts with Groq, and phase 1 with real-time chat with Groq."
+        "es": "Desarrollo de la documentación bilingüe y gestión de diagramas.",
+        "en": "Development of bilingual documentation and diagram management."
       }
     },
     {
       "date": "2026-05-24",
       "description": {
-        "es": "Mejoras en la interfaz de usuario con temas de imágenes, contraste en modo oscuro y mejoras en la visualización de diagramas.",
-        "en": "Improvements in the user interface with themed images, dark mode contrast and improvements in diagram visualization."
-      }
-    },
-    {
-      "date": "2026-05-24",
-      "description": {
-        "es": "Implementación de características de descarga de diagramas y mejoras en la visualización de PDF.",
-        "en": "Implementation of features for diagram download and improvements in PDF visualization."
+        "es": "Mejoras en la experiencia del usuario y diseño de la documentación.",
+        "en": "User experience improvements and documentation design."
       }
     }
   ]

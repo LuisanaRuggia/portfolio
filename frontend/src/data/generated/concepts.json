@@ -10,26 +10,18 @@
         "group": "arch"
       },
       {
-        "id": "force-directed-graph",
+        "id": "force-directed-graphs",
         "label": {
-          "es": "Grafo conceptual force-directed",
-          "en": "Force-Directed Conceptual Graph"
+          "es": "Grafos force-directed",
+          "en": "Force-Directed Graphs"
         },
         "group": "data"
       },
       {
         "id": "edge-functions",
         "label": {
-          "es": "Funciones edge",
+          "es": "Funciones de edge",
           "en": "Edge Functions"
-        },
-        "group": "ops"
-      },
-      {
-        "id": "static-site-generation",
-        "label": {
-          "es": "Generación de sitios estáticos",
-          "en": "Static Site Generation"
         },
         "group": "ops"
       },
@@ -42,6 +34,14 @@
         "group": "ops"
       },
       {
+        "id": "static-site-generation",
+        "label": {
+          "es": "Generación de sitios estáticos",
+          "en": "Static Site Generation"
+        },
+        "group": "ops"
+      },
+      {
         "id": "animated-visualizations",
         "label": {
           "es": "Visualizaciones animadas",
@@ -50,10 +50,18 @@
         "group": "data"
       },
       {
-        "id": "machine-learning-models",
+        "id": "chat-assistant",
         "label": {
-          "es": "Modelos de aprendizaje automático",
-          "en": "Machine Learning Models"
+          "es": "Asistente de chat",
+          "en": "Chat Assistant"
+        },
+        "group": "ml"
+      },
+      {
+        "id": "language-modeling",
+        "label": {
+          "es": "Modelado de lenguaje",
+          "en": "Language Modeling"
         },
         "group": "ml"
       },
@@ -68,16 +76,8 @@
       {
         "id": "hash-routing",
         "label": {
-          "es": "Enrutamiento hash",
+          "es": "Enrutamiento de hash",
           "en": "Hash Routing"
-        },
-        "group": "ops"
-      },
-      {
-        "id": "continuous-integration",
-        "label": {
-          "es": "Integración continua",
-          "en": "Continuous Integration"
         },
         "group": "ops"
       }
@@ -92,36 +92,36 @@
         "to": "edge-functions"
       },
       {
-        "from": "force-directed-graph",
+        "from": "force-directed-graphs",
         "to": "animated-visualizations"
       },
       {
         "from": "edge-functions",
-        "to": "machine-learning-models"
+        "to": "chat-assistant"
       },
       {
         "from": "internationalization",
         "to": "hash-routing"
       },
       {
-        "from": "web-audio-api",
-        "to": "animated-visualizations"
+        "from": "static-site-generation",
+        "to": "web-audio-api"
       },
       {
-        "from": "continuous-integration",
-        "to": "static-site-generation"
+        "from": "chat-assistant",
+        "to": "language-modeling"
       },
       {
-        "from": "machine-learning-models",
-        "to": "edge-functions"
+        "from": "animated-visualizations",
+        "to": "force-directed-graphs"
       },
       {
         "from": "hash-routing",
         "to": "internationalization"
       },
       {
-        "from": "animated-visualizations",
-        "to": "force-directed-graph"
+        "from": "language-modeling",
+        "to": "chat-assistant"
       }
     ]
   }
