@@ -27,6 +27,7 @@ const CATEGORY_LABELS: Record<string, { es: string; en: string }> = {
 
 const STATUS_LABELS: Record<ProjectStatus, { es: string; en: string }> = {
   'in-progress': { es: 'en progreso', en: 'in progress' },
+  published: { es: 'publicado, activo', en: 'published, active' },
   'finished-open': { es: 'terminado, open-source', en: 'finished, open-source' },
   finished: { es: 'terminado', en: 'finished' },
 };

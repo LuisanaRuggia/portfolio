@@ -8,7 +8,7 @@
  */
 
 export type LocalizedString = string | { es: string; en: string };
-export type ProjectStatus = 'in-progress' | 'finished-open' | 'finished';
+export type ProjectStatus = 'in-progress' | 'published' | 'finished-open' | 'finished';
 export type ConceptGroup = 'arch' | 'data' | 'ops' | 'ml';
 
 export interface ProjectConcept {
@@ -36,6 +36,8 @@ export interface Project {
   id: string;
   title: LocalizedString;
   description?: LocalizedString;
+  /** Versión agnóstica al portafolio usada por generate-cv.ts. Si no se define, usa `description`. */
+  cvDescription?: LocalizedString;
   tags?: string[];
   status?: ProjectStatus;
   updates?: Update[];

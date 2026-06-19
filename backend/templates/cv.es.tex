@@ -8,7 +8,10 @@
 
 \documentclass[10pt]{article}
 
-\usepackage[a4paper, margin=1.6cm]{geometry}
+% Márgenes ajustados para que el contenido típico (3 proyectos, 1 trabajo,
+% 1 educación, ~7 skills, idiomas) quepa en una página estilo Harvard.
+% Si en el futuro hay mucho más contenido, el CV se extenderá naturalmente.
+\usepackage[a4paper, top=1.2cm, bottom=1.2cm, left=1.3cm, right=1.3cm]{geometry}
 \usepackage{fontspec}
 % Lato: sans moderno con múltiples pesos. Necesita el package `fonts-lato`
 % en el sistema (apt install fonts-lato en Ubuntu).
@@ -37,19 +40,20 @@
 \hypersetup{colorlinks=true, urlcolor=bodytext, linkcolor=bodytext}
 
 % --- Sección estilo Harvard: MAYÚSCULAS sobrias + línea fina abajo ---
-% Jerarquía sutil: 11pt bold con tracking ancho, no `\large` que era muy grande.
 \newcommand{\cvsection}[1]{%
-  \vspace{10pt}%
-  {\fontsize{10.5}{12}\selectfont\bfseries\color{bodytext}\addfontfeature{LetterSpace=6.0}\MakeUppercase{#1}}\par%
-  \vspace{1pt}%
+  \vspace{5pt}%
+  {\fontsize{10}{12}\selectfont\bfseries\color{bodytext}\addfontfeature{LetterSpace=6.0}\MakeUppercase{#1}}\par%
+  \vspace{3pt}%
   \hrule height 0.4pt%
-  \vspace{4pt}%
+  \vspace{3pt}%
 }
 
-\setlist{itemsep=2pt, topsep=2pt, parsep=0pt, leftmargin=1.2em}
+\setlist{itemsep=0pt, topsep=1pt, parsep=0pt, leftmargin=1em}
 \pagestyle{empty}
+% Interlineado un poco más apretado para ganar líneas extra sin sacrificar lectura.
+\linespread{0.98}
 
-\renewcommand{\arraystretch}{1.15}
+\renewcommand{\arraystretch}{1.05}
 
 % Línea de entrada para experiencia/educación: izquierda con título y subtítulo,
 % derecha con fecha y ubicación. Argumentos: {izq-bold}{izq-italic}{der-bold}{der-italic}.
@@ -58,25 +62,23 @@
     \textbf{#1} & \textbf{#3} \\
     \textit{\color{mutedtext}#2} & \textit{\color{mutedtext}#4} \\
   \end{tabularx}
-  \vspace{2pt}
+  \vspace{0pt}
 }
 
 \begin{document}
 
 % ==================== ENCABEZADO ====================
-% Nombre prominente pero sobrio (18pt Black), label en light para contraste sutil,
-% contact en muted más pequeño.
 \begin{center}
-  {\fontsize{20}{24}\selectfont\latoblack\color{bodytext}{{NAME}}\par}
+  {\fontsize{18}{22}\selectfont\latoblack\color{bodytext}{{NAME}}\par}
+  \vspace{2pt}
+  {\fontsize{10}{12}\selectfont\latolight\color{bodytext}{{LABEL}}\par}
   \vspace{4pt}
-  {\fontsize{11}{14}\selectfont\latolight\color{bodytext}{{LABEL}}\par}
-  \vspace{8pt}
-  {\fontsize{9}{12}\selectfont\color{mutedtext}{{CONTACT_LINE}}\par}
+  {\fontsize{8.5}{11}\selectfont\color{mutedtext}{{CONTACT_LINE}}\par}
 \end{center}
 
-\vspace{6pt}
+\vspace{3pt}
 \hrule height 0.6pt
-\vspace{2pt}
+\vspace{0pt}
 
 % ==================== RESUMEN ====================
 \cvsection{Resumen}

@@ -35,7 +35,17 @@ import type { ThemedImage } from "@/lib/theme";
  *   3. Guarda. Vite recargará el portafolio automáticamente.
  */
 
-export type ProjectStatus = "in-progress" | "finished-open" | "finished";
+/**
+ * Estado del proyecto. Controla el badge en project-detail.tsx y el filtro
+ * de proyectos que aparecen en el CV.
+ *   in-progress    → en desarrollo, NO visible en el CV.
+ *   published      → ya publicado / en producción, pero sigo activamente
+ *                    agregando features o iterando. SÍ aparece en CV.
+ *   finished-open  → cerrado pero el código queda público / open-source.
+ *                    SÍ aparece en CV.
+ *   finished       → cerrado, completo, archivado. SÍ aparece en CV.
+ */
+export type ProjectStatus = "in-progress" | "published" | "finished-open" | "finished";
 
 /**
  * Grupo conceptual de un nodo. Controla el color del nodo en el grafo.
@@ -80,6 +90,14 @@ export interface Project {
   image: ThemedImage;
   title: LocalizedString;
   description?: LocalizedString;
+  /**
+   * Descripción ALTERNATIVA usada por `backend/scripts/generate-cv.ts` cuando
+   * la `description` tiene frases que asumen el contexto del portafolio
+   * (ej. "este mismo sitio", "ver más abajo"). Si no se define, el CV usa
+   * `description` directamente. Debe ser agnóstica al portafolio: pensada
+   * para que tenga sentido si alguien la lee impresa o por email.
+   */
+  cvDescription?: LocalizedString;
   tags?: string[];
   status?: ProjectStatus;
   date?: string;
@@ -363,8 +381,14 @@ export const portfolioData: Category[] = [
           es: "Este mismo sitio. Portafolio interactivo en React + TypeScript con animaciones 3D, grafos conceptuales force-directed, chat asistente con LLM, multilenguaje ES/EN y música de fondo. Build estática en GitHub Pages + Cloudflare Worker para el chat.",
           en: "This very site. Interactive portfolio in React + TypeScript with 3D animations, force-directed concept graphs, LLM-powered chat assistant, ES/EN multilingual support, and background music. Static build on GitHub Pages + Cloudflare Worker for the chat.",
         },
+        cvDescription: {
+          es: "Portafolio personal interactivo en React + TypeScript con animaciones 3D, grafos conceptuales force-directed, chat asistente con LLM y soporte multilenguaje ES/EN. Frontend estático en GitHub Pages, backend serverless en Cloudflare Workers + Groq.",
+          en: "Interactive personal portfolio in React + TypeScript with 3D animations, force-directed concept graphs, LLM-powered chat assistant and ES/EN multilingual support. Static frontend on GitHub Pages, serverless backend on Cloudflare Workers + Groq.",
+        },
         tags: ["React", "TypeScript", "Vite", "Tailwind", "Cloudflare Workers", "Lottie", "Web Audio API"],
-        status: "in-progress",
+        // "published": el portafolio está vivo en luisanaruggia.github.io/portfolio
+        // pero sigo agregando features y puliéndolo.
+        status: "published",
         crossCategories: ["category.iaAutomatizacion"],
         links: {
           repo: "https://github.com/LuisanaRuggia/portfolio",

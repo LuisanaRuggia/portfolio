@@ -945,12 +945,16 @@ export const ComingSoonPlaceholder: React.FC<{ message?: string }> = ({ message 
 
 const STATUS_LABEL: Record<ProjectStatus, TranslationKey> = {
   'in-progress': 'detail.statusInProgress',
+  published: 'detail.statusPublished',
   'finished-open': 'detail.statusFinishedOpen',
   finished: 'detail.statusFinished',
 };
 
 const STATUS_DOT: Record<ProjectStatus, string> = {
   'in-progress': 'bg-amber-400 shadow-amber-400/50',
+  // teal: distinto del azul `finished-open` (azul) y el verde `finished`
+  // (verde-esmeralda). "Publicado" sugiere viviente + activo.
+  published: 'bg-teal-400 shadow-teal-400/50',
   'finished-open': 'bg-sky-400 shadow-sky-400/50',
   finished: 'bg-emerald-400 shadow-emerald-400/50',
 };

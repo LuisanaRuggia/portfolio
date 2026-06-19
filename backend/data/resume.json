@@ -12,8 +12,8 @@
       "countryCode": "CO"
     },
     "summary": {
-      "es": "Estudiante de Ingeniería en Ciencia de Datos en séptimo semestre. Convierto datos en decisiones a través de pipelines, automatización y análisis con Python. Busco proyectos donde el análisis de datos genere impacto real.",
-      "en": "Data Science Engineering student in seventh semester. I turn data into decisions through pipelines, automation and Python analysis. I'm looking for projects where data analysis drives real impact."
+      "es": "Estudiante de Ingeniería en Ciencia de Datos en séptimo semestre. Convierto datos en decisiones a través de pipelines, automatización y análisis con Python. Busco proyectos donde los datos generen impacto real.",
+      "en": "Data Science Engineering student in seventh semester. I turn data into decisions through pipelines, automation and Python analysis. I'm looking for projects where data drives real impact."
     },
     "profiles": [
       {
@@ -48,20 +48,28 @@
       "endDate": null,
       "highlights": [
         {
-          "es": "Modelado de datos y procesos ETL",
-          "en": "Data modeling and ETL processes"
+          "es": "Modelado de datos y procesos ETL para integración entre sistemas internos.",
+          "en": "Data modeling and ETL processes for integration between internal systems."
         },
         {
-          "es": "Desarrollo de pipelines de datos",
-          "en": "Data pipeline development"
+          "es": "Desarrollo y mantenimiento de pipelines de datos en Python.",
+          "en": "Development and maintenance of data pipelines in Python."
         },
         {
-          "es": "Soporte y mejora de herramientas de Business Intelligence",
-          "en": "Support and improvement of Business Intelligence tools"
+          "es": "Diseño y mantenimiento de dashboards en Power BI y Apache Superset para áreas de negocio.",
+          "en": "Design and maintenance of dashboards in Power BI and Apache Superset for business areas."
         },
         {
-          "es": "Automatización de procesos internos con Python",
-          "en": "Automation of internal processes with Python"
+          "es": "Construcción de agentes de IA con LLMs: diseño de prompts, integración de herramientas y orquestación de skills.",
+          "en": "Building AI agents with LLMs: prompt design, tool integration and skills orchestration."
+        },
+        {
+          "es": "Automatización de procesos internos con Python y flujos en n8n.",
+          "en": "Automation of internal processes with Python and n8n flows."
+        },
+        {
+          "es": "Desarrollo de scripts y herramientas internas para optimizar tareas operativas.",
+          "en": "Development of internal scripts and tools to optimize operational tasks."
         }
       ]
     }
@@ -172,36 +180,5 @@
       }
     }
   ],
-  "projects": [
-    {
-      "name": "Lakehouse Medallion",
-      "description": {
-        "es": "Lakehouse local con arquitectura medallion (bronze/silver/gold) usando Spark + dbt + Trino sobre MinIO, orquestado con Airflow.",
-        "en": "Local lakehouse with medallion architecture (bronze/silver/gold) using Spark + dbt + Trino on MinIO, orchestrated with Airflow."
-      },
-      "url": "https://luisanaruggia.github.io/portfolio/#/project/ed1",
-      "keywords": ["Spark", "dbt", "Trino", "MinIO", "Airflow", "Docker"],
-      "highlight": true
-    },
-    {
-      "name": "CDC con Debezium",
-      "description": {
-        "es": "Captura de cambios en tiempo real desde Postgres con Debezium + Kafka, sink final en ClickHouse. Foco en snapshot inicial y exactly-once.",
-        "en": "Real-time change data capture from Postgres with Debezium + Kafka, final sink in ClickHouse. Focus on initial snapshot and exactly-once delivery."
-      },
-      "url": "https://luisanaruggia.github.io/portfolio/#/project/ed2",
-      "keywords": ["Postgres", "Debezium", "Kafka", "ClickHouse", "Docker"],
-      "highlight": true
-    },
-    {
-      "name": "Portafolio Personal",
-      "description": {
-        "es": "Sitio interactivo en React + TypeScript con chat asistente LLM, grafos conceptuales y backend serverless en Cloudflare Workers + Groq.",
-        "en": "Interactive site in React + TypeScript with LLM chat assistant, concept graphs and serverless backend on Cloudflare Workers + Groq."
-      },
-      "url": "https://luisanaruggia.github.io/portfolio/",
-      "keywords": ["React", "TypeScript", "Vite", "Tailwind", "Cloudflare Workers", "Groq"],
-      "highlight": true
-    }
-  ]
+  "projects": []
 }

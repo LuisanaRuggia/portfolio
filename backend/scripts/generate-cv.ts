@@ -1,11 +1,11 @@
 /**
- * Genera el CV bilingüe (cv.es.pdf + cv.en.pdf) a partir de
- * backend/data/resume.json.
- *
- * Esta primera versión NO usa LLM — solo flatten + render + compile. El
- * resume.json es la fuente de verdad y se actualiza a mano por ahora. La
- * sincronización automática con el portafolio (LLM Llama 70B que agrega
- * proyectos / skills / actualiza summary) se agrega en una iteración futura.
+ * Genera el CV bilingüe (cv.es.pdf + cv.en.pdf) a partir de:
+ *   - backend/data/resume.json: datos del perfil (basics, work, education,
+ *     skills, languages). El campo `projects[]` queda como placeholder de
+ *     futuros proyectos NO-portfolio (trabajos privados, etc.).
+ *   - frontend/src/data/projects.ts: proyectos del portafolio. Solo los que
+ *     tienen status ∈ {published, finished-open, finished} entran al CV.
+ *     Los `in-progress` no aparecen — el CV no muestra trabajos a medio hacer.
  *
  * Requiere `xelatex` y `pdftoppm` instalados:
  *   sudo apt install texlive-xetex texlive-fonts-recommended \
@@ -17,11 +17,50 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { REPO_ROOT_PATH, repoRelative } from './lib/github.js';
+import { loadProjectsFromFrontend, REPO_ROOT_PATH, repoRelative } from './lib/github.js';
+import { resolveLocalized, type Category, type ProjectStatus } from './lib/types.js';
 import { compileAndPlace, escapeLatex, renderTemplate } from './lib/latex.js';
 import { flattenResume, loadResume, type FlatResume } from './lib/resume.js';
 
 type Lang = 'es' | 'en';
+
+/**
+ * Status que SÍ aparecen en el CV. Los `in-progress` quedan fuera porque el
+ * CV no muestra trabajos en desarrollo. Si cambian de status (por edición
+ * manual de projects.ts o por release tag → detect-status), la próxima
+ * regeneración del CV los toma automáticamente.
+ */
+const CV_VISIBLE_STATUSES: ReadonlySet<ProjectStatus> = new Set<ProjectStatus>([
+  'published',
+  'finished-open',
+  'finished',
+]);
+
+/** Convierte los proyectos del portafolio al shape de proyectos del CV. */
+function projectsFromPortfolio(portfolioData: Category[], lang: Lang): FlatResume['projects'] {
+  const out: FlatResume['projects'] = [];
+  for (const cat of portfolioData) {
+    for (const p of cat.projects) {
+      if (!p.status || !CV_VISIBLE_STATUSES.has(p.status)) continue;
+      const url =
+        p.tags && p.tags.length > 0
+          ? `https://luisanaruggia.github.io/portfolio/#/project/${p.id}`
+          : undefined;
+      // Si el proyecto tiene `cvDescription`, la usamos: es la versión agnóstica
+      // al portafolio (sin frases tipo "este mismo sitio"). Sino, fallback a la
+      // `description` general.
+      const desc = p.cvDescription ?? p.description;
+      out.push({
+        name: resolveLocalized(p.title, lang),
+        description: resolveLocalized(desc, lang),
+        url,
+        keywords: p.tags,
+        highlight: true,
+      });
+    }
+  }
+  return out;
+}
 
 const LABELS = {
   es: {
@@ -102,7 +141,7 @@ function workBlock(flat: FlatResume, lang: Lang): string {
       }
       return block;
     })
-    .join('\n\\vspace{4pt}\n');
+    .join('\n\\vspace{2pt}\n');
 }
 
 function educationBlock(flat: FlatResume, lang: Lang): string {
@@ -119,19 +158,21 @@ function educationBlock(flat: FlatResume, lang: Lang): string {
       }
       return block;
     })
-    .join('\n\\vspace{4pt}\n');
+    .join('\n\\vspace{2pt}\n');
 }
 
 function skillsBlock(flat: FlatResume): string {
   if (flat.skills.length === 0) return '';
   // Tabular con categoría a la izquierda y keywords a la derecha.
-  let block = '\\begin{tabularx}{\\linewidth}{@{}l X@{}}\n';
+  // arraystretch local 1.35 (vs el 1.05 global) para que cada fila respire más.
+  let block = '{\\renewcommand{\\arraystretch}{1.35}\n';
+  block += '\\begin{tabularx}{\\linewidth}{@{}l X@{}}\n';
   for (const s of flat.skills) {
     const name = escapeLatex(s.name);
     const kws = s.keywords.map(escapeLatex).join(', ');
     block += `  \\textbf{${name}} & ${kws} \\\\\n`;
   }
-  block += '\\end{tabularx}\n';
+  block += '\\end{tabularx}}\n';
   return block;
 }
 
@@ -150,7 +191,7 @@ function projectsBlock(flat: FlatResume, lang: Lang): string {
       }
       return block;
     })
-    .join('\n\\vspace{4pt}\n');
+    .join('\n\\vspace{2pt}\n');
 }
 
 function languagesBlock(flat: FlatResume): string {
@@ -179,6 +220,7 @@ function buildPlaceholders(flat: FlatResume, lang: Lang): Record<string, string>
 
 async function main(): Promise<void> {
   const resume = loadResume();
+  const portfolioData = await loadProjectsFromFrontend();
 
   const targets: Array<{ lang: Lang; templatePath: string }> = [
     { lang: 'es', templatePath: repoRelative('backend/templates/cv.es.tex') },
@@ -188,6 +230,10 @@ async function main(): Promise<void> {
   for (const target of targets) {
     console.log(`[cv.${target.lang}] compilando...`);
     const flat = flattenResume(resume, target.lang);
+    // Concatena proyectos del portafolio (filtrados por status) + proyectos
+    // declarados en resume.json (típicamente vacíos — placeholder para futuros
+    // proyectos no-portfolio como trabajos privados de cliente).
+    flat.projects = [...projectsFromPortfolio(portfolioData, target.lang), ...flat.projects];
     const template = readFileSync(target.templatePath, 'utf8');
     const placeholders = buildPlaceholders(flat, target.lang);
     const rendered = renderTemplate(template, placeholders);
