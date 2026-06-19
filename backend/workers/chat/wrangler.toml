@@ -9,7 +9,7 @@ compatibility_flags = ["nodejs_compat"]
 # y pegar el id devuelto en `id` abajo (reemplazando el placeholder).
 [[kv_namespaces]]
 binding = "RATE_LIMIT"
-id = "PLACEHOLDER_REEMPLAZAR_CON_ID_REAL"
+id = "7bf909c90790469e93862fe8cdd0675b"
 
 # Secrets a configurar (no se commitean):
 #   wrangler secret put GROQ_API_KEY
