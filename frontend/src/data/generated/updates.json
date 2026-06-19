@@ -1,24 +1,31 @@
 {
   "dev1": [
     {
+      "date": "2026-06-19",
+      "description": {
+        "es": "Mejoras en la sección de currículum y contenido del portafolio.",
+        "en": "Improvements in the CV and content sections of the portfolio."
+      }
+    },
+    {
       "date": "2026-06-18",
       "description": {
-        "es": "Implementación de features y optimización de workflow",
-        "en": "Implementation of features and workflow optimization"
+        "es": "Implementación de la fase 3 de contenido, incluyendo documentación bilingüe y gestión de diagramas.",
+        "en": "Implementation of content phase 3, including bilingual documentation and diagram management."
       }
     },
     {
       "date": "2026-05-24",
       "description": {
-        "es": "Mejoras en la experiencia del usuario y diseño de la documentación",
-        "en": "User experience improvements and documentation design"
+        "es": "Mejoras en la sección de diagramas, incluyendo soporte de SVG, zoom y navegación.",
+        "en": "Improvements in the diagrams section, including SVG support, zoom and navigation."
       }
     },
     {
-      "date": "2026-05-23",
+      "date": "2026-05-24",
       "description": {
-        "es": "Implementación de características y diseño de la interfaz de usuario",
-        "en": "Feature implementation and user interface design"
+        "es": "Implementación de la sección de documentación, incluyendo PDF y renderizado de imágenes.",
+        "en": "Implementation of the documentation section, including PDF and image rendering."
       }
     }
   ]

@@ -20,7 +20,7 @@
       {
         "id": "edge-functions",
         "label": {
-          "es": "Funciones de borde",
+          "es": "Funciones de edge",
           "en": "Edge Functions"
         },
         "group": "ops"
@@ -66,20 +66,20 @@
         "group": "data"
       },
       {
-        "id": "chat-assistant",
+        "id": "machine-learning",
         "label": {
-          "es": "Asistente de chat",
-          "en": "Chat Assistant"
+          "es": "Aprendizaje automático",
+          "en": "Machine Learning"
         },
         "group": "ml"
       },
       {
-        "id": "language-modeling",
+        "id": "cloud-computing",
         "label": {
-          "es": "Modelado de lenguaje",
-          "en": "Language Modeling"
+          "es": "Computación en la nube",
+          "en": "Cloud Computing"
         },
-        "group": "ml"
+        "group": "ops"
       }
     ],
     "edges": [
@@ -97,7 +97,7 @@
       },
       {
         "from": "edge-functions",
-        "to": "chat-assistant"
+        "to": "machine-learning"
       },
       {
         "from": "force-directed-graphs",
@@ -109,18 +109,18 @@
       },
       {
         "from": "web-audio-api",
-        "to": "chat-assistant"
+        "to": "cloud-computing"
       },
       {
         "from": "conceptual-modeling",
-        "to": "language-modeling"
+        "to": "machine-learning"
       },
       {
-        "from": "chat-assistant",
-        "to": "language-modeling"
+        "from": "cloud-computing",
+        "to": "edge-functions"
       },
       {
-        "from": "language-modeling",
+        "from": "machine-learning",
         "to": "conceptual-modeling"
       }
     ]
