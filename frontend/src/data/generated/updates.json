@@ -3,36 +3,36 @@
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Correcciones de errores en la implementación de chat y auto-despliegue de trabajos",
-        "en": "Fixes for chat implementation and auto-deployment of tasks"
+        "es": "Mejoras en la página de CV y chat para una experiencia más interactiva.",
+        "en": "Improvements to the CV and chat pages for a more interactive experience."
+      }
+    },
+    {
+      "date": "2026-06-19",
+      "description": {
+        "es": "Correcciones en el despliegue y workflows para una mayor estabilidad.",
+        "en": "Corrections to deployment and workflows for greater stability."
       }
     },
     {
       "date": "2026-06-18",
       "description": {
-        "es": "Implementación de Fase 3 de contenido: documentación bilingüe y gestión de diagramas",
-        "en": "Implementation of Phase 3 content: bilingual documentation and diagram management"
+        "es": "Implementación de la documentación bilingüe y gestión de contenido.",
+        "en": "Implementation of bilingual documentation and content management."
       }
     },
     {
       "date": "2026-06-18",
       "description": {
-        "es": "Implementación de Fase 2 de contenido: agentes de actualizaciones y conceptos con Groq",
-        "en": "Implementation of Phase 2 content: update agents and concepts with Groq"
+        "es": "Configuración de triggers automáticos y reorganización del repo.",
+        "en": "Setup of automatic triggers and repository reorganization."
       }
     },
     {
       "date": "2026-06-18",
       "description": {
-        "es": "Implementación de Fase 1 de chat: chat real con Groq y límite de velocidad",
-        "en": "Implementation of Phase 1 chat: real-time chat with Groq and rate limit"
-      }
-    },
-    {
-      "date": "2026-05-24",
-      "description": {
-        "es": "Corrección de errores en la legibilidad del input de chat en modo oscuro",
-        "en": "Fix for chat input legibility in dark mode"
+        "es": "Implementación del chat real y agentes de updates con Groq.",
+        "en": "Implementation of real-time chat and update agents with Groq."
       }
     }
   ]
