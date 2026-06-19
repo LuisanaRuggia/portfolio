@@ -3,22 +3,29 @@
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Implementación de características y correcciones en la sección de Blog/Video y página de CV.",
-        "en": "Implementation of features and fixes in the Blog/Video section and CV page."
+        "es": "Implementación de la fase 6 del portafolio, incluyendo blog, proyectos y CV interactivos.",
+        "en": "Implementation of phase 6 of the portfolio, including bilingual blog, interactive CV and projects."
       }
     },
     {
-      "date": "2026-06-18",
+      "date": "2026-06-19",
       "description": {
-        "es": "Actualización de la documentación bilingüe y gestión de diagramas.",
-        "en": "Update of bilingual documentation and diagram management."
+        "es": "Mejoras en la configuración de CI/CD, incluyendo deploy seguro y workflows sin carreras.",
+        "en": "Improvements in CI/CD configuration, including secure deploy and workflow without races."
       }
     },
     {
-      "date": "2026-06-18",
+      "date": "2026-06-19",
       "description": {
-        "es": "Activación de triggers automáticos para regenerar contenido.",
-        "en": "Activation of automatic triggers to regenerate content."
+        "es": "Correcciones y mejoras en la sección de chat, incluyendo posición del botón CV y nombres de archivos.",
+        "en": "Fixes and improvements in the chat section, including CV button position and file names."
+      }
+    },
+    {
+      "date": "2026-06-19",
+      "description": {
+        "es": "Activación de la fase 5 en producción y auto-deploy de worker, CV y docs.",
+        "en": "Activation of phase 5 in production and auto-deploy of worker, CV and docs."
       }
     }
   ]
