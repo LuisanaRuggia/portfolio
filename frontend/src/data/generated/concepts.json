@@ -20,7 +20,7 @@
       {
         "id": "edge-functions",
         "label": {
-          "es": "Funciones de edge",
+          "es": "Funciones de borde",
           "en": "Edge Functions"
         },
         "group": "ops"
@@ -42,36 +42,36 @@
         "group": "ops"
       },
       {
+        "id": "hash-routing",
+        "label": {
+          "es": "Enrutamiento por hash",
+          "en": "Hash Routing"
+        },
+        "group": "ops"
+      },
+      {
+        "id": "animated-visualizations",
+        "label": {
+          "es": "Visualizaciones animadas",
+          "en": "Animated Visualizations"
+        },
+        "group": "data"
+      },
+      {
+        "id": "machine-learning-models",
+        "label": {
+          "es": "Modelos de aprendizaje automático",
+          "en": "Machine Learning Models"
+        },
+        "group": "ml"
+      },
+      {
         "id": "web-audio-api",
         "label": {
           "es": "API de audio web",
           "en": "Web Audio API"
         },
         "group": "ops"
-      },
-      {
-        "id": "machine-learning",
-        "label": {
-          "es": "Aprendizaje automático",
-          "en": "Machine Learning"
-        },
-        "group": "ml"
-      },
-      {
-        "id": "hash-routing",
-        "label": {
-          "es": "Enrutamiento hash",
-          "en": "Hash Routing"
-        },
-        "group": "ops"
-      },
-      {
-        "id": "conceptual-modeling",
-        "label": {
-          "es": "Modelado conceptual",
-          "en": "Conceptual Modeling"
-        },
-        "group": "data"
       },
       {
         "id": "cloud-computing",
@@ -97,31 +97,31 @@
       },
       {
         "from": "edge-functions",
-        "to": "machine-learning"
+        "to": "machine-learning-models"
       },
       {
         "from": "force-directed-graphs",
-        "to": "conceptual-modeling"
+        "to": "animated-visualizations"
       },
       {
         "from": "internationalization",
         "to": "web-audio-api"
       },
       {
-        "from": "web-audio-api",
+        "from": "hash-routing",
         "to": "cloud-computing"
       },
       {
-        "from": "machine-learning",
-        "to": "conceptual-modeling"
+        "from": "animated-visualizations",
+        "to": "force-directed-graphs"
       },
       {
-        "from": "hash-routing",
-        "to": "jamstack-architecture"
+        "from": "machine-learning-models",
+        "to": "cloud-computing"
       },
       {
-        "from": "cloud-computing",
-        "to": "edge-functions"
+        "from": "web-audio-api",
+        "to": "animated-visualizations"
       }
     ]
   }
