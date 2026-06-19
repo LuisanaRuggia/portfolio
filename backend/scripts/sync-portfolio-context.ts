@@ -32,7 +32,7 @@ const STATUS_LABELS: Record<ProjectStatus, { es: string; en: string }> = {
 };
 
 const ABOUT_ME = {
-  es: `Soy Luisana Ruggia, estudiante de Ingeniería en Ciencia de Datos en el Politécnico Grancolombiano. Vivo en Bogotá, Colombia. Actualmente trabajo en GSE — Gestión de Seguridad Electrónica S.A. Construí este portafolio para mostrar los proyectos en los que he trabajado. Los que están publicados aquí son proyectos personales que hago por interés propio fuera de la carrera. Tengo además proyectos académicos de análisis de datos y dashboards que aún no he subido al portafolio. Por ahora no estoy buscando empleo activamente; el portafolio es para enseñar lo que sé hacer.
+  es: `Soy Luisana Ruggia, estudiante de Ingeniería en Ciencia de Datos en el Politécnico Grancolombiano. Vivo en Bogotá, Colombia. Actualmente trabajo en Paynet como Analista Junior de Datos. Construí este portafolio para mostrar los proyectos en los que he trabajado. Los que están publicados aquí son proyectos personales que hago por interés propio fuera de la carrera. Tengo además proyectos académicos de análisis de datos y dashboards que aún no he subido al portafolio. Por ahora no estoy buscando empleo activamente; el portafolio es para enseñar lo que sé hacer.
 
 ### Stack técnico con el que tengo experiencia
 - **Lenguajes**: Python, SQL
@@ -43,7 +43,7 @@ const ABOUT_ME = {
 - **Cloud / contenedores**: Docker, Cloudflare Workers
 
 ### Experiencia
-- Trabajo actualmente en GSE (Gestión de Seguridad Electrónica S.A).
+- Trabajo actualmente en Paynet como Analista Junior de Datos.
 - He trabajado como analista de datos.
 - Tengo fundamentos sólidos en estadística y matemáticas.
 - Áreas en las que tengo proyectos y experiencia práctica: ingeniería de datos, ciencia de datos, análisis de datos, inteligencia artificial.
@@ -53,7 +53,7 @@ const ABOUT_ME = {
 - Pienso en arquitectura y trade-offs antes de codear.
 - Trabajo end-to-end: del dato crudo al producto final.
 - Documento y comunico bien lo que construyo (este portafolio es prueba).`,
-  en: `I'm Luisana Ruggia, a Data Science Engineering student at Politécnico Grancolombiano. I live in Bogotá, Colombia. I currently work at GSE — Gestión de Seguridad Electrónica S.A. I built this portfolio to showcase the projects I've worked on. The ones published here are personal projects I do out of interest, outside the degree. I also have academic projects on data analysis and dashboards that I haven't uploaded to the portfolio yet. I'm not actively looking for a job right now; the portfolio is to share what I can do.
+  en: `I'm Luisana Ruggia, a Data Science Engineering student at Politécnico Grancolombiano. I live in Bogotá, Colombia. I currently work at Paynet as a Junior Data Analyst. I built this portfolio to showcase the projects I've worked on. The ones published here are personal projects I do out of interest, outside the degree. I also have academic projects on data analysis and dashboards that I haven't uploaded to the portfolio yet. I'm not actively looking for a job right now; the portfolio is to share what I can do.
 
 ### Tech stack I have hands-on experience with
 - **Languages**: Python, SQL
@@ -64,7 +64,7 @@ const ABOUT_ME = {
 - **Cloud / containers**: Docker, Cloudflare Workers
 
 ### Experience
-- I currently work at GSE (Gestión de Seguridad Electrónica S.A).
+- I currently work at Paynet as a Junior Data Analyst.
 - I've worked as a data analyst.
 - I have solid foundations in statistics and mathematics.
 - Areas where I have projects and practical experience: data engineering, data science, data analysis, artificial intelligence.

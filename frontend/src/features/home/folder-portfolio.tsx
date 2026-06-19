@@ -799,7 +799,10 @@ export default function FolderPortfolio() {
       <header className="sticky top-0 z-40 w-full bg-background/80 backdrop-blur-xl border-b border-border transition-colors duration-500">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 h-16 flex items-center justify-between gap-2">
           <a
-            href={`${import.meta.env.BASE_URL}cv.pdf`}
+            // CV bilingüe auto-generado (Fase 4): el PDF descargado depende
+            // del idioma activo del sitio. `download` hace que el browser lo
+            // baje en lugar de abrirlo, y le da el nombre cv.<lang>.pdf.
+            href={`${import.meta.env.BASE_URL}cv/cv.${language}.pdf`}
             download
             aria-label={t('header.downloadCv')}
             className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 h-10 rounded-xl bg-muted/50 hover:bg-muted transition-colors border border-border text-sm font-bold tracking-wide text-foreground"

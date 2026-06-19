@@ -1,0 +1,73 @@
+name: Regenerate CV (bilingual PDFs)
+
+# Trigger automático DESACTIVADO hasta validar 1-2 runs manuales en CI.
+# Cuando confirmes que el PDF compila bien en GitHub Actions, descomentar.
+on:
+  # push:
+  #   branches: [main]
+  #   paths:
+  #     - 'backend/data/resume.json'
+  #     - 'backend/templates/cv.es.tex'
+  #     - 'backend/templates/cv.en.tex'
+  #     - 'backend/scripts/generate-cv.ts'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: regenerate-cv
+  cancel-in-progress: false
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install LaTeX + poppler + fuentes
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            texlive-xetex \
+            texlive-fonts-recommended \
+            texlive-latex-extra \
+            fonts-dejavu \
+            fonts-lato \
+            poppler-utils
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          package_json_file: backend/package.json
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: backend/pnpm-lock.yaml
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate CV (es + en)
+        working-directory: backend
+        run: pnpm script:cv
+
+      - name: Commit regenerated CV if changed
+        run: |
+          if [[ -n "$(git status --porcelain frontend/public/cv/)" ]]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add frontend/public/cv/
+            git commit -m "chore(cv): regenerate bilingual CV PDFs [skip ci]"
+            git push
+          else
+            echo "Sin cambios en frontend/public/cv/"
+          fi

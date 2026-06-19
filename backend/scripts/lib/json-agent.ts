@@ -1,9 +1,9 @@
 /**
- * Llama a Groq esperando una respuesta JSON parseable. Si la 1ª respuesta no
+ * Llama al LLM esperando una respuesta JSON parseable. Si la 1ª respuesta no
  * parsea, hace 1 retry con un prompt más estricto antes de fallar.
  */
 
-import { completeFast, completeQuality, parseJsonResponse } from './groq.js';
+import { completeFast, completeQuality, parseJsonResponse } from './llm.js';
 
 export type JsonAgentOptions = {
   /** Prompt del sistema (reglas, contexto, estilo). */
@@ -21,7 +21,7 @@ export type JsonAgentOptions = {
 };
 
 /**
- * Devuelve el JSON parseado tipado como T. Si Groq devuelve algo no-JSON o si
+ * Devuelve el JSON parseado tipado como T. Si el LLM devuelve algo no-JSON o si
  * `validate` tira, hace 1 reintento con prompt más estricto. Si vuelve a
  * fallar, propaga el error original (el caller decide qué hacer).
  */

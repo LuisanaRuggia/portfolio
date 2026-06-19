@@ -1,0 +1,78 @@
+name: Detect project status from release tag
+
+# Cuando publiques un release en este repo (o cualquier repo en el manifest),
+# el script lee el tag y actualiza el campo `status` del proyecto en
+# `frontend/src/data/projects.ts` automáticamente.
+#
+# Reglas:
+#   v1.x.y         → status: "finished"
+#   v0.x.y         → status: "finished-open"
+#   prerelease     → no cambia
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag a procesar (ej. v0.5.0)'
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: detect-status
+  cancel-in-progress: false
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          package_json_file: backend/package.json
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: backend/pnpm-lock.yaml
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: pnpm install --frozen-lockfile
+
+      - name: Resolve GITHUB_REF for workflow_dispatch
+        id: ref
+        run: |
+          if [[ -n "${{ inputs.tag }}" ]]; then
+            echo "ref=refs/tags/${{ inputs.tag }}" >> $GITHUB_OUTPUT
+          else
+            echo "ref=${{ github.ref }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run detect-status
+        working-directory: backend
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_REF: ${{ steps.ref.outputs.ref }}
+        run: pnpm script:status
+
+      - name: Commit status change if any
+        run: |
+          if [[ -n "$(git status --porcelain frontend/src/data/projects.ts)" ]]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add frontend/src/data/projects.ts
+            git commit -m "chore(status): update from release tag [skip ci]"
+            git push
+          else
+            echo "Sin cambios en projects.ts"
+          fi

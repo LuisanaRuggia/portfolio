@@ -1,0 +1,207 @@
+{
+  "basics": {
+    "name": "Luisana Jacqueline Gutiérrez Ruggia",
+    "label": {
+      "es": "Analista Junior de Datos · Estudiante de Ingeniería en Ciencia de Datos",
+      "en": "Junior Data Analyst · Data Science Engineering Student"
+    },
+    "email": "ruggialuisana@gmail.com",
+    "location": {
+      "city": "Bogotá",
+      "country": "Colombia",
+      "countryCode": "CO"
+    },
+    "summary": {
+      "es": "Estudiante de Ingeniería en Ciencia de Datos en séptimo semestre. Convierto datos en decisiones a través de pipelines, automatización y análisis con Python. Busco proyectos donde el análisis de datos genere impacto real.",
+      "en": "Data Science Engineering student in seventh semester. I turn data into decisions through pipelines, automation and Python analysis. I'm looking for projects where data analysis drives real impact."
+    },
+    "profiles": [
+      {
+        "network": "GitHub",
+        "username": "LuisanaRuggia",
+        "url": "https://github.com/LuisanaRuggia"
+      },
+      {
+        "network": "LinkedIn",
+        "username": "luisana-j-gutiérrez-ruggia",
+        "url": "https://www.linkedin.com/in/luisana-j-gutiérrez-ruggia-128083256/"
+      },
+      {
+        "network": "Portfolio",
+        "username": "luisanaruggia",
+        "url": "https://luisanaruggia.github.io/portfolio/"
+      }
+    ]
+  },
+  "work": [
+    {
+      "name": "Paynet",
+      "position": {
+        "es": "Analista Junior de Datos",
+        "en": "Junior Data Analyst"
+      },
+      "location": {
+        "city": "Bogotá",
+        "country": "Colombia"
+      },
+      "startDate": "2025-09",
+      "endDate": null,
+      "highlights": [
+        {
+          "es": "Modelado de datos y procesos ETL",
+          "en": "Data modeling and ETL processes"
+        },
+        {
+          "es": "Desarrollo de pipelines de datos",
+          "en": "Data pipeline development"
+        },
+        {
+          "es": "Soporte y mejora de herramientas de Business Intelligence",
+          "en": "Support and improvement of Business Intelligence tools"
+        },
+        {
+          "es": "Automatización de procesos internos con Python",
+          "en": "Automation of internal processes with Python"
+        }
+      ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "Politécnico Grancolombiano",
+      "location": {
+        "city": "Bogotá",
+        "country": "Colombia"
+      },
+      "area": {
+        "es": "Ingeniería en Ciencia de Datos",
+        "en": "Data Science Engineering"
+      },
+      "studyType": {
+        "es": "Pregrado",
+        "en": "Undergraduate"
+      },
+      "startDate": "2023",
+      "endDate": "2027",
+      "note": {
+        "es": "Cursando séptimo semestre",
+        "en": "Currently in seventh semester"
+      }
+    }
+  ],
+  "skills": [
+    {
+      "name": {
+        "es": "Lenguajes de programación",
+        "en": "Programming languages"
+      },
+      "keywords": ["Python", "SQL", "R", "Java"]
+    },
+    {
+      "name": {
+        "es": "Bases de datos",
+        "en": "Databases"
+      },
+      "keywords": ["PostgreSQL", "MongoDB", "ClickHouse"]
+    },
+    {
+      "name": {
+        "es": "Pipelines y Big Data",
+        "en": "Pipelines and Big Data"
+      },
+      "keywords": ["Apache Spark", "Apache Airflow", "Apache Kafka", "Debezium", "Iceberg", "dbt"]
+    },
+    {
+      "name": {
+        "es": "Business Intelligence",
+        "en": "Business Intelligence"
+      },
+      "keywords": ["Power BI", "Apache Superset"]
+    },
+    {
+      "name": {
+        "es": "Cloud e infraestructura",
+        "en": "Cloud and infrastructure"
+      },
+      "keywords": ["Docker", "Cloudflare Workers", "GitHub Actions"]
+    },
+    {
+      "name": {
+        "es": "Automatización",
+        "en": "Automation"
+      },
+      "keywords": ["n8n", "scripts en Python", "agentes de IA con LLM"]
+    },
+    {
+      "name": {
+        "es": "En crecimiento",
+        "en": "Growing in"
+      },
+      "keywords": ["Machine Learning", "Inteligencia Artificial", "Investigación aplicada"]
+    }
+  ],
+  "languages": [
+    {
+      "language": {
+        "es": "Español",
+        "en": "Spanish"
+      },
+      "fluency": {
+        "es": "Nativo",
+        "en": "Native"
+      }
+    },
+    {
+      "language": {
+        "es": "Inglés",
+        "en": "English"
+      },
+      "fluency": {
+        "es": "Conversacional",
+        "en": "Conversational"
+      }
+    },
+    {
+      "language": {
+        "es": "Italiano",
+        "en": "Italian"
+      },
+      "fluency": {
+        "es": "Conversacional",
+        "en": "Conversational"
+      }
+    }
+  ],
+  "projects": [
+    {
+      "name": "Lakehouse Medallion",
+      "description": {
+        "es": "Lakehouse local con arquitectura medallion (bronze/silver/gold) usando Spark + dbt + Trino sobre MinIO, orquestado con Airflow.",
+        "en": "Local lakehouse with medallion architecture (bronze/silver/gold) using Spark + dbt + Trino on MinIO, orchestrated with Airflow."
+      },
+      "url": "https://luisanaruggia.github.io/portfolio/#/project/ed1",
+      "keywords": ["Spark", "dbt", "Trino", "MinIO", "Airflow", "Docker"],
+      "highlight": true
+    },
+    {
+      "name": "CDC con Debezium",
+      "description": {
+        "es": "Captura de cambios en tiempo real desde Postgres con Debezium + Kafka, sink final en ClickHouse. Foco en snapshot inicial y exactly-once.",
+        "en": "Real-time change data capture from Postgres with Debezium + Kafka, final sink in ClickHouse. Focus on initial snapshot and exactly-once delivery."
+      },
+      "url": "https://luisanaruggia.github.io/portfolio/#/project/ed2",
+      "keywords": ["Postgres", "Debezium", "Kafka", "ClickHouse", "Docker"],
+      "highlight": true
+    },
+    {
+      "name": "Portafolio Personal",
+      "description": {
+        "es": "Sitio interactivo en React + TypeScript con chat asistente LLM, grafos conceptuales y backend serverless en Cloudflare Workers + Groq.",
+        "en": "Interactive site in React + TypeScript with LLM chat assistant, concept graphs and serverless backend on Cloudflare Workers + Groq."
+      },
+      "url": "https://luisanaruggia.github.io/portfolio/",
+      "keywords": ["React", "TypeScript", "Vite", "Tailwind", "Cloudflare Workers", "Groq"],
+      "highlight": true
+    }
+  ]
+}

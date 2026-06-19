@@ -17,9 +17,11 @@ interface ChatRequestBody {
 const MAX_MESSAGE_CHARS = 1000;
 const RATE_LIMIT_REQS = 10;
 const RATE_LIMIT_WINDOW_SECONDS = 60;
-const GROQ_MODEL = 'llama-3.1-8b-instant';
-const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
-const GROQ_TIMEOUT_MS = 20_000;
+// Modelo fast del provider compartido (ver backend/scripts/lib/llm.ts).
+// Para el chat la latencia importa, por eso usamos el tier fast.
+const LLM_MODEL = 'llama-3.1-8b-instant';
+const LLM_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const LLM_TIMEOUT_MS = 20_000;
 
 const LOCALHOST_ORIGIN = /^http:\/\/localhost:\d+$/;
 
@@ -144,19 +146,19 @@ async function checkRateLimit(ip: string, env: Env): Promise<boolean> {
   return true;
 }
 
-async function callGroq(env: Env, systemPrompt: string, userMessage: string): Promise<string> {
+async function callLLM(env: Env, systemPrompt: string, userMessage: string): Promise<string> {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), GROQ_TIMEOUT_MS);
+  const timeout = setTimeout(() => controller.abort(), LLM_TIMEOUT_MS);
 
   try {
-    const res = await fetch(GROQ_URL, {
+    const res = await fetch(LLM_URL, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
         authorization: `Bearer ${env.GROQ_API_KEY}`,
       },
       body: JSON.stringify({
-        model: GROQ_MODEL,
+        model: LLM_MODEL,
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userMessage },
@@ -168,14 +170,14 @@ async function callGroq(env: Env, systemPrompt: string, userMessage: string): Pr
     });
 
     if (!res.ok) {
-      throw new Error(`Groq upstream ${res.status}`);
+      throw new Error(`LLM upstream ${res.status}`);
     }
 
     const data = (await res.json()) as {
       choices?: { message?: { content?: string } }[];
     };
     const reply = data.choices?.[0]?.message?.content?.trim();
-    if (!reply) throw new Error('Empty Groq response');
+    if (!reply) throw new Error('Empty LLM response');
     return reply;
   } finally {
     clearTimeout(timeout);
@@ -213,13 +215,13 @@ export default {
     }
 
     // Canned response: si el mensaje matchea una pregunta frecuente,
-    // respondemos directo sin tocar Groq (gratis, instantáneo).
+    // respondemos directo sin tocar el LLM (gratis, instantáneo).
     const canned = tryCannedResponse(body.message, body.language);
     if (canned) {
       return jsonResponse({ reply: canned }, 200, request, env);
     }
 
-    // Solo las llamadas que van a Groq consumen rate limit (proteje costo upstream).
+    // Solo las llamadas que van al LLM consumen rate limit (protege costo upstream).
     const ip = request.headers.get('CF-Connecting-IP') ?? 'unknown';
     const allowed = await checkRateLimit(ip, env);
     if (!allowed) {
@@ -228,7 +230,7 @@ export default {
 
     try {
       const systemPrompt = buildSystemPrompt(body.language);
-      const reply = await callGroq(env, systemPrompt, body.message);
+      const reply = await callLLM(env, systemPrompt, body.message);
       return jsonResponse({ reply }, 200, request, env);
     } catch (err) {
       console.error('chat upstream error', err);

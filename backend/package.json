@@ -26,9 +26,7 @@
     "deploy:chat": "wrangler deploy --config workers/chat/wrangler.toml",
     "deploy:drafts": "wrangler deploy --config workers/drafts/wrangler.toml"
   },
-  "dependencies": {
-    "groq-sdk": "^0.34.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20251101.0",
     "@types/node": "^25.9.1",

@@ -1,9 +1,9 @@
 /**
- * Respuestas canónicas para preguntas frecuentes — saltea Groq cuando hay match.
+ * Respuestas canónicas para preguntas frecuentes — saltea el LLM cuando hay match.
  *
  * Match es por keyword/frase insensible a mayúsculas y tildes. Patrones más
  * específicos van primero (Lakehouse > "proyectos"). Si nada matchea, el
- * caller llama a Groq como fallback.
+ * caller llama al LLM como fallback.
  *
  * Mantener cada respuesta en español neutro, primera persona, 1-3 oraciones.
  * Si una respuesta cambia, también actualizar el system prompt para que el
@@ -97,8 +97,8 @@ const RULES: CannedRule[] = [
       'what company',
     ],
     reply: {
-      es: 'Actualmente trabajo en GSE (Gestión de Seguridad Electrónica S.A) en Bogotá.',
-      en: 'I currently work at GSE (Gestión de Seguridad Electrónica S.A) in Bogotá.',
+      es: 'Actualmente trabajo en Paynet en Bogotá como Analista Junior de Datos.',
+      en: 'I currently work at Paynet in Bogotá as a Junior Data Analyst.',
     },
   },
 
@@ -206,7 +206,7 @@ const RULES: CannedRule[] = [
     id: 'project-portfolio',
     triggers: ['portafolio', 'este sitio', 'this site', 'how is the portfolio built', 'como esta hecho'],
     reply: {
-      es: 'Este portafolio es React + TypeScript + Vite + Tailwind, con animaciones 3D, grafos conceptuales y chat asistente con LLM. Backend en Cloudflare Workers + Groq para el chat.',
+      es: 'Este portafolio es React + TypeScript + Vite + Tailwind, con animaciones 3D, grafos conceptuales y chat asistente con LLM. Backend en Cloudflare Workers + Groq (Llama) para el chat.',
       en: 'This portfolio is React + TypeScript + Vite + Tailwind, with 3D animations, concept graphs and an LLM chat assistant. Backend on Cloudflare Workers + Groq for the chat.',
     },
   },
