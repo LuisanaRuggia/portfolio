@@ -25,6 +25,7 @@ import { useIsDarkMode, useThemedImage } from '@/lib/theme';
 import { playSound } from '@/lib/sounds';
 import { portfolioData, type Project, type ProjectStatus } from '@/data/projects';
 import { ConceptGraph } from '@/features/concepts/concept-graph';
+import { YoutubeEmbed, extractYoutubeId } from '@/components/ui/youtube-embed';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -881,12 +882,20 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project, o
         onClose={() => setOpenSection(null)}
       >
         {has.blogVideo ? (
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col gap-4">
+            {/* Video: si es YouTube, embed responsive 16:9. Si es otra
+                plataforma (Vimeo, Loom, etc.), un link externo. */}
+            {project.videoUrl &&
+              (extractYoutubeId(project.videoUrl) ? (
+                <YoutubeEmbed
+                  url={project.videoUrl}
+                  title={`${localize(project.title)} — ${t('detail.viewVideo')}`}
+                />
+              ) : (
+                <ExternalLinkBlock url={project.videoUrl} label={t('detail.viewVideo')} />
+              ))}
             {project.links?.blog && (
               <ExternalLinkBlock url={project.links.blog} label={t('detail.viewBlog')} />
-            )}
-            {project.videoUrl && (
-              <ExternalLinkBlock url={project.videoUrl} label={t('detail.viewVideo')} />
             )}
           </div>
         ) : (
