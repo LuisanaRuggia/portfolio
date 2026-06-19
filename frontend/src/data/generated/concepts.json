@@ -10,6 +10,22 @@
         "group": "arch"
       },
       {
+        "id": "force-directed-graph",
+        "label": {
+          "es": "Grafo conceptual force-directed",
+          "en": "Force-Directed Conceptual Graph"
+        },
+        "group": "data"
+      },
+      {
+        "id": "edge-functions",
+        "label": {
+          "es": "Funciones edge",
+          "en": "Edge Functions"
+        },
+        "group": "ops"
+      },
+      {
         "id": "static-site-generation",
         "label": {
           "es": "Generación de sitios estáticos",
@@ -18,28 +34,28 @@
         "group": "ops"
       },
       {
-        "id": "edge-functions",
-        "label": {
-          "es": "Funciones de edge",
-          "en": "Edge Functions"
-        },
-        "group": "ops"
-      },
-      {
-        "id": "force-directed-graphs",
-        "label": {
-          "es": "Grafos force-directed",
-          "en": "Force-Directed Graphs"
-        },
-        "group": "data"
-      },
-      {
         "id": "internationalization",
         "label": {
           "es": "Internacionalización",
           "en": "Internationalization"
         },
         "group": "ops"
+      },
+      {
+        "id": "animated-visualizations",
+        "label": {
+          "es": "Visualizaciones animadas",
+          "en": "Animated Visualizations"
+        },
+        "group": "data"
+      },
+      {
+        "id": "machine-learning-models",
+        "label": {
+          "es": "Modelos de aprendizaje automático",
+          "en": "Machine Learning Models"
+        },
+        "group": "ml"
       },
       {
         "id": "web-audio-api",
@@ -52,32 +68,16 @@
       {
         "id": "hash-routing",
         "label": {
-          "es": "Enrutamiento por hash",
+          "es": "Enrutamiento hash",
           "en": "Hash Routing"
         },
         "group": "ops"
       },
       {
-        "id": "conceptual-modeling",
+        "id": "continuous-integration",
         "label": {
-          "es": "Modelado conceptual",
-          "en": "Conceptual Modeling"
-        },
-        "group": "data"
-      },
-      {
-        "id": "machine-learning",
-        "label": {
-          "es": "Aprendizaje automático",
-          "en": "Machine Learning"
-        },
-        "group": "ml"
-      },
-      {
-        "id": "cloud-computing",
-        "label": {
-          "es": "Computación en la nube",
-          "en": "Cloud Computing"
+          "es": "Integración continua",
+          "en": "Continuous Integration"
         },
         "group": "ops"
       }
@@ -92,16 +92,12 @@
         "to": "edge-functions"
       },
       {
-        "from": "static-site-generation",
-        "to": "hash-routing"
+        "from": "force-directed-graph",
+        "to": "animated-visualizations"
       },
       {
         "from": "edge-functions",
-        "to": "machine-learning"
-      },
-      {
-        "from": "force-directed-graphs",
-        "to": "conceptual-modeling"
+        "to": "machine-learning-models"
       },
       {
         "from": "internationalization",
@@ -109,19 +105,23 @@
       },
       {
         "from": "web-audio-api",
-        "to": "cloud-computing"
+        "to": "animated-visualizations"
       },
       {
-        "from": "conceptual-modeling",
-        "to": "machine-learning"
+        "from": "continuous-integration",
+        "to": "static-site-generation"
       },
       {
-        "from": "cloud-computing",
+        "from": "machine-learning-models",
         "to": "edge-functions"
       },
       {
-        "from": "machine-learning",
-        "to": "conceptual-modeling"
+        "from": "hash-routing",
+        "to": "internationalization"
+      },
+      {
+        "from": "animated-visualizations",
+        "to": "force-directed-graph"
       }
     ]
   }
