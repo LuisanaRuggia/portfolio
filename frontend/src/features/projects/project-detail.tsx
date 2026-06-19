@@ -894,9 +894,22 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project, o
               ) : (
                 <ExternalLinkBlock url={project.videoUrl} label={t('detail.viewVideo')} />
               ))}
-            {project.links?.blog && (
-              <ExternalLinkBlock url={project.links.blog} label={t('detail.viewBlog')} />
-            )}
+            {project.links?.blog &&
+              (project.links.blog.startsWith('/blog/') ? (
+                /* Blog interno self-hosted: setea el hash para navegación SPA. */
+                <button
+                  onClick={() => {
+                    playSound('pop');
+                    window.location.hash = `#${project.links!.blog!}`;
+                  }}
+                  className="flex items-center gap-3 px-5 py-4 rounded-xl bg-card hover:bg-muted/50 border border-border text-foreground transition-colors w-full text-left"
+                >
+                  <Newspaper className="w-5 h-5 flex-shrink-0 text-accent" />
+                  <span className="text-sm font-medium">{t('detail.viewBlog')}</span>
+                </button>
+              ) : (
+                <ExternalLinkBlock url={project.links.blog} label={t('detail.viewBlog')} />
+              ))}
           </div>
         ) : (
           <ComingSoonPlaceholder />

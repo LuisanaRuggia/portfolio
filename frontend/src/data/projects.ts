@@ -417,6 +417,10 @@ export const portfolioData: Category[] = [
         links: {
           repo: "https://github.com/LuisanaRuggia/portfolio",
           demo: "https://luisanaruggia.github.io/portfolio/",
+          // Blog interno self-hosted: el path empieza con "/blog/<slug>" y
+          // navega dentro del SPA. Para enlazar a un post externo
+          // (ej. Dev.to), usar una URL absoluta.
+          blog: "/blog/portafolio-interactivo-con-llm",
         },
         diagrams: [
           `${import.meta.env.BASE_URL}diagrams/portfolio/frontend-architecture.svg`,

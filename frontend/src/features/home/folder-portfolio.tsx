@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useLayoutEffect, useCallback, forwardRef } from 'react';
-import { Sun, Moon, X, ExternalLink, ChevronLeft, ChevronRight, Volume2, VolumeX, Sparkles, Music, FileDown, ArrowLeftRight } from 'lucide-react';
+import { Sun, Moon, X, ExternalLink, ChevronLeft, ChevronRight, Volume2, VolumeX, Sparkles, Music, FileDown, ArrowLeftRight, Newspaper } from 'lucide-react';
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import Lottie from 'lottie-react';
@@ -11,6 +11,8 @@ import girlLaptopAnimation from "@/assets/lottie/girl-laptop.json";
 import { portfolioData, type Project } from "@/data/projects";
 import { ProjectDetailView } from "@/features/projects/project-detail";
 import { CvPage } from "@/features/cv/cv-page";
+import { BlogIndex } from "@/features/blog/blog-index";
+import { BlogPost } from "@/features/blog/blog-post";
 import { PortfolioChat } from "@/features/chat/portfolio-chat";
 
 // --- Utilities ---
@@ -585,7 +587,17 @@ const MUSIC_BASE_VOLUME = 0.15;
 
 export default function FolderPortfolio() {
   const { t, language, setLanguage } = useTranslation();
-  const { projectId, isCv, navigate, navigateCv, navigateHome } = useHashRoute();
+  const {
+    projectId,
+    isCv,
+    isBlogIndex,
+    blogSlug,
+    navigate,
+    navigateCv,
+    navigateBlogIndex,
+    navigateBlogPost,
+    navigateHome,
+  } = useHashRoute();
   const selectedProject: Project | null = projectId
     ? portfolioData.flatMap((c) => c.projects).find((p) => p.id === projectId) ?? null
     : null;
@@ -799,20 +811,34 @@ export default function FolderPortfolio() {
     <main className="min-h-screen bg-background text-foreground transition-colors duration-500 selection:bg-accent/40 selection:text-foreground">
       <header className="sticky top-0 z-40 w-full bg-background/80 backdrop-blur-xl border-b border-border transition-colors duration-500">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 h-16 flex items-center justify-between gap-2">
-          <button
-            // CV interactivo (Fase 6): navega a #/cv. Antes descargaba el PDF
-            // directo; ahora primero abre la vista HTML del CV, y desde ahí el
-            // visitante puede descargar el PDF si quiere.
-            onClick={() => {
-              playSound('pop');
-              navigateCv();
-            }}
-            aria-label={t('header.cv')}
-            className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 h-10 rounded-xl bg-muted/50 hover:bg-muted transition-colors border border-border text-sm font-bold tracking-wide text-foreground"
-          >
-            <FileDown className="w-4 h-4" />
-            <span>{t('header.cv')}</span>
-          </button>
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <button
+              // CV interactivo (Fase 6): navega a #/cv. Antes descargaba el PDF
+              // directo; ahora primero abre la vista HTML del CV, y desde ahí el
+              // visitante puede descargar el PDF si quiere.
+              onClick={() => {
+                playSound('pop');
+                navigateCv();
+              }}
+              aria-label={t('header.cv')}
+              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 h-10 rounded-xl bg-muted/50 hover:bg-muted transition-colors border border-border text-sm font-bold tracking-wide text-accent"
+            >
+              <FileDown className="w-4 h-4" />
+              <span>{t('header.cv')}</span>
+            </button>
+            <button
+              // Blog self-hosted (Fase 6 — parte C): navega a #/blog (índice).
+              onClick={() => {
+                playSound('pop');
+                navigateBlogIndex();
+              }}
+              aria-label={t('header.blog')}
+              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 h-10 rounded-xl bg-muted/50 hover:bg-muted transition-colors border border-border text-sm font-bold tracking-wide text-accent"
+            >
+              <Newspaper className="w-4 h-4" />
+              <span>{t('header.blog')}</span>
+            </button>
+          </div>
           <div className="flex items-center gap-1.5 sm:gap-2">
           <div
             className="relative"
@@ -910,6 +936,10 @@ export default function FolderPortfolio() {
 
       {isCv ? (
         <CvPage onBack={navigateHome} />
+      ) : isBlogIndex ? (
+        <BlogIndex onBack={navigateHome} onOpenPost={navigateBlogPost} />
+      ) : blogSlug ? (
+        <BlogPost slug={blogSlug} onBack={navigateBlogIndex} onProjectLink={navigate} />
       ) : selectedProject ? (
         <ProjectDetailView
           project={selectedProject}
