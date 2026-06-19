@@ -104,6 +104,13 @@ export interface Project {
   links?: {
     repo?: string;
     demo?: string;
+    /**
+     * URL del post en Dev.to (o blog equivalente) que explica el proyecto.
+     * Se muestra como card con link externo en la sección "Blog y Video".
+     *
+     * Ejemplo:
+     *   blog: "https://dev.to/luisanaruggia/portfolio-interactivo-con-llm-chat-1ab2",
+     */
     blog?: string;
   };
   concepts?: ProjectConcepts;       // mapa conceptual del proyecto (grafo estilo Obsidian)
@@ -135,7 +142,24 @@ export interface Project {
   documentationPages?: string[];
   readmeUrl?: string;           // link al README.md en GitHub
   screenshot?: string;          // foto grande para sección "Enlaces" (default: image)
-  videoUrl?: string;            // YouTube/Vimeo URL para video demo
+  /**
+   * URL del video demo del proyecto.
+   *
+   * - Si es de YouTube (cualquier formato — `youtube.com/watch?v=`,
+   *   `youtu.be/`, `/embed/`, `/shorts/`), el frontend embebe el iframe
+   *   responsive 16:9 directo en la sección "Blog y Video".
+   * - Si es de otra plataforma (Vimeo, Loom, etc.), se muestra como un
+   *   link externo en lugar del embed.
+   *
+   * Para que el visitante del portafolio pueda verlo embebido, el video
+   * debe ser **Público** o **Unlisted** ("oculto, solo con el link") en
+   * YouTube. Los videos Privados NO funcionan en iframes embebidos.
+   *
+   * Ejemplos:
+   *   videoUrl: "https://youtu.be/dQw4w9WgXcQ",
+   *   videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+   */
+  videoUrl?: string;
 
   /**
    * Lista de cambios recientes / commits en lenguaje natural.
