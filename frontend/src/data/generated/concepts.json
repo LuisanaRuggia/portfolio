@@ -10,22 +10,6 @@
         "group": "arch"
       },
       {
-        "id": "force-directed-graphs",
-        "label": {
-          "es": "Grafos force-directed",
-          "en": "Force-Directed Graphs"
-        },
-        "group": "data"
-      },
-      {
-        "id": "edge-functions",
-        "label": {
-          "es": "Funciones de borde",
-          "en": "Edge Functions"
-        },
-        "group": "ops"
-      },
-      {
         "id": "static-site-generation",
         "label": {
           "es": "Generación de sitios estáticos",
@@ -34,26 +18,26 @@
         "group": "ops"
       },
       {
-        "id": "internationalization",
+        "id": "edge-functions",
         "label": {
-          "es": "Internacionalización",
-          "en": "Internationalization"
+          "es": "Funciones de edge",
+          "en": "Edge Functions"
+        },
+        "group": "ops"
+      },
+      {
+        "id": "force-directed-graphs",
+        "label": {
+          "es": "Grafos force-directed",
+          "en": "Force-Directed Graphs"
         },
         "group": "data"
       },
       {
-        "id": "machine-learning-models",
+        "id": "internationalization",
         "label": {
-          "es": "Modelos de aprendizaje automático",
-          "en": "Machine Learning Models"
-        },
-        "group": "ml"
-      },
-      {
-        "id": "hash-routing",
-        "label": {
-          "es": "Enrutamiento por hash",
-          "en": "Hash Routing"
+          "es": "Internacionalización",
+          "en": "Internationalization"
         },
         "group": "ops"
       },
@@ -63,6 +47,30 @@
           "es": "API de audio web",
           "en": "Web Audio API"
         },
+        "group": "ops"
+      },
+      {
+        "id": "machine-learning",
+        "label": {
+          "es": "Aprendizaje automático",
+          "en": "Machine Learning"
+        },
+        "group": "ml"
+      },
+      {
+        "id": "hash-routing",
+        "label": {
+          "es": "Enrutamiento hash",
+          "en": "Hash Routing"
+        },
+        "group": "ops"
+      },
+      {
+        "id": "conceptual-modeling",
+        "label": {
+          "es": "Modelado conceptual",
+          "en": "Conceptual Modeling"
+        },
         "group": "data"
       },
       {
@@ -70,14 +78,6 @@
         "label": {
           "es": "Computación en la nube",
           "en": "Cloud Computing"
-        },
-        "group": "ops"
-      },
-      {
-        "id": "continuous-integration",
-        "label": {
-          "es": "Integración continua",
-          "en": "Continuous Integration"
         },
         "group": "ops"
       }
@@ -92,36 +92,36 @@
         "to": "edge-functions"
       },
       {
+        "from": "static-site-generation",
+        "to": "hash-routing"
+      },
+      {
+        "from": "edge-functions",
+        "to": "machine-learning"
+      },
+      {
         "from": "force-directed-graphs",
-        "to": "internationalization"
+        "to": "conceptual-modeling"
       },
       {
-        "from": "machine-learning-models",
-        "to": "edge-functions"
-      },
-      {
-        "from": "hash-routing",
-        "to": "static-site-generation"
+        "from": "internationalization",
+        "to": "web-audio-api"
       },
       {
         "from": "web-audio-api",
-        "to": "internationalization"
+        "to": "cloud-computing"
+      },
+      {
+        "from": "machine-learning",
+        "to": "conceptual-modeling"
+      },
+      {
+        "from": "hash-routing",
+        "to": "jamstack-architecture"
       },
       {
         "from": "cloud-computing",
         "to": "edge-functions"
-      },
-      {
-        "from": "continuous-integration",
-        "to": "static-site-generation"
-      },
-      {
-        "from": "jamstack-architecture",
-        "to": "continuous-integration"
-      },
-      {
-        "from": "machine-learning-models",
-        "to": "cloud-computing"
       }
     ]
   }

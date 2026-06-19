@@ -3,29 +3,22 @@
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Implementación de la fase 6 del portafolio, incluyendo blog, proyectos y CV interactivos.",
-        "en": "Implementation of phase 6 of the portfolio, including bilingual blog, interactive CV and projects."
+        "es": "Implementación de características y correcciones para la versión 6 del portafolio.",
+        "en": "Implementation of features and fixes for portafolio version 6."
       }
     },
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Mejoras en la configuración de CI/CD, incluyendo deploy seguro y workflows sin carreras.",
-        "en": "Improvements in CI/CD configuration, including secure deploy and workflow without races."
+        "es": "Mejoras en la experiencia del usuario y la interfaz de usuario del chat y la página de currículum.",
+        "en": "User experience and interface improvements for chat and CV page."
       }
     },
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Correcciones y mejoras en la sección de chat, incluyendo posición del botón CV y nombres de archivos.",
-        "en": "Fixes and improvements in the chat section, including CV button position and file names."
-      }
-    },
-    {
-      "date": "2026-06-19",
-      "description": {
-        "es": "Activación de la fase 5 en producción y auto-deploy de worker, CV y docs.",
-        "en": "Activation of phase 5 in production and auto-deploy of worker, CV and docs."
+        "es": "Correcciones y mejoras en la infraestructura de despliegue y automatización.",
+        "en": "Fixes and improvements in deployment and automation infrastructure."
       }
     }
   ]
