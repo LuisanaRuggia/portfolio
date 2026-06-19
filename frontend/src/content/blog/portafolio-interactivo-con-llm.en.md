@@ -1,67 +1,97 @@
 ---
-title: "How I built my interactive portfolio with an LLM chat"
-description: "Stack, technical decisions and quirks of a JAMstack portfolio with an AI assistant, an auto-generated bilingual CV and agents on GitHub Actions."
+title: "How I built my interactive portfolio with an AI chat"
+description: "The stack, the decisions and the logic behind a portfolio that keeps itself up to date, with a chat assistant that answers as I would."
 date: "2026-06-20"
-tags: ["react", "typescript", "llm", "cloudflare", "ai"]
+tags: ["react", "typescript", "ai", "cloudflare", "storytelling"]
 projectId: "dev1"
 ---
 
-## Why I wanted something different
+A while back I started thinking about how to show what I can do without falling into the usual: a PDF, a LinkedIn page, and not much else. What bothered me most is that those formats show **results**, but not **how you think**. And I wanted anyone who landed on my site to feel, in less than a minute, how I actually work.
 
-Most portfolios are a PDF plus a LinkedIn page. They work, but they show what you've done, not how you think. I wanted something that demonstrated my way of working: end-to-end, technical with some personality, and built with the same tools I claim to know.
+So I decided on something that's simple in concept and complicated in practice: build a portfolio that was, in itself, a demonstration of my skills. Not just saying "I use React"; using it. Not just saying "I work with AI"; having a real AI chat answering in my voice.
 
-So instead of listing my skills in a static grid, I decided to build a site that **is** my skills. Optional jazz in the background, smooth animations, a chat that knows my projects and explains them as if it were me, a bilingual CV that regenerates itself when something changes, and a blog (this one) compiled at build time.
+Let me walk you through how I put it all together, step by step, trying to make sense of it even if you don't know much about programming.
 
-## The stack in one line
+## The backbone: the stack
 
-React 18 + TypeScript + Vite on the frontend, Tailwind for styles, GitHub Pages for hosting, Cloudflare Workers for the chat backend, and Groq as the LLM provider. All orchestrated with GitHub Actions, and total monthly cost under three dollars.
+When someone says "stack" in programming, they mean the set of technologies that hold a project up. It's like cooking a recipe: every ingredient has a role. Mine looks like this:
 
-## The interesting part: a chat with my own voice
+- **React + TypeScript**: the engine of the site. React lets me build interactive interfaces (the projects that open, the animations, dark mode). TypeScript is like adding rules to JavaScript so it warns me before I make a mistake.
+- **Vite**: the "assembler". It takes all my code files and packages them into something the browser understands.
+- **Tailwind CSS**: a way of writing styles without needing separate files. Instead of saying "this class has a blue background and rounded border" in a CSS file, I write it straight into the HTML.
+- **GitHub Pages**: where the site lives. It's free for public repos and fast.
+- **Cloudflare Workers**: a small server that runs in hundreds of cities around the world, including Bogotá. I only use it for the chat, because GitHub Pages can't run code on the server side.
+- **Groq**: the AI model provider. It's like having access to a chatbot brain, but fast and cheap.
 
-The easy part of an LLM chat is hooking it up. The hard part is that it **sounds** like you and not like an external assistant talking about you. The difference is huge: a visitor asking "what projects do you have?" should not hear "Luisana has worked on...", they should hear "I built a local lakehouse with Spark + dbt...".
+It sounds like a lot, but every piece solves a specific problem.
 
-I solved it with a strong system prompt and a portfolio context injected on every request. The first rule is the most important:
+## What happens when you land on the site
 
-```
-YOU ARE Luisana Ruggia answering in YOUR OWN portfolio.
-You are NOT an assistant talking about Luisana — YOU ARE Luisana.
-Always speak in first person singular.
-NEVER say "let me show you my portfolio" — that sounds like an outside assistant.
-Say "I built", "I work on", "I use".
-```
+Imagine my portfolio is a house. When someone rings the bell (enters the site), GitHub Pages immediately hands over all the static files: the HTML, the CSS, the images, the JavaScript code. All of that gets downloaded to the visitor's browser and assembled right there. That makes it very fast.
 
-There are more rules around scope ("you only answer about my projects and profile"), length ("two or three sentences max") and truthfulness ("never invent technology combinations that aren't in the context"). The full system prompt lives in the [chat worker](https://github.com/LuisanaRuggia/portfolio/blob/main/backend/workers/chat/src/index.ts).
+The important thing is: **there's nobody on the other side**. There's no server of mine waiting for you. Just files that already live in the cloud and get delivered.
 
-The **portfolio context** is auto-generated by a script (`sync-portfolio-context.ts`) that reads `projects.ts` from the frontend and produces a structured summary by category. When I add a new project, the chat learns about it on the next deploy without me touching the system prompt.
+So far so good. But what happens when the visitor opens the chat and types a question?
 
-To prevent abuse I used Cloudflare Workers KV as a rate limiter: ten requests per minute per IP. More than enough for a real visitor, blocks aggressive bots.
+## The chat: why I needed a small server
 
-## My CV maintains itself
+The chat can't be static. It has to talk to an AI model, and for that it needs a secret key (like a password proving I have access to the service). That key **can't be in the site's code**, because anyone could inspect it and steal it.
 
-I hate updating CVs. It's tedious and they always get outdated. So I built a flow where the source of truth is a bilingual JSON Resume (`resume.json`), a LaTeX template with the Lato typeface, and a script that renders the PDF in Spanish and English.
+So I built a middleman: a "worker" on Cloudflare. When the visitor types a message, the flow is:
 
-The on-screen CV (`#/cv`) reads the same JSON and shows it as HTML with the site's style. From there, the visitor downloads the PDF if they want something to print or attach to an email.
+1. The browser sends the message to the worker.
+2. The worker has the secret key stored (where no one can see it) and uses it to call the AI model.
+3. The model replies.
+4. The worker forwards the response back to the browser.
 
-The trick is that the projects shown in the CV aren't written twice: they get filtered from `projects.ts` itself by status. If a project has `status: "published"` or `"finished"`, it enters the CV automatically; if it's `"in-progress"`, it doesn't. When a project gets done, just change a word and the CV regenerates in CI.
+It's like a waiter at a restaurant. You order at the table and the waiter handles talking to the kitchen. You never enter the kitchen and you never see the secret recipe.
 
-## Decisions that cost me
+## The hard part: making the chat sound like me
 
-**Custom routing vs react-router**. React Router is the obvious choice, but it adds ~30KB and needs SPA fallback configuration on the server. Since GitHub Pages doesn't handle SPA fallback well, I wrote a mini router based on `window.location.hash` (fifty lines). It knows four routes: home, `#/project/<id>`, `#/cv` and `#/blog`. Enough.
+This is where I spent the most time. Getting an AI model to answer questions isn't hard. What's hard is making it answer **like you**, not like an external assistant talking about you in third person.
 
-**Cloudflare Workers vs Vercel/Lambda**. Workers has better edge presence (lower latency from Bogotá), a more generous free tier (100k requests/day) and a simpler deploy (`wrangler deploy`). The only trade-off is that the runtime is V8 isolates, not Node, so some libraries don't work. For a chat that calls an external API, that doesn't matter.
+The difference is huge. If someone asks "what projects do you have?", the answer should sound like "I built a local lakehouse with Spark and dbt...", not "Luisana has worked on various data projects". Sounds obvious, but models by default lean toward the second option.
 
-**Groq vs OpenAI vs Anthropic vs local model**. Groq serves Llama 3.1 8B at absurdly fast speeds (hundreds of tokens per second) and costs cents. For a portfolio chat where latency matters more than sophistication, it wins by a lot. For tasks that need more quality, like writing this post or suggesting CV changes, I use Llama 3.3 70B from the same provider.
+The solution was giving the model a personality manual before every response. I explain how it should sound, what expressions to avoid, what to do if it's asked something outside my portfolio. It's similar to training someone who's going to answer the phone on my behalf: I don't give them a rigid script, I give them a tone and clear rules.
 
-**Blog on Dev.to vs self-hosted**. I thought about this a lot. Dev.to gives you immediate audience and zero effort. But you end up depending on a third party's URL, you lose visual coherence, and if Dev.to changes something, you're stuck. I decided to self-host: each post is a `.md` with frontmatter, Vite's `import.meta.glob` loads them, and `react-markdown` renders them. Once I have three or four good posts, I'll cross-post to Dev.to with `canonical_url` pointing here.
+Also, on every interaction I inject a fresh summary of all my projects. When someone asks about a specific one, the model answers with real details instead of making things up. And if it's asked something with no context (the weather, politics, opinions), the manual tells it to politely decline and redirect to the portfolio.
 
-## What I take from this
+To protect against bots, the worker counts how many messages each visitor sent in the last minute. If they go over ten, it asks them to wait. It's a simple but effective system, and it stores the counter in a tiny database that Cloudflare provides for free.
 
-Three takeaways after building all of this:
+## A CV that keeps itself updated
 
-1. **An LLM in production is not plug-and-play.** The system prompt is seventy percent of the work. I spent more time refining voice and scope rules than coding the worker.
-2. **Workers KV is excellent for rate limit, not for complex state.** It has variable latency between regions. If you need strong consistency, go elsewhere.
-3. **If your CV updates itself, you'll update it more often.** Turning it into code removed the friction and now I edit it without thinking.
+I hate updating CVs. Every time I learned something new or finished a project, I had to edit my PDF, find the Word file, make it look nice again. It was a chore I avoided.
 
-## Repo
+So I turned my CV into data. I have a `.json` file (a structured text format) with all my information: name, education, work, skills, languages. I write it once in Spanish and English.
 
-The code is open at [github.com/LuisanaRuggia/portfolio](https://github.com/LuisanaRuggia/portfolio). If you want to copy it as a base, the interesting parts are in `backend/scripts/` (the agents that maintain the portfolio) and `backend/workers/chat/` (the chat worker). If you find something that could be done better, write me: I'm all ears.
+Then, two things read that file:
+
+1. **A script with LaTeX** (a language designed for typesetting elegant documents). It takes the data and generates two PDFs: one in Spanish and one in English. When I make any change to the JSON, the script runs automatically and the PDFs stay updated.
+
+2. **A page inside the site** (`/cv`). It reads the same JSON and shows it as pretty HTML. If you want the PDF, there's a button to download it.
+
+The projects on the CV are filtered automatically. Only the ones that are finished or published show up. The ones I'm still working on don't. When a project changes status, the CV regenerates itself without me touching anything.
+
+The result is that now I update my CV without thinking. I change a word, push the commit, and in two minutes the site and the PDF are fresh.
+
+## Decisions that gave me pause
+
+Two decisions cost me significant thought.
+
+The first was **where to put the blog**. I could publish on Dev.to, a platform for people who code, and have an instant audience. But I'd end up depending on someone else's URL, and if Dev.to changes something, I'm affected. In the end I decided to build the blog inside my portfolio: each post is a text file in my repository, written in a simple format called Markdown. When I make a change, the whole site rebuilds with the new post. Later, when I have several posts, I can cross-post to Dev.to pointing back to my site as the original source.
+
+The second was **which AI model to use**. There are better-known options (OpenAI, Anthropic), but they're more expensive. Groq runs open models (Llama, made by Meta) at very fast speeds and for cents a month. For a portfolio chat, where speed matters more than having the most sophisticated model in the world, the choice was easy.
+
+## What I'm taking from all of this
+
+Three things surprised me while building this site.
+
+First: **working with AI in production isn't magic**. Most of the time I spent on the chat wasn't coding, it was tweaking the personality manual. I'd try a version, read the responses, adjust the tone, try again. It feels more like editing a text than writing code.
+
+Second: **automating small tasks has big effects**. Once I made the CV regenerate itself, I stopped procrastinating to update it. The friction vanished and I started touching it often. The same happened with the project documentation.
+
+Third: **a portfolio is a project of its own**. I had thought of it as a place to display what I do. But along the way I ended up building several tools that are now living examples of how I work. The portfolio turned into one of my best projects.
+
+## The code
+
+It's open at [github.com/LuisanaRuggia/portfolio](https://github.com/LuisanaRuggia/portfolio). If you want to copy it as a base for something of your own, the interesting parts are `backend/scripts` (the small programs that keep the portfolio up to date) and `backend/workers/chat` (the chat code). If you find something that could be done better, drop me a line: I love learning from people who look at things from a different angle.

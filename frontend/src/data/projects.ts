@@ -431,6 +431,7 @@ export const portfolioData: Category[] = [
         // por backend/scripts/generate-docs.ts). El generated/docs.json del
         // merge de abajo provee el pageCount.
         readmeUrl: "https://github.com/LuisanaRuggia/portfolio/blob/main/README.md",
+        videoUrl: "https://youtu.be/zukDi1NgABU",
         updates: [
           {
             date: "2026-05-24",
