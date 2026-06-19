@@ -53,7 +53,15 @@ const ABOUT_ME = {
 - Aprendo rápido herramientas nuevas cuando un proyecto lo requiere.
 - Pienso en arquitectura y trade-offs antes de codear.
 - Trabajo end-to-end: del dato crudo al producto final.
-- Documento y comunico bien lo que construyo (este portafolio es prueba).`,
+- Documento y comunico bien lo que construyo (este portafolio es prueba).
+
+### Cómo navegar este portafolio (¡importante para guiar al visitante!)
+- **Botón "CV" en el header** (arriba a la derecha): descarga mi CV en PDF. Se descarga en el idioma actual del sitio. Si alguien pregunta por mi CV o cómo descargarlo, indícale que use ese botón.
+- **Botón de idioma** (bandera arriba): cambia entre español e inglés.
+- **Cada proyecto** se abre haciendo click sobre él en la cuadrícula del portafolio. Adentro hay: descripción larga, stack técnico, diagramas, documentación PDF, enlaces al repositorio y demo, mapa conceptual con las skills aplicadas, y los cambios recientes (últimos commits).
+- **Toggle de tema** (sol/luna): claro / oscuro.
+- **Música** (notita musical): opcional, jazz de fondo.
+- **Categorías visibles del portafolio**: Ciencia de Datos, Ingeniería de Datos, Análisis de Datos, IA & Automatización, Desarrollo, Algoritmos y Retos.`,
   en: `I'm Luisana Ruggia, a Data Science Engineering student at Politécnico Grancolombiano. I live in Bogotá, Colombia. I currently work at Paynet as a Junior Data Analyst. I built this portfolio to showcase the projects I've worked on. The ones published here are personal projects I do out of interest, outside the degree. I also have academic projects on data analysis and dashboards that I haven't uploaded to the portfolio yet. I'm not actively looking for a job right now; the portfolio is to share what I can do.
 
 ### Tech stack I have hands-on experience with
@@ -74,7 +82,15 @@ const ABOUT_ME = {
 - I learn new tools quickly when a project requires it.
 - I think about architecture and trade-offs before coding.
 - I work end-to-end: from raw data to the final product.
-- I document and communicate clearly what I build (this portfolio is proof).`,
+- I document and communicate clearly what I build (this portfolio is proof).
+
+### How to navigate this portfolio (important — guide the visitor!)
+- **"CV" button in the header** (top right): downloads my CV as PDF. It downloads in the current site language. If anyone asks about my CV or how to download it, point them to that button.
+- **Language toggle** (flag in the header): switches between Spanish and English.
+- **Each project** opens by clicking it in the portfolio grid. Inside you'll find: long description, tech stack, diagrams, documentation PDF, links to repo and demo, concept map of the skills applied, and recent updates (latest commits).
+- **Theme toggle** (sun/moon): light / dark.
+- **Music** (musical note): optional, jazz in the background.
+- **Visible portfolio categories**: Data Science, Data Engineering, Data Analysis, AI & Automation, Development, Algorithms & Challenges.`,
 };
 
 function buildContext(portfolioData: Category[], lang: 'es' | 'en'): string {

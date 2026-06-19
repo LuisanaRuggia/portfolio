@@ -238,7 +238,13 @@ async function main(): Promise<void> {
     const placeholders = buildPlaceholders(flat, target.lang);
     const rendered = renderTemplate(template, placeholders);
 
-    const destPdf = join(REPO_ROOT_PATH, 'frontend', 'public', 'cv', `cv.${target.lang}.pdf`);
+    const destPdf = join(
+      REPO_ROOT_PATH,
+      'frontend',
+      'public',
+      'cv',
+      `CV_Luisana_Ruggia_${target.lang}.pdf`,
+    );
     const destPages = join(REPO_ROOT_PATH, 'frontend', 'public', 'cv', `pages-${target.lang}`);
 
     const { pageCount } = compileAndPlace(rendered, destPdf, destPages, { dpi: 200 });
