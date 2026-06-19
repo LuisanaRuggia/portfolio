@@ -3,36 +3,36 @@
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Implementación de la sección Blog en el portafolio con contenido bilingüe y video demo.",
-        "en": "Implementation of the Blog section in the portfolio with bilingual content and demo video."
+        "es": "Implementación de la sección de blog bilingüe en el portafolio, incluyendo contenido y diseño.",
+        "en": "Implementation of the bilingual blog section in the portfolio, including content and design."
       }
     },
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Mejoras en la navegación y experiencia del usuario en la sección Blog.",
-        "en": "Improvements in navigation and user experience in the Blog section."
+        "es": "Mejoras en la experiencia del usuario del blog, incluyendo correcciones de errores y mejoras de navegación.",
+        "en": "User experience improvements in the blog, including error corrections and navigation enhancements."
       }
     },
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Implementación de la sección CV interactiva y mejora en la experiencia del usuario en la sección Chat.",
-        "en": "Implementation of the interactive CV section and improvement in user experience in the Chat section."
+        "es": "Implementación de la página de currículum vitae interactiva y mejora de la experiencia del usuario en la sección de proyectos.",
+        "en": "Implementation of the interactive resume page and user experience improvements in the projects section."
       }
     },
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Mejoras en la infraestructura de despliegue y seguridad del proyecto.",
-        "en": "Improvements in deployment infrastructure and security of the project."
+        "es": "Mejoras en la infraestructura de despliegue y automatización de tareas, incluyendo correcciones de errores y mejoras de seguridad.",
+        "en": "Infrastructure deployment and automation improvements, including error corrections and security enhancements."
       }
     },
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Mejoras en la documentación y ejemplos de uso en la sección Proyectos.",
-        "en": "Improvements in documentation and usage examples in the Projects section."
+        "es": "Correcciones de errores menores en la sección de chat y mejora de la experiencia del usuario.",
+        "en": "Minor error corrections in the chat section and user experience improvements."
       }
     }
   ]

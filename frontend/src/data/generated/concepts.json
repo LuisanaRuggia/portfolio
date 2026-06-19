@@ -42,14 +42,6 @@
         "group": "ops"
       },
       {
-        "id": "hash-routing",
-        "label": {
-          "es": "Enrutamiento por hash",
-          "en": "Hash Routing"
-        },
-        "group": "ops"
-      },
-      {
         "id": "animated-visualizations",
         "label": {
           "es": "Visualizaciones animadas",
@@ -74,10 +66,18 @@
         "group": "ops"
       },
       {
-        "id": "cloud-computing",
+        "id": "hash-routing",
         "label": {
-          "es": "Computación en la nube",
-          "en": "Cloud Computing"
+          "es": "Enrutamiento por hash",
+          "en": "Hash Routing"
+        },
+        "group": "ops"
+      },
+      {
+        "id": "continuous-integration",
+        "label": {
+          "es": "Integración continua",
+          "en": "Continuous Integration"
         },
         "group": "ops"
       }
@@ -108,20 +108,20 @@
         "to": "web-audio-api"
       },
       {
-        "from": "hash-routing",
-        "to": "cloud-computing"
-      },
-      {
         "from": "animated-visualizations",
         "to": "force-directed-graphs"
       },
       {
         "from": "machine-learning-models",
-        "to": "cloud-computing"
+        "to": "edge-functions"
       },
       {
-        "from": "web-audio-api",
-        "to": "animated-visualizations"
+        "from": "continuous-integration",
+        "to": "static-site-generation"
+      },
+      {
+        "from": "hash-routing",
+        "to": "internationalization"
       }
     ]
   }
