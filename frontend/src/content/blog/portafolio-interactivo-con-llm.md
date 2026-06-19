@@ -6,9 +6,9 @@ tags: ["react", "typescript", "ia", "cloudflare", "storytelling"]
 projectId: "dev1"
 ---
 
-Hace un tiempo me puse a pensar cómo mostrar lo que sé hacer sin caer en lo de siempre: un PDF, un LinkedIn y poco más. Lo que más me molestaba es que esos formatos te muestran **resultados**, pero no **cómo piensas**. Y yo quería que alguien que entrara a mi sitio sintiera, en menos de un minuto, cómo trabajo en realidad.
+Cuando tuve el reto de iniciar mi portafolio, pensé que había mejores formas de mostrar lo que hago que el camino tradicional. Un PDF y un LinkedIn son útiles, pero te muestran resultados, no cómo piensas. Y yo quería que alguien que entrara a mi sitio sintiera, en menos de un minuto, cómo trabajo en realidad.
 
-Decidí algo simple en concepto y complicado en práctica: construir un portafolio que fuera, por sí mismo, una demostración de mis habilidades. Que no solo dijera "uso React"; que lo usara. Que no solo dijera "trabajo con IA"; que tuviera un chat real con IA respondiendo en mi nombre.
+Decidí algo simple en concepto y complicado en práctica: construir un portafolio que fuera, por sí mismo, una demostración de mis habilidades. Que no solo dijera "sé Python"; que lo usara. Que no solo dijera "trabajo con IA"; que tuviera un chat real con IA respondiendo en mi nombre.
 
 Te cuento cómo armé todo, paso por paso, intentando que tenga sentido aunque no sepas mucho de programación.
 

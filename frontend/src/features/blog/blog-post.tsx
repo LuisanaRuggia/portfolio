@@ -114,7 +114,7 @@ export const BlogPost: React.FC<BlogPostProps> = ({ slug, onBack, onProjectLink 
               }}
               className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:text-accent/80 transition-colors"
             >
-              {t('blog.viewRelatedProject')} →
+              {t('blog.viewRelatedProject')}
             </button>
           )}
         </header>

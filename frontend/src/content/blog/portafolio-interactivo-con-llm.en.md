@@ -6,9 +6,9 @@ tags: ["react", "typescript", "ai", "cloudflare", "storytelling"]
 projectId: "dev1"
 ---
 
-A while back I started thinking about how to show what I can do without falling into the usual: a PDF, a LinkedIn page, and not much else. What bothered me most is that those formats show **results**, but not **how you think**. And I wanted anyone who landed on my site to feel, in less than a minute, how I actually work.
+When I took on building my portfolio, I figured there had to be better ways to show what I do than the traditional path. A PDF and a LinkedIn are useful, but they show results, not how you think. And I wanted anyone who landed on my site to feel, in less than a minute, how I actually work.
 
-So I decided on something that's simple in concept and complicated in practice: build a portfolio that was, in itself, a demonstration of my skills. Not just saying "I use React"; using it. Not just saying "I work with AI"; having a real AI chat answering in my voice.
+So I decided on something that's simple in concept and complicated in practice: build a portfolio that was, in itself, a demonstration of my skills. Not just saying "I know Python"; using it. Not just saying "I work with AI"; having a real AI chat answering in my voice.
 
 Let me walk you through how I put it all together, step by step, trying to make sense of it even if you don't know much about programming.
 
