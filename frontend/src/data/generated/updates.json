@@ -3,36 +3,29 @@
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Implementación de la sección de blog bilingüe en el portafolio, incluyendo contenido y diseño.",
-        "en": "Implementation of the bilingual blog section in the portfolio, including content and design."
+        "es": "Implementación de la sección de blog bilingüe en el portafolio, incluyendo diseño y contenido.",
+        "en": "Implementation of bilingual blog section in the portfolio, including design and content."
       }
     },
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Mejoras en la experiencia del usuario del blog, incluyendo correcciones de errores y mejoras de navegación.",
+        "es": "Mejoras en la experiencia del usuario del blog, incluyendo la corrección de errores y mejoras en la navegación.",
         "en": "User experience improvements in the blog, including error corrections and navigation enhancements."
       }
     },
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Implementación de la página de currículum vitae interactiva y mejora de la experiencia del usuario en la sección de proyectos.",
-        "en": "Implementation of the interactive resume page and user experience improvements in the projects section."
+        "es": "Implementación de la página de currículum vitae (CV) interactiva y la sección de proyectos con videos de YouTube responsive.",
+        "en": "Implementation of interactive CV page and projects section with responsive YouTube videos."
       }
     },
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Mejoras en la infraestructura de despliegue y automatización de tareas, incluyendo correcciones de errores y mejoras de seguridad.",
-        "en": "Infrastructure deployment and automation improvements, including error corrections and security enhancements."
-      }
-    },
-    {
-      "date": "2026-06-19",
-      "description": {
-        "es": "Correcciones de errores menores en la sección de chat y mejora de la experiencia del usuario.",
-        "en": "Minor error corrections in the chat section and user experience improvements."
+        "es": "Mejoras en la configuración de CI/CD, incluyendo la corrección de errores en los workflows y la seguridad de los despliegues.",
+        "en": "CI/CD configuration improvements, including error corrections in workflows and deployment security."
       }
     }
   ]
