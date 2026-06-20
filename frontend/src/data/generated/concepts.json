@@ -10,14 +10,6 @@
         "group": "arch"
       },
       {
-        "id": "force-directed-graphs",
-        "label": {
-          "es": "Grafos conceptuales dirigidos por fuerza",
-          "en": "Force-Directed Graphs"
-        },
-        "group": "data"
-      },
-      {
         "id": "edge-functions",
         "label": {
           "es": "Funciones de borde",
@@ -28,50 +20,34 @@
       {
         "id": "static-site-generation",
         "label": {
-          "es": "Generación de sitios web estáticos",
+          "es": "Generación de sitios estáticos",
           "en": "Static Site Generation"
         },
         "group": "ops"
       },
       {
-        "id": "internationalization",
+        "id": "force-directed-graphs",
         "label": {
-          "es": "Internacionalización",
-          "en": "Internationalization"
+          "es": "Grafos force-directed",
+          "en": "Force-Directed Graphs"
         },
         "group": "data"
       },
       {
-        "id": "animated-visualizations",
+        "id": "multilanguage-support",
         "label": {
-          "es": "Visualizaciones animadas",
-          "en": "Animated Visualizations"
+          "es": "Soporte multilenguaje",
+          "en": "Multilanguage Support"
         },
         "group": "data"
       },
       {
-        "id": "chatbots",
+        "id": "chat-asistente",
         "label": {
-          "es": "Chatbots",
-          "en": "Chatbots"
+          "es": "Chat asistente",
+          "en": "Chat Assistant"
         },
         "group": "ml"
-      },
-      {
-        "id": "multilingual-support",
-        "label": {
-          "es": "Soporte multilingüe",
-          "en": "Multilingual Support"
-        },
-        "group": "data"
-      },
-      {
-        "id": "web-audio-api",
-        "label": {
-          "es": "API de audio web",
-          "en": "Web Audio API"
-        },
-        "group": "ops"
       },
       {
         "id": "continuous-integration",
@@ -80,48 +56,72 @@
           "en": "Continuous Integration"
         },
         "group": "ops"
+      },
+      {
+        "id": "automated-documentation",
+        "label": {
+          "es": "Documentación automática",
+          "en": "Automated Documentation"
+        },
+        "group": "data"
+      },
+      {
+        "id": "machine-learning-models",
+        "label": {
+          "es": "Modelos de aprendizaje automático",
+          "en": "Machine Learning Models"
+        },
+        "group": "ml"
+      },
+      {
+        "id": "web-audio-api",
+        "label": {
+          "es": "API de audio web",
+          "en": "Web Audio API"
+        },
+        "group": "ops"
       }
     ],
     "edges": [
       {
         "from": "jamstack-architecture",
-        "to": "static-site-generation"
+        "to": "edge-functions"
       },
       {
         "from": "jamstack-architecture",
-        "to": "edge-functions"
-      },
-      {
-        "from": "force-directed-graphs",
-        "to": "animated-visualizations"
-      },
-      {
-        "from": "internationalization",
-        "to": "multilingual-support"
-      },
-      {
-        "from": "chatbots",
-        "to": "edge-functions"
-      },
-      {
-        "from": "web-audio-api",
-        "to": "animated-visualizations"
-      },
-      {
-        "from": "continuous-integration",
         "to": "static-site-generation"
       },
       {
-        "from": "multilingual-support",
-        "to": "internationalization"
-      },
-      {
         "from": "edge-functions",
-        "to": "chatbots"
+        "to": "chat-asistente"
       },
       {
         "from": "static-site-generation",
-        "to": "continuous-integration"
+        "to": "multilanguage-support"
+      },
+      {
+        "from": "force-directed-graphs",
+        "to": "multilanguage-support"
+      },
+      {
+        "from": "chat-asistente",
+        "to": "machine-learning-models"
+      },
+      {
+        "from": "continuous-integration",
+        "to": "automated-documentation"
+      },
+      {
+        "from": "automated-documentation",
+        "to": "multilanguage-support"
+      },
+      {
+        "from": "machine-learning-models",
+        "to": "chat-asistente"
+      },
+      {
+        "from": "web-audio-api",
+        "to": "jamstack-architecture"
       }
     ]
   }

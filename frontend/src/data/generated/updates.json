@@ -3,29 +3,29 @@
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Implementación de la sección de blog bilingüe en el portafolio, incluyendo diseño y contenido.",
-        "en": "Implementation of bilingual blog section in the portfolio, including design and content."
+        "es": "Implementación de la fase 6 del portafolio, incluyendo blog self-hosted, video en sección Blog/Video y página /cv interactiva.",
+        "en": "Implementation of phase 6 of the portfolio, including self-hosted blog, video in Blog/Video section and interactive /cv page."
       }
     },
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Mejoras en la experiencia del usuario del blog, incluyendo la corrección de errores y mejoras en la navegación.",
-        "en": "User experience improvements in the blog, including error corrections and navigation enhancements."
+        "es": "Mejoras en la experiencia del usuario, incluyendo distinguir entre lista y stack en chat, botón Volver que regresa al proyecto y video demo en dev1.",
+        "en": "User experience improvements, including distinguishing between list and stack in chat, Back button that returns to the project and dev1 demo video."
       }
     },
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Implementación de la página de currículum vitae (CV) interactiva y la sección de proyectos con videos de YouTube responsive.",
-        "en": "Implementation of interactive CV page and projects section with responsive YouTube videos."
+        "es": "Actualización de documentación y regeneración de PDF de README.",
+        "en": "Documentation update and regeneration of README PDF."
       }
     },
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Mejoras en la configuración de CI/CD, incluyendo la corrección de errores en los workflows y la seguridad de los despliegues.",
-        "en": "CI/CD configuration improvements, including error corrections in workflows and deployment security."
+        "es": "Correcciones en CI, incluyendo wrangler deploy y push race-safe en 5 workflows.",
+        "en": "CI fixes, including wrangler deploy and push race-safe in 5 workflows."
       }
     }
   ]
