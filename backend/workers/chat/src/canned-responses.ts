@@ -204,7 +204,26 @@ const RULES: CannedRule[] = [
   },
   {
     id: 'project-portfolio',
-    triggers: ['portafolio', 'este sitio', 'this site', 'how is the portfolio built', 'como esta hecho'],
+    // Triggers ESPECÍFICOS al CASO B (preguntan por el stack/cómo está hecho
+    // el sitio mismo). Antes el trigger era solo "portafolio" y atrapaba
+    // CUALQUIER pregunta con esa palabra, incluyendo "qué hay en tu
+    // portafolio?" que debe ir al LLM con la lista de proyectos.
+    triggers: [
+      'cuéntame del portafolio',
+      'cuentame del portafolio',
+      'háblame del portafolio',
+      'hablame del portafolio',
+      'cómo está hecho el portafolio',
+      'como esta hecho el portafolio',
+      'cómo construiste el portafolio',
+      'como construiste el portafolio',
+      'stack del portafolio',
+      'este sitio',
+      'this site',
+      'how is the portfolio built',
+      'how did you build the portfolio',
+      'tell me about the portfolio',
+    ],
     reply: {
       es: 'Este portafolio es React + TypeScript + Vite + Tailwind, con animaciones 3D, grafos conceptuales y chat asistente con LLM. Backend en Cloudflare Workers + Groq (Llama) para el chat.',
       en: 'This portfolio is React + TypeScript + Vite + Tailwind, with 3D animations, concept graphs and an LLM chat assistant. Backend on Cloudflare Workers + Groq for the chat.',

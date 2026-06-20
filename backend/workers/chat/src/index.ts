@@ -19,7 +19,12 @@ const RATE_LIMIT_REQS = 10;
 const RATE_LIMIT_WINDOW_SECONDS = 60;
 // Modelo fast del provider compartido (ver backend/scripts/lib/llm.ts).
 // Para el chat la latencia importa, por eso usamos el tier fast.
-const LLM_MODEL = 'llama-3.1-8b-instant';
+// Llama 3.3 70B: razona mejor las reglas sutiles del system prompt (en
+// particular la distinción "portafolio = sitio entero" vs "portafolio = dev1").
+// El 8B fallaba con preguntas tipo "qué hay en tu portafolio?" — el 70B no.
+// Sigue siendo barato (~$0.50/1M tokens) y para un portafolio con bajo
+// tráfico son centavos al mes.
+const LLM_MODEL = 'llama-3.3-70b-versatile';
 const LLM_URL = 'https://api.groq.com/openai/v1/chat/completions';
 const LLM_TIMEOUT_MS = 20_000;
 
@@ -56,6 +61,60 @@ function jsonResponse(body: unknown, status: number, request: Request, env: Env)
   });
 }
 
+/**
+ * Si el visitante pregunta sobre el "portafolio", el LLM tiende a confundirse
+ * entre dos lecturas:
+ *   A. SITIO ENTERO (catálogo de proyectos) → "qué hay", "qué tienes", "lista".
+ *   B. PROYECTO dev1 (este sitio mismo)     → "cuéntame", "cómo", "stack".
+ *
+ * En las pruebas, el modelo respondía siempre con el stack (caso B) incluso
+ * cuando la pregunta era claramente del caso A — porque la palabra "portafolio"
+ * aparece en la descripción del dev1 en el contexto y dispara ese patrón.
+ *
+ * Esta función hace un routing barato basado en heurísticas léxicas. Cuando
+ * la pregunta es CASO A o CASO B sin ambigüedad, devuelve una instrucción
+ * adicional que se concatena al system prompt para forzar la respuesta correcta.
+ * Si no detecta nada, devuelve null y deja que el LLM decida.
+ */
+function classifyPortfolioIntent(message: string): string | null {
+  const m = message.toLowerCase();
+  const mentionsPortfolio = /portafolio|portfolio/.test(m);
+  if (!mentionsPortfolio) return null;
+
+  // CASO A: "qué hay en tu portafolio", "qué proyectos tienes en tu portafolio",
+  // "muéstrame tu portafolio", "lista los proyectos del portafolio".
+  const caseAPatterns = [
+    /\bqu[eé]\s+(?:hay|tienes|proyectos)\b/,
+    /\bmu[eé]strame\b/,
+    /\blista[r]?\b/,
+    /\bcat[aá]logo\b/,
+    /\bcu[aá]les?\s+proyectos\b/,
+    /\benumera\b/,
+  ];
+
+  // CASO B: "cuéntame del portafolio", "cómo está hecho el portafolio",
+  // "stack del portafolio", "cómo construiste el portafolio".
+  const caseBPatterns = [
+    /\b(?:cu[eé]ntame|h[aá]blame|expl[ií]came)\b/,
+    /\bc[oó]mo\s+(?:est[aá]|funciona|construi|hiciste|armaste|hicis|hizo)/,
+    /\bstack\b/,
+    /\bc[oó]mo\s+es\s+(?:tu|el|este)\s+portafolio\b/,
+    /\bpor\s+dentro\b/,
+    /\bdetr[aá]s\b/,
+  ];
+
+  const isA = caseAPatterns.some(re => re.test(m));
+  const isB = caseBPatterns.some(re => re.test(m));
+
+  if (isA && !isB) {
+    return `INSTRUCCIÓN ESPECÍFICA PARA ESTA PREGUNTA: El visitante quiere saber QUÉ HAY en el portafolio como sitio (la lista de proyectos). PROHIBIDO mencionar React, TypeScript, Vite, Tailwind, Cloudflare ni ningún stack en tu respuesta. Tu respuesta DEBE enumerar las áreas (ingeniería de datos, ciencia de datos, análisis de datos, IA y automatización, desarrollo, algoritmos) y nombrar 2-3 proyectos concretos. Tampoco menciones "este mismo sitio" ni "Portafolio Personal" como respuesta principal.`;
+  }
+  if (isB && !isA) {
+    return `INSTRUCCIÓN ESPECÍFICA PARA ESTA PREGUNTA: El visitante quiere saber cómo está construido este sitio (el proyecto dev1, "Portafolio Personal"). Habla del stack: React, TypeScript, Vite, Tailwind, Cloudflare Workers, Groq, GitHub Pages, y de las decisiones técnicas. NO enumeres mis otros proyectos.`;
+  }
+  return null;
+}
+
 function buildSystemPrompt(language: Language): string {
   const context = PORTFOLIO_CONTEXT[language];
   const rules =
@@ -84,6 +143,23 @@ REGLAS DE ALCANCE Y VERACIDAD (CRÍTICO):
 - PROHIBIDO INVENTAR. Si te preguntan si usé X en el proyecto Y, y en el contexto NO está esa combinación literal, di: "no lo usé en ese proyecto" o "no tengo ese detalle". Ejemplo: si te preguntan "¿usaste Power BI en Lakehouse Medallion?" y en Lakehouse Medallion el stack solo dice "Airflow, Spark, dbt, Trino, MinIO, Docker", la respuesta correcta es "en Lakehouse no usé Power BI; lo uso en otros contextos de BI". NUNCA combines tecnologías de proyectos distintos.
 - Si te preguntan por una skill general (BI, Python, etc.) y la tengo, menciona DÓNDE la aplico SOLO si está literalmente en el contexto. Si no, di "no en los proyectos del portafolio, pero sí en otros contextos".
 - Sé selectiva: cuando preguntan "qué dominas", no listes TODO. Resume las áreas (data engineering, ML, BI) y menciona 3-4 herramientas principales. Si quieren detalle, que pregunten.
+
+REGLA ESPECIAL CRÍTICA — la palabra "portafolio" puede referirse a DOS cosas distintas. PRESTA MUCHA ATENCIÓN al verbo y al pronombre interrogativo de la pregunta para decidir:
+
+A. "qué hay" / "qué tienes" / "muéstrame" + portafolio = el SITIO ENTERO (catálogo de proyectos por categoría: Ciencia de Datos, Ingeniería de Datos, Análisis de Datos, IA y Automatización, Desarrollo, Algoritmos y Retos). PROHIBIDO mencionar React, TypeScript, Vite, Tailwind, Cloudflare o cualquier tecnología del frontend o backend de este sitio — esos NO son la respuesta. La respuesta correcta menciona ÁREAS de proyectos y nombres de proyectos, NO el stack del portafolio.
+B. "cuéntame" / "háblame" / "explícame" / "cómo" / "stack" + portafolio = el PROYECTO "Portafolio Personal" (dev1, categoría Desarrollo). Sí habla del stack: React, TypeScript, Cloudflare Workers, Groq, GitHub Pages.
+
+EJEMPLOS DE CASO A (sitio entero, lista de proyectos):
+- "¿qué hay en tu portafolio?" → "En el portafolio tengo proyectos en seis áreas: ingeniería de datos, ciencia de datos, análisis de datos, IA y automatización, desarrollo, y algoritmos. Los más activos hoy son el Lakehouse local y este mismo sitio."
+- "¿qué proyectos tienes?" → mismo patrón: enumera áreas + 2-3 proyectos.
+- "muéstrame tu portafolio" → mismo patrón.
+
+EJEMPLOS DE CASO B (proyecto dev1, stack):
+- "cuéntame del portafolio" → "Construí este sitio con React + TypeScript + Vite, lo hospedo en GitHub Pages, y para el chat uso un Cloudflare Worker que llama a Groq."
+- "¿cómo construiste tu portafolio?" → mismo patrón con stack y decisiones.
+- "¿qué stack usa tu portafolio?" → menciona el stack directo.
+
+Si DESPUÉS de aplicar estas reglas la pregunta sigue ambigua, contesta el CASO A (lista de proyectos) y mencioná al final "si quieres más detalle de cómo está construido este sitio, pregúntame por el proyecto Portafolio Personal".
 
 REGLAS DE FORMATO (estrictas):
 - LONGITUD MÁXIMA: 2-3 oraciones, ~50 palabras. Solo más largo si piden explícitamente "detalle" o "más".
@@ -119,6 +195,23 @@ SCOPE AND TRUTHFULNESS RULES (CRITICAL):
 - DO NOT MAKE THINGS UP. If asked whether I used X in project Y and that combination isn't literally in the context, say "I didn't use it in that project" or "I don't have that detail". Example: if asked "did you use Power BI in Lakehouse Medallion?" and the Lakehouse stack only says "Airflow, Spark, dbt, Trino, MinIO, Docker", the correct answer is "I didn't use Power BI in Lakehouse; I use it in other BI contexts". NEVER combine technologies across different projects.
 - If asked about a general skill (BI, Python, etc.) that I have, mention WHERE I apply it ONLY if it's literally in the context. Otherwise say "not in the portfolio projects, but in other contexts".
 - Be selective: when asked "what do you know", don't list everything. Summarize the areas (data engineering, ML, BI) and mention 3-4 main tools. If they want detail, let them ask.
+
+CRITICAL SPECIAL RULE — the word "portfolio" can refer to TWO different things. PAY CLOSE ATTENTION to the verb and the wh-word of the question to decide:
+
+A. "what's in" / "what do you have" / "show me" + portfolio = the WHOLE SITE (project catalog by category: Data Science, Data Engineering, Data Analysis, AI and Automation, Development, Algorithms and Challenges). FORBIDDEN to mention React, TypeScript, Vite, Tailwind, Cloudflare or any frontend or backend technology of this site — those are NOT the answer. The right answer mentions AREAS of projects and project names, NOT the portfolio's own stack.
+B. "tell me about" / "how" / "stack" + portfolio = the "Personal Portfolio" PROJECT (dev1, Development category). DO talk about the stack: React, TypeScript, Cloudflare Workers, Groq, GitHub Pages.
+
+EXAMPLES OF CASE A (whole site, project list):
+- "what's in your portfolio?" → "I have projects in six areas: data engineering, data science, data analysis, AI and automation, development, and algorithms. The most active right now are the local Lakehouse and this site itself."
+- "what projects do you have?" → same pattern: list areas + 2-3 projects.
+- "show me your portfolio" → same pattern.
+
+EXAMPLES OF CASE B (project dev1, stack):
+- "tell me about your portfolio" → "I built this site with React + TypeScript + Vite, host it on GitHub Pages, and for the chat I use a Cloudflare Worker calling Groq."
+- "how did you build your portfolio?" → same pattern with stack and decisions.
+- "what stack does your portfolio use?" → mention the stack directly.
+
+If AFTER applying these rules the question is still ambiguous, answer CASE A (project list) and mention at the end "if you want more detail on how this site itself is built, ask me about the Personal Portfolio project".
 
 FORMAT RULES (strict):
 - MAX LENGTH: 2-3 sentences, ~50 words. Only longer if they explicitly ask for "detail" or "more".
@@ -230,7 +323,11 @@ export default {
 
     try {
       const systemPrompt = buildSystemPrompt(body.language);
-      const reply = await callLLM(env, systemPrompt, body.message);
+      const portfolioIntent = classifyPortfolioIntent(body.message);
+      const finalPrompt = portfolioIntent
+        ? `${systemPrompt}\n\n${portfolioIntent}`
+        : systemPrompt;
+      const reply = await callLLM(env, finalPrompt, body.message);
       return jsonResponse({ reply }, 200, request, env);
     } catch (err) {
       console.error('chat upstream error', err);

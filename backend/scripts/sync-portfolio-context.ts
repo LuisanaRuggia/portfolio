@@ -111,7 +111,12 @@ function buildContext(portfolioData: Category[], lang: 'es' | 'en'): string {
       const status = p.status ? ` (${STATUS_LABELS[p.status][lang]})` : '';
       sections.push(`\n- **${title}** [id: ${p.id}]${status}`);
 
-      const desc = resolveLocalized(p.description, lang);
+      // Preferir `cvDescription` (versión agnóstica al portafolio) si existe.
+      // Sino, `description`. Esto evita que frases tipo "este mismo sitio"
+      // del dev1 confundan al LLM cuando alguien pregunta "¿qué hay en tu
+      // portafolio?" — el modelo encontraba esa frase y respondía sobre el
+      // stack en vez de listar proyectos.
+      const desc = resolveLocalized(p.cvDescription ?? p.description, lang);
       if (desc) sections.push(`  ${desc}`);
 
       if (p.tags && p.tags.length > 0) {
