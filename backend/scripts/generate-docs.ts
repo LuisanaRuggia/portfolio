@@ -24,8 +24,11 @@ import { join } from 'node:path';
 
 import {
   cleanCommits,
+  cleanupClone,
+  cloneShallow,
   gitLog,
   idempotentWrite,
+  isLocalRepo,
   loadManifest,
   loadProjectsFromFrontend,
   REPO_ROOT_PATH,
@@ -112,10 +115,10 @@ function validateBlocks(parsed: unknown): asserts parsed is DocBlocks {
   if (!isBilingualString(p.recentChanges)) throw new Error('recentChanges missing or invalid bilingual shape');
 }
 
-function readReadmeForProject(entry: ManifestEntry): string {
-  if (entry.repo !== 'portfolio') return '';
+/** Lee el README desde el `repoPath` resuelto (local o tmp clone). */
+function readReadmeFromPath(repoPath: string): string {
   try {
-    return readFileSync(join(REPO_ROOT_PATH, 'README.md'), 'utf8');
+    return readFileSync(join(repoPath, 'README.md'), 'utf8');
   } catch {
     return '';
   }
@@ -208,11 +211,39 @@ async function generateForProject(
   entry: ManifestEntry,
   project: Project,
 ): Promise<{ pageCount: number; variants: string[] }> {
+  // Resolver dónde leer README + git log: filesystem local si es el portafolio,
+  // clone shallow si es un repo externo. Si el clone falla, seguimos con
+  // README/commits vacíos (el LLM igual puede inferir desde projects.ts).
+  let repoPath = REPO_ROOT_PATH;
+  let cloneTmpDir: string | null = null;
+  if (!isLocalRepo(entry)) {
+    try {
+      cloneTmpDir = cloneShallow(entry, { depth: 25 });
+      repoPath = cloneTmpDir;
+      console.log(`[${projectId}] clonado ${entry.owner}/${entry.repo}@${entry.branch} a ${cloneTmpDir}`);
+    } catch (err) {
+      console.warn(`[${projectId}] no se pudo clonar, sigo con context vacío: ${err instanceof Error ? err.message : err}`);
+    }
+  }
+
+  try {
+    return await generateDocsFromContext(projectId, entry, project, repoPath);
+  } finally {
+    if (cloneTmpDir) cleanupClone(cloneTmpDir);
+  }
+}
+
+async function generateDocsFromContext(
+  projectId: string,
+  entry: ManifestEntry,
+  project: Project,
+  repoPath: string,
+): Promise<{ pageCount: number; variants: string[] }> {
   // 1. Recolectar contexto
-  const readme = readReadmeForProject(entry);
+  const readme = readReadmeFromPath(repoPath);
   const description = resolveLocalized(project.description, 'es');
   const tags = project.tags?.join(', ') ?? '';
-  const commits = cleanCommits(gitLog(REPO_ROOT_PATH, 25));
+  const commits = cleanCommits(gitLog(repoPath, 25));
   const commitList = commits.slice(0, 15).map(c => `- ${c.subject}`).join('\n');
 
   const userPrompt = `Proyecto: ${entry.displayName} (id ${projectId}).

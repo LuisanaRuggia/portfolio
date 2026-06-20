@@ -136,3 +136,68 @@ export function idempotentWrite(path: string, content: string): boolean {
 export function repoRelative(rel: string): string {
   return join(REPO_ROOT_PATH, rel);
 }
+
+/**
+ * Clona shallow un repo público de GitHub a un tmp dir y devuelve el path.
+ * El caller es responsable de borrar el dir con `cleanupClone()` cuando
+ * termine (idealmente en un `try/finally`).
+ *
+ * - `depth=30` para agentes que leen commits (generate-updates).
+ * - `depth=1` para agentes que solo leen el README (generate-concepts, generate-docs).
+ * - `--filter=blob:none` evita descargar contenidos de blobs viejos (más rápido).
+ *
+ * Usa el binario `git` del sistema. En CI (GitHub Actions) ya viene instalado.
+ * En local, requiere `apt install git` (vino con casi cualquier setup).
+ */
+export function cloneShallow(
+  entry: ManifestEntry,
+  options: { depth?: number } = {},
+): string {
+  const depth = options.depth ?? 30;
+  const tmpDir = mkdtempSync(join(tmpdir(), `portfolio-clone-${entry.repo}-`));
+  const url = `https://github.com/${entry.owner}/${entry.repo}.git`;
+  try {
+    execFileSync(
+      'git',
+      [
+        'clone',
+        '--depth',
+        String(depth),
+        '--branch',
+        entry.branch,
+        '--filter=blob:none',
+        '--single-branch',
+        url,
+        tmpDir,
+      ],
+      { stdio: 'pipe' },
+    );
+    return tmpDir;
+  } catch (err) {
+    // Si el clone falla, limpiamos el tmp dir antes de re-lanzar.
+    cleanupClone(tmpDir);
+    throw new Error(
+      `cloneShallow falló para ${entry.owner}/${entry.repo}@${entry.branch}: ${
+        err instanceof Error ? err.message : String(err)
+      }`,
+    );
+  }
+}
+
+/** Borra recursivo el tmp dir creado por `cloneShallow()`. Idempotente. */
+export function cleanupClone(tmpDir: string): void {
+  try {
+    rmSync(tmpDir, { recursive: true, force: true });
+  } catch {
+    // Si la limpieza falla, no es crítico — el SO eventualmente limpia /tmp.
+  }
+}
+
+/**
+ * Determina si una entry del manifest apunta al propio repo del portafolio
+ * (donde ya tenemos el filesystem cargado) o a un repo externo (que hay que
+ * clonar). Convención: si `repo === 'portfolio'`, es el local.
+ */
+export function isLocalRepo(entry: ManifestEntry): boolean {
+  return entry.repo === 'portfolio';
+}

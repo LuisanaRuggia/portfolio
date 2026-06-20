@@ -13,8 +13,11 @@ import { join } from 'node:path';
 
 import {
   cleanCommits,
+  cleanupClone,
+  cloneShallow,
   gitLog,
   idempotentWrite,
+  isLocalRepo,
   loadManifest,
   REPO_ROOT_PATH,
   repoRelative,
@@ -69,14 +72,37 @@ function validateUpdates(parsed: unknown): asserts parsed is RawUpdate[] {
 }
 
 async function generateForProject(projectId: string, entry: ManifestEntry): Promise<Update[] | null> {
-  // Por ahora solo soportamos el repo del propio portafolio. Cuando aparezcan
-  // repos externos en el manifest (Lakehouse, CDC, etc.), agregar git clone aquí.
-  if (entry.repo !== 'portfolio') {
-    console.log(`[${projectId}] saltado: repo ${entry.owner}/${entry.repo} no es el portafolio (clone externo TODO).`);
-    return null;
+  // Si el manifest apunta al propio portafolio, usamos el filesystem local.
+  // Si apunta a un repo externo (Lakehouse, CDC, etc.), clonamos shallow a
+  // /tmp, leemos su git log y limpiamos después.
+  let repoPath: string;
+  let cloneTmpDir: string | null = null;
+  if (isLocalRepo(entry)) {
+    repoPath = REPO_ROOT_PATH;
+  } else {
+    try {
+      cloneTmpDir = cloneShallow(entry, { depth: 30 });
+      repoPath = cloneTmpDir;
+      console.log(`[${projectId}] clonado ${entry.owner}/${entry.repo}@${entry.branch} a ${cloneTmpDir}`);
+    } catch (err) {
+      console.warn(`[${projectId}] no se pudo clonar ${entry.owner}/${entry.repo}: ${err instanceof Error ? err.message : err}`);
+      return null;
+    }
   }
 
-  const allCommits = gitLog(REPO_ROOT_PATH, 30);
+  try {
+    return await generateUpdatesFromRepo(projectId, entry, repoPath);
+  } finally {
+    if (cloneTmpDir) cleanupClone(cloneTmpDir);
+  }
+}
+
+async function generateUpdatesFromRepo(
+  projectId: string,
+  entry: ManifestEntry,
+  repoPath: string,
+): Promise<Update[]> {
+  const allCommits = gitLog(repoPath, 30);
   const commits = cleanCommits(allCommits);
 
   if (commits.length === 0) {

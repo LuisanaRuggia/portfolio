@@ -13,7 +13,10 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 import {
+  cleanupClone,
+  cloneShallow,
   idempotentWrite,
+  isLocalRepo,
   loadManifest,
   loadProjectsFromFrontend,
   REPO_ROOT_PATH,
@@ -83,13 +86,28 @@ function validateConcepts(parsed: unknown): asserts parsed is ProjectConcepts {
   }
 }
 
-function readReadme(entry: ManifestEntry): string | null {
-  // Solo soportamos el repo del propio portafolio por ahora.
-  if (entry.repo !== 'portfolio') return null;
+/**
+ * Lee el README. Si el repo es el propio del portafolio, lo lee del filesystem.
+ * Si es externo, clona shallow (depth=1), lee y devuelve el contenido + el
+ * tmpDir para que el caller lo limpie.
+ */
+function fetchReadme(entry: ManifestEntry): { readme: string | null; tmpDir: string | null } {
+  if (isLocalRepo(entry)) {
+    try {
+      return { readme: readFileSync(join(REPO_ROOT_PATH, 'README.md'), 'utf8'), tmpDir: null };
+    } catch {
+      return { readme: null, tmpDir: null };
+    }
+  }
+  let tmpDir: string | null = null;
   try {
-    return readFileSync(join(REPO_ROOT_PATH, 'README.md'), 'utf8');
-  } catch {
-    return null;
+    tmpDir = cloneShallow(entry, { depth: 1 });
+    const readme = readFileSync(join(tmpDir, 'README.md'), 'utf8');
+    return { readme, tmpDir };
+  } catch (err) {
+    if (tmpDir) cleanupClone(tmpDir);
+    console.warn(`[${entry.repo}] no se pudo leer README: ${err instanceof Error ? err.message : err}`);
+    return { readme: null, tmpDir: null };
   }
 }
 
@@ -98,16 +116,25 @@ async function generateForProject(
   entry: ManifestEntry,
   project: Project | undefined,
 ): Promise<ProjectConcepts | null> {
-  if (entry.repo !== 'portfolio') {
-    console.log(`[${projectId}] saltado: repo ${entry.owner}/${entry.repo} no es el portafolio.`);
-    return null;
-  }
   if (!project) {
     console.warn(`[${projectId}] no aparece en projects.ts.`);
     return null;
   }
 
-  const readme = readReadme(entry);
+  const { readme, tmpDir } = fetchReadme(entry);
+  try {
+    return await generateConceptsFromReadme(projectId, entry, project, readme);
+  } finally {
+    if (tmpDir) cleanupClone(tmpDir);
+  }
+}
+
+async function generateConceptsFromReadme(
+  projectId: string,
+  entry: ManifestEntry,
+  project: Project,
+  readme: string | null,
+): Promise<ProjectConcepts | null> {
   const description = resolveLocalized(project.description, 'es');
   const tags = project.tags?.join(', ') ?? '';
 
