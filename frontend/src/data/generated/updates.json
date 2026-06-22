@@ -3,22 +3,36 @@
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Implementación de funcionalidades de blog y proyectos en el portafolio",
-        "en": "Implementation of blog and projects features in the portfolio"
+        "es": "Implementación de la fase 6 del portafolio, incluyendo blog self-hosted bilingüe, página /cv interactiva y embed YouTube responsive.",
+        "en": "Implementation of phase 6 of the portfolio, including bilingual self-hosted blog, interactive /cv page and responsive YouTube embed."
       }
     },
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Mejoras en la experiencia del usuario y correcciones de errores en el blog",
-        "en": "User experience improvements and bug fixes in the blog"
+        "es": "Mejoras en el backend y frontend del portafolio, incluyendo soporte para repos externos, actualización de README y regeneración de documentación PDF.",
+        "en": "Improvements to the backend and frontend of the portfolio, including support for external repos, update of README and regeneration of PDF documentation."
       }
     },
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Desarrollo de la página de currículum vitae y actualización de documentación",
-        "en": "Development of the curriculum vitae page and documentation update"
+        "es": "Correcciones de errores en el chat y blog, incluyendo distinguir entre lista y stack, y el botón Volver del post que regresa al proyecto.",
+        "en": "Error corrections in the chat and blog, including distinguishing between list and stack, and the post's Back button that returns to the project."
+      }
+    },
+    {
+      "date": "2026-06-19",
+      "description": {
+        "es": "Mejoras en la documentación y contenido del portafolio, incluyendo ejemplos inline para videoUrl y links.blog, y reescritura del storytelling del post.",
+        "en": "Improvements to the portfolio's documentation and content, including inline examples for videoUrl and links.blog, and rewriting of the post's storytelling."
+      }
+    },
+    {
+      "date": "2026-06-19",
+      "description": {
+        "es": "Corrección de error en el CI y mejora en la página /cv.",
+        "en": "Error correction in the CI and improvement in the /cv page."
       }
     }
   ]
