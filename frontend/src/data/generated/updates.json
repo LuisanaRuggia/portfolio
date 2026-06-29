@@ -3,36 +3,22 @@
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Implementación de la fase 6 del portafolio, incluyendo blog self-hosted bilingüe, página /cv interactiva y embed YouTube responsive.",
-        "en": "Implementation of phase 6 of the portfolio, including bilingual self-hosted blog, interactive /cv page and responsive YouTube embed."
+        "es": "Implementación de funcionalidades para el blog y la página de proyectos.",
+        "en": "Implementation of features for the blog and project page."
       }
     },
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Mejoras en el backend y frontend del portafolio, incluyendo soporte para repos externos, actualización de README y regeneración de documentación PDF.",
-        "en": "Improvements to the backend and frontend of the portfolio, including support for external repos, update of README and regeneration of PDF documentation."
+        "es": "Mejoras en la documentación y la experiencia del usuario en el portafolio.",
+        "en": "Improvements in documentation and user experience in the portfolio."
       }
     },
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Correcciones de errores en el chat y blog, incluyendo distinguir entre lista y stack, y el botón Volver del post que regresa al proyecto.",
-        "en": "Error corrections in the chat and blog, including distinguishing between list and stack, and the post's Back button that returns to the project."
-      }
-    },
-    {
-      "date": "2026-06-19",
-      "description": {
-        "es": "Mejoras en la documentación y contenido del portafolio, incluyendo ejemplos inline para videoUrl y links.blog, y reescritura del storytelling del post.",
-        "en": "Improvements to the portfolio's documentation and content, including inline examples for videoUrl and links.blog, and rewriting of the post's storytelling."
-      }
-    },
-    {
-      "date": "2026-06-19",
-      "description": {
-        "es": "Corrección de error en el CI y mejora en la página /cv.",
-        "en": "Error correction in the CI and improvement in the /cv page."
+        "es": "Desarrollo de la página de currículum vitae interactiva.",
+        "en": "Development of the interactive curriculum vitae page."
       }
     }
   ]
