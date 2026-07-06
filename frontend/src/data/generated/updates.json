@@ -3,22 +3,29 @@
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Implementación de funcionalidades para el blog y la página de proyectos.",
-        "en": "Implementation of features for the blog and project page."
+        "es": "Implementación de blog self-hosted bilingüe en el portafolio.",
+        "en": "Implementation of bilingual self-hosted blog in the portfolio."
       }
     },
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Mejoras en la documentación y la experiencia del usuario en el portafolio.",
-        "en": "Improvements in documentation and user experience in the portfolio."
+        "es": "Mejoras en la experiencia del usuario del blog, incluyendo correcciones y mejoras de funcionalidad.",
+        "en": "User experience improvements in the blog, including fixes and functionality enhancements."
       }
     },
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Desarrollo de la página de currículum vitae interactiva.",
-        "en": "Development of the interactive curriculum vitae page."
+        "es": "Actualización de la documentación y README para reflejar los cambios recientes.",
+        "en": "Documentation and README update to reflect recent changes."
+      }
+    },
+    {
+      "date": "2026-06-19",
+      "description": {
+        "es": "Soporte para repositorios externos en los agentes y mejoras en la integración con YouTube.",
+        "en": "External repository support in agents and YouTube integration improvements."
       }
     }
   ]
