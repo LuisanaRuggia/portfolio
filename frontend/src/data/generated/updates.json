@@ -3,29 +3,22 @@
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Implementación de blog self-hosted bilingüe en el portafolio.",
-        "en": "Implementation of bilingual self-hosted blog in the portfolio."
+        "es": "Implementación de blog self-hosted bilingüe en el portafolio",
+        "en": "Implementation of bilingual self-hosted blog in the portfolio"
       }
     },
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Mejoras en la experiencia del usuario del blog, incluyendo correcciones y mejoras de funcionalidad.",
-        "en": "User experience improvements in the blog, including fixes and functionality enhancements."
+        "es": "Actualización de contenido y corrección de errores en el blog",
+        "en": "Content updates and bug fixes in the blog"
       }
     },
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Actualización de la documentación y README para reflejar los cambios recientes.",
-        "en": "Documentation and README update to reflect recent changes."
-      }
-    },
-    {
-      "date": "2026-06-19",
-      "description": {
-        "es": "Soporte para repositorios externos en los agentes y mejoras en la integración con YouTube.",
-        "en": "External repository support in agents and YouTube integration improvements."
+        "es": "Mejoras en la experiencia del usuario en el portafolio, incluyendo soporte para repos externos",
+        "en": "User experience improvements in the portfolio, including external repository support"
       }
     }
   ]
