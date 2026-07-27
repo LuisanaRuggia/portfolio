@@ -3,22 +3,29 @@
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Implementación de blog self-hosted bilingüe en el portafolio",
-        "en": "Implementation of bilingual self-hosted blog in the portfolio"
+        "es": "Implementación de la fase 7 del portafolio, incluyendo soporte para repos externos y actualización de la documentación.",
+        "en": "Implementation of phase 7 of the portfolio, including external repository support and documentation updates."
       }
     },
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Actualización de contenido y corrección de errores en el blog",
-        "en": "Content updates and bug fixes in the blog"
+        "es": "Mejoras en la experiencia del usuario del chat, incluyendo la distinción entre listas y stacks.",
+        "en": "User experience improvements in the chat, including the distinction between lists and stacks."
       }
     },
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Mejoras en la experiencia del usuario en el chat y la documentación",
-        "en": "User experience improvements in the chat and documentation"
+        "es": "Actualización del contenido del blog, incluyendo la reescritura del storytelling y la adición de una opción A.",
+        "en": "Blog content updates, including storytelling rewrite and addition of option A."
+      }
+    },
+    {
+      "date": "2026-06-19",
+      "description": {
+        "es": "Implementación de la fase 6 del blog self-hosted, incluyendo soporte bilingüe.",
+        "en": "Implementation of phase 6 of the self-hosted blog, including bilingual support."
       }
     }
   ]

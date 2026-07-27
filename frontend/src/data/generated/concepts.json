@@ -1,1 +1,128 @@
-{}
+{
+  "dev1": {
+    "nodes": [
+      {
+        "id": "jamstack-architecture",
+        "label": {
+          "es": "Arquitectura JAMstack",
+          "en": "JAMstack Architecture"
+        },
+        "group": "arch"
+      },
+      {
+        "id": "force-directed-graphs",
+        "label": {
+          "es": "Grafos conceptuales dirigidos por fuerza",
+          "en": "Force-Directed Graphs"
+        },
+        "group": "data"
+      },
+      {
+        "id": "edge-functions",
+        "label": {
+          "es": "Funciones de borde",
+          "en": "Edge Functions"
+        },
+        "group": "ops"
+      },
+      {
+        "id": "static-site-generation",
+        "label": {
+          "es": "Generación de sitios estáticos",
+          "en": "Static Site Generation"
+        },
+        "group": "ops"
+      },
+      {
+        "id": "internationalization",
+        "label": {
+          "es": "Internacionalización",
+          "en": "Internationalization"
+        },
+        "group": "data"
+      },
+      {
+        "id": "continuous-integration",
+        "label": {
+          "es": "Integración continua",
+          "en": "Continuous Integration"
+        },
+        "group": "ops"
+      },
+      {
+        "id": "machine-learning-models",
+        "label": {
+          "es": "Modelos de aprendizaje automático",
+          "en": "Machine Learning Models"
+        },
+        "group": "ml"
+      },
+      {
+        "id": "content-delivery-network",
+        "label": {
+          "es": "Red de entrega de contenido",
+          "en": "Content Delivery Network"
+        },
+        "group": "ops"
+      },
+      {
+        "id": "web-audio-api",
+        "label": {
+          "es": "API de audio web",
+          "en": "Web Audio API"
+        },
+        "group": "data"
+      },
+      {
+        "id": "hash-routing",
+        "label": {
+          "es": "Enrutamiento por hash",
+          "en": "Hash Routing"
+        },
+        "group": "arch"
+      }
+    ],
+    "edges": [
+      {
+        "from": "jamstack-architecture",
+        "to": "static-site-generation"
+      },
+      {
+        "from": "jamstack-architecture",
+        "to": "edge-functions"
+      },
+      {
+        "from": "force-directed-graphs",
+        "to": "web-audio-api"
+      },
+      {
+        "from": "edge-functions",
+        "to": "machine-learning-models"
+      },
+      {
+        "from": "static-site-generation",
+        "to": "content-delivery-network"
+      },
+      {
+        "from": "internationalization",
+        "to": "hash-routing"
+      },
+      {
+        "from": "continuous-integration",
+        "to": "static-site-generation"
+      },
+      {
+        "from": "machine-learning-models",
+        "to": "web-audio-api"
+      },
+      {
+        "from": "content-delivery-network",
+        "to": "edge-functions"
+      },
+      {
+        "from": "hash-routing",
+        "to": "jamstack-architecture"
+      }
+    ]
+  }
+}
