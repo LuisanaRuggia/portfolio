@@ -10,12 +10,12 @@
         "group": "arch"
       },
       {
-        "id": "force-directed-graphs",
+        "id": "static-site-generation",
         "label": {
-          "es": "Grafos conceptuales dirigidos por fuerza",
-          "en": "Force-Directed Graphs"
+          "es": "Generación de sitios estáticos",
+          "en": "Static Site Generation"
         },
-        "group": "data"
+        "group": "ops"
       },
       {
         "id": "edge-functions",
@@ -26,20 +26,36 @@
         "group": "ops"
       },
       {
-        "id": "static-site-generation",
+        "id": "batch-processing",
         "label": {
-          "es": "Generación de sitios estáticos",
-          "en": "Static Site Generation"
+          "es": "Procesamiento por lotes",
+          "en": "Batch Processing"
         },
         "group": "ops"
       },
       {
-        "id": "internationalization",
+        "id": "force-directed-graphs",
         "label": {
-          "es": "Internacionalización",
-          "en": "Internationalization"
+          "es": "Grafos dirigidos por fuerza",
+          "en": "Force-Directed Graphs"
         },
         "group": "data"
+      },
+      {
+        "id": "multilingual-support",
+        "label": {
+          "es": "Soporte multilingüe",
+          "en": "Multilingual Support"
+        },
+        "group": "data"
+      },
+      {
+        "id": "chat-assistant",
+        "label": {
+          "es": "Asistente de chat",
+          "en": "Chat Assistant"
+        },
+        "group": "ml"
       },
       {
         "id": "continuous-integration",
@@ -50,18 +66,10 @@
         "group": "ops"
       },
       {
-        "id": "machine-learning-models",
+        "id": "automated-documentation",
         "label": {
-          "es": "Modelos de aprendizaje automático",
-          "en": "Machine Learning Models"
-        },
-        "group": "ml"
-      },
-      {
-        "id": "content-delivery-network",
-        "label": {
-          "es": "Red de entrega de contenido",
-          "en": "Content Delivery Network"
+          "es": "Documentación automática",
+          "en": "Automated Documentation"
         },
         "group": "ops"
       },
@@ -72,14 +80,6 @@
           "en": "Web Audio API"
         },
         "group": "data"
-      },
-      {
-        "id": "hash-routing",
-        "label": {
-          "es": "Enrutamiento por hash",
-          "en": "Hash Routing"
-        },
-        "group": "arch"
       }
     ],
     "edges": [
@@ -92,36 +92,36 @@
         "to": "edge-functions"
       },
       {
-        "from": "force-directed-graphs",
-        "to": "web-audio-api"
+        "from": "static-site-generation",
+        "to": "batch-processing"
       },
       {
         "from": "edge-functions",
-        "to": "machine-learning-models"
+        "to": "chat-assistant"
       },
       {
-        "from": "static-site-generation",
-        "to": "content-delivery-network"
+        "from": "force-directed-graphs",
+        "to": "multilingual-support"
       },
       {
-        "from": "internationalization",
-        "to": "hash-routing"
-      },
-      {
-        "from": "continuous-integration",
-        "to": "static-site-generation"
-      },
-      {
-        "from": "machine-learning-models",
+        "from": "multilingual-support",
         "to": "web-audio-api"
       },
       {
-        "from": "content-delivery-network",
-        "to": "edge-functions"
+        "from": "chat-assistant",
+        "to": "continuous-integration"
       },
       {
-        "from": "hash-routing",
-        "to": "jamstack-architecture"
+        "from": "continuous-integration",
+        "to": "automated-documentation"
+      },
+      {
+        "from": "automated-documentation",
+        "to": "batch-processing"
+      },
+      {
+        "from": "web-audio-api",
+        "to": "multilingual-support"
       }
     ]
   }

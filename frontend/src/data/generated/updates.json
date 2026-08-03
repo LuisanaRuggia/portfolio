@@ -3,29 +3,22 @@
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Implementación de la fase 7 del portafolio, incluyendo soporte para repos externos y actualización de la documentación.",
-        "en": "Implementation of phase 7 of the portfolio, including external repository support and documentation updates."
+        "es": "Implementación de la fase 7 del portafolio, incluyendo soporte para repos externos y actualizaciones en la documentación.",
+        "en": "Implementation of phase 7 of the portfolio, including support for external repositories and documentation updates."
       }
     },
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Mejoras en la experiencia del usuario del chat, incluyendo la distinción entre listas y stacks.",
-        "en": "User experience improvements in the chat, including the distinction between lists and stacks."
+        "es": "Mejoras en la experiencia del usuario en el chat y el blog, incluyendo la distinción entre listas y stacks.",
+        "en": "User experience improvements in the chat and blog, including distinguishing between lists and stacks."
       }
     },
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Actualización del contenido del blog, incluyendo la reescritura del storytelling y la adición de una opción A.",
-        "en": "Blog content updates, including storytelling rewrite and addition of option A."
-      }
-    },
-    {
-      "date": "2026-06-19",
-      "description": {
-        "es": "Implementación de la fase 6 del blog self-hosted, incluyendo soporte bilingüe.",
-        "en": "Implementation of phase 6 of the self-hosted blog, including bilingual support."
+        "es": "Actualizaciones en el contenido del blog, incluyendo la reescritura de la historia y la eliminación de elementos innecesarios.",
+        "en": "Blog content updates, including rewriting the story and removing unnecessary elements."
       }
     }
   ]
