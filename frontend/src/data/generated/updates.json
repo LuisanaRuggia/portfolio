@@ -3,22 +3,22 @@
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Implementación de la fase 7 del portafolio, incluyendo soporte para repos externos y actualizaciones en la documentación.",
-        "en": "Implementation of phase 7 of the portfolio, including support for external repositories and documentation updates."
+        "es": "Mejoras en la experiencia del usuario del blog y la documentación.",
+        "en": "User experience improvements in the blog and documentation."
       }
     },
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Mejoras en la experiencia del usuario en el chat y el blog, incluyendo la distinción entre listas y stacks.",
-        "en": "User experience improvements in the chat and blog, including distinguishing between lists and stacks."
+        "es": "Soporte para repositorios externos en los agentes y actualizaciones en el README.",
+        "en": "External repository support in agents and README updates."
       }
     },
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Actualizaciones en el contenido del blog, incluyendo la reescritura de la historia y la eliminación de elementos innecesarios.",
-        "en": "Blog content updates, including rewriting the story and removing unnecessary elements."
+        "es": "Correcciones en la lógica de la conversación del chat y el comportamiento del botón Volver.",
+        "en": "Chat conversation logic fixes and Back button behavior."
       }
     }
   ]
