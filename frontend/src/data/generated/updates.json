@@ -3,22 +3,22 @@
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Mejoras en la experiencia del usuario del blog y la documentación.",
-        "en": "User experience improvements in the blog and documentation."
+        "es": "Mejoras en la experiencia del usuario en el portafolio, incluyendo soporte para repos externos y actualizaciones en la documentación.",
+        "en": "User experience improvements in the portfolio, including external repository support and documentation updates."
       }
     },
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Soporte para repositorios externos en los agentes y actualizaciones en el README.",
-        "en": "External repository support in agents and README updates."
+        "es": "Actualizaciones en el contenido del blog, incluyendo la reescritura de un post y la creación de un video demo.",
+        "en": "Blog content updates, including a rewritten post and a demo video creation."
       }
     },
     {
       "date": "2026-06-19",
       "description": {
-        "es": "Correcciones en la lógica de la conversación del chat y el comportamiento del botón Volver.",
-        "en": "Chat conversation logic fixes and Back button behavior."
+        "es": "Correcciones en la funcionalidad del chat y del botón Volver en el post del blog.",
+        "en": "Chat and blog post button functionality fixes."
       }
     }
   ]
